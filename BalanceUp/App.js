@@ -6,6 +6,12 @@ import MainScreen from './src/MainScreen';
 import NameScreen from './src/NameScreen';
 import AgreeScreen from './src/AgreeScreen';
 
+
+const Stack = createStackNavigator();
+
+const App = () => {
+
+
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -49,6 +55,7 @@ import {NaverLogin, getProfile} from '@react-native-seoul/naver-login';
 
 const Section = ({children, title}): Node => {
   const isDarkMode = useColorScheme() === 'dark';
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -76,6 +83,7 @@ const androidKeys = {
   kConsumerSecret: 'z_Q_8LbpiI',
   kServiceAppName: 'keyum',
 };
+
 
 const initials = androidKeys;
 
@@ -175,5 +183,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
+
 
 export default App;
