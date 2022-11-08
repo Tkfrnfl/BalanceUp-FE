@@ -6,5 +6,11 @@ module.exports = {
     'spaced-comment': 'error',
     'no-duplicate-imports': 'warn',
     'react-hooks/rules-of-hooks': 'warn', // Checks rules of Hooks
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+      },
+    ],
   },
 };

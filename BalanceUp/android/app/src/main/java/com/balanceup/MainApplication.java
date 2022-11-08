@@ -12,6 +12,8 @@ import com.facebook.soloader.SoLoader;
 import com.balanceup.newarchitecture.MainApplicationReactNativeHost;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+// import com.facebook.react.bridge.JSIModulePackage; // <- 추가
+// import com.swmansion.reanimated.ReanimatedJSIModulePackage; // <- 추가
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -21,7 +23,10 @@ public class MainApplication extends Application implements ReactApplication {
         public boolean getUseDeveloperSupport() {
           return BuildConfig.DEBUG;
         }
-
+        // @Override
+        // protected JSIModulePackage getJSIModulePackage() {
+        // 	return new ReanimatedJSIModulePackage(); 
+        // }
         @Override
         protected List<ReactPackage> getPackages() {
           @SuppressWarnings("UnnecessaryLocalVariable")
