@@ -7,6 +7,8 @@ import {
   SafeAreaView,
 } from 'react-native';
 
+// dd
+
 const MainScreen = ({navigation}) => {
   function onStart() {
     navigation.navigate('Name');
