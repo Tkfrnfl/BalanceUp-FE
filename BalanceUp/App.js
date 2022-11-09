@@ -2,9 +2,9 @@ import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
-import MainScreen from './src/components/MainScreen';
-import NameScreen from './src/components/NameScreen';
-import AgreeScreen from './src/components/AgreeScreen';
+import MainScreen from './src/screens/home/MainScreen';
+import NameScreen from './src/screens/register/NameScreen';
+import AgreeScreen from './src/screens/register/AgreeScreen';
 
 const Stack = createStackNavigator();
 
