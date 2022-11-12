@@ -5,6 +5,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 import MainScreen from './src/screens/home/MainScreen';
 import NameScreen from './src/screens/register/NameScreen';
 import AgreeScreen from './src/screens/register/AgreeScreen';
+import UseInfoScreen from './src/screens/register/UseInfoScreen';
+import ServiceInfoScreen from './src/screens/register/ServiceInfoScreen';
 
 const Stack = createStackNavigator();
 
@@ -25,6 +27,16 @@ const App = () => {
         <Stack.Screen
           name="Agree"
           component={AgreeScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="UseInfo"
+          component={UseInfoScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ServiceInfo"
+          component={ServiceInfoScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

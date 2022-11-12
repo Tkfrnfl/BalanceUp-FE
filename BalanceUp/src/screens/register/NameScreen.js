@@ -12,12 +12,14 @@ import {
 import * as Progress from 'react-native-progress';
 
 import {validateText, removeWhitespace} from '../../utils/regex';
+import duplicationCheckAPI from '../../actions/duplicationCheckAPI';
+import FastImage from 'react-native-fast-image';
 
 const NameScreen = ({navigation}) => {
   const [userName, setUserName] = useState('');
   const [checkTextError, setCheckTextError] = useState('');
   const [disabled, setDisabled] = useState(false);
-  // const [userList, setUserList] = useState([]);
+  const [usableId, setUsableId] = useState(false);
 
   useEffect(() => {
     setDisabled(!(userName && !checkTextError));
@@ -32,22 +34,19 @@ const NameScreen = ({navigation}) => {
     // console.log(userName, validateText(userName), setCheckTextError);
   };
 
-  const handleCheck = () => {
-    // list에 inputText 값 넣어주기
-    // const newList = [...userList];
-    // newList.push(userName);
-    // setUserList(newList);
-
-    // if (userName === 'asd') {
-    //   setCheckError('중복입니다.');
-    // } else {
-    //   setCheckError('사용가능한 닉네임입니다.');
-    // }
-    if (userName === /[^a-z|A-Z|0-9|ㄱ-ㅎ|가-힣]/g) {
-      alert('사용 가능합니다');
-    } else {
-      alert('초성과 특수문자는 사용 불가능합니다');
-    }
+  // 중복 확인 부분은 아직 미완성
+  const duplicationCheck = () => {
+    duplicationCheckAPI(userName).then(response => {
+      console.log(response);
+      if (response === false) {
+        alert('사용 가능한 아이디입니다.');
+        setUsableId(response);
+      } else {
+        alert('중복된 아이디입니다. 다시 시도하세요.');
+        setUsableId(response);
+        setUserid('');
+      }
+    });
   };
 
   const handleRemove = () => {
@@ -67,29 +66,49 @@ const NameScreen = ({navigation}) => {
           <Text style={styles.titleText}>닉네임을 입력해주세요</Text>
         </View>
         <View style={styles.form}>
+          <Text style={styles.label}>닉네임</Text>
           <View style={styles.inputWrapper}>
-            <Text style={styles.label}>닉네임</Text>
             <TextInput
               value={userName}
               onChangeText={handleTextChange}
               style={styles.textInput}
               maxLength={11}
+              autoCapitalize="none"
+              fontSize={15}
             />
-            <Text>11글자 이하 / 글자, 특수문자 사용 불가</Text>
-            <Text style={{color: 'red'}}>{checkTextError}</Text>
+            <TouchableOpacity style={styles.inputBtn} onPress={handleRemove}>
+              <Text>X</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.inputBtn}
+              onPress={duplicationCheck}>
+              <Text>중복확인</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={handleCheck}>
-            <Text>중복확인</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleRemove}>
-            <Text>X</Text>
-          </TouchableOpacity>
+          <Text style={{marginTop: -15}}>
+            11글자 이하 / 글자, 특수문자 사용 불가
+          </Text>
+          <Text style={{color: 'red', marginTop: 2}}>{checkTextError}</Text>
         </View>
-        <Progress.Bar progress={0.5} width={350} style={styles.barWrap} />
+        <View style={styles.gifView}>
+          <FastImage // 캐릭터 GIF 예정
+            style={{width: 300, height: 300}}
+            source={{uri: 'https://unsplash.it/400/400?image=1'}}
+          />
+        </View>
+        <Progress.Bar
+          progress={0.5}
+          width={350}
+          height={10}
+          unfilledColor={'#8f8f89'}
+          borderWidth={0}
+          color={'#181817'}
+          style={styles.barWrap}
+        />
         <TouchableOpacity
           style={[
             styles.Nextbutton,
-            {backgroundColor: disabled ? '#d3eaf2' : '#66b6d2'},
+            {backgroundColor: disabled ? '#d3eaf2' : '#9ce4ff'},
           ]}
           onPress={goAgree}
           disabled={disabled}>
@@ -118,19 +137,21 @@ const styles = StyleSheet.create({
   },
   form: {
     flex: 4,
-    width: '100%',
-    alignItems: 'center',
   },
   inputWrapper: {
-    width: '100%',
+    width: '130%',
     paddingBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   label: {
     fontSize: 20,
     paddingBottom: 6,
+    marginTop: 15,
   },
   textInput: {
-    width: '100%',
+    width: '60%',
     height: 40,
     borderBottomWidth: 1.5,
   },
@@ -155,6 +176,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 15,
     padding: 10,
+    marginBottom: 10,
   },
   NextbuttonText: {
     fontSize: 25,
@@ -162,6 +184,14 @@ const styles = StyleSheet.create({
   barWrap: {
     width: '100%',
     marginBottom: 20,
+  },
+  inputBtn: {
+    marginLeft: 10,
+  },
+  gifView: {
+    alignItems: 'center',
+    width: '100%',
+    flex: 8,
   },
 });
 
