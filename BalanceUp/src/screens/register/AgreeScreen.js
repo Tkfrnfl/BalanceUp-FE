@@ -7,7 +7,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import CheckBox from '@react-native-community/checkbox';
 
 const AgreeScreen = ({navigation}) => {
   const [disabled, setDisabled] = useState(false);
@@ -17,10 +17,6 @@ const AgreeScreen = ({navigation}) => {
   const [ageCheck, setAgeCheck] = useState(false);
 
   const allBtnEvent = () => {
-    console.log('allCheck : ', allCheck);
-    // console.log('useCheck : ', useCheck);
-    // console.log('serviceCheck : ', serviceCheck);
-    // console.log('ageCheck : ', ageCheck);
     if (allCheck === false) {
       setAllCheck(true);
       setUseCheck(true);
@@ -82,47 +78,48 @@ const AgreeScreen = ({navigation}) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.form}>
         <Text style={styles.title}>약관 동의</Text>
-        <BouncyCheckbox
-          fillColor="#99d5ff"
-          unfillColor="#99d5ff"
-          text="모두 동의합니다"
-          textStyle={{textDecorationLine: 'none'}}
-          onPress={allBtnEvent}
-        />
-        <View style={styles.buttonGo}>
-          <BouncyCheckbox
-            style={{marginTop: 10}}
-            fillColor="#99d5ff"
-            unfillColor="#99d5ff"
-            text="[필수] 개인정보 처리 방침"
-            textStyle={{textDecorationLine: 'none'}}
-            onPress={useBtnEvent}
+        <View style={styles.btnWrap}>
+          <CheckBox
+            disabled={false}
+            value={allCheck}
+            onValueChange={allBtnEvent}
+            tintColors={{true: '#44bcd8'}}
           />
+          <Text>모두 동의합니다</Text>
+        </View>
+        <View style={styles.btnWrap}>
+          <CheckBox
+            disabled={false}
+            value={useCheck}
+            onValueChange={useBtnEvent}
+            tintColors={{true: '#44bcd8'}}
+          />
+          <Text>[필수] 개인정보 처리 방침</Text>
           <TouchableOpacity onPress={useInfo}>
             <Text style={styles.agreeText}> [더보기]</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.buttonGo}>
-          <BouncyCheckbox
-            style={{marginTop: 10}}
-            fillColor="#99d5ff"
-            unfillColor="#99d5ff"
-            text="[필수] 서비스 이용 약관"
-            textStyle={{textDecorationLine: 'none'}}
-            onPress={serviceBtnEvent}
+        <View style={styles.btnWrap}>
+          <CheckBox
+            disabled={false}
+            value={serviceCheck}
+            onValueChange={serviceBtnEvent}
+            tintColors={{true: '#44bcd8'}}
           />
+          <Text>[필수] 서비스 이용 약관</Text>
           <TouchableOpacity onPress={serviceInfo}>
             <Text style={styles.agreeText}> [더보기]</Text>
           </TouchableOpacity>
         </View>
-        <BouncyCheckbox
-          style={{marginTop: 10}}
-          fillColor="#99d5ff"
-          unfillColor="#99d5ff"
-          text="[필수] 만 14세 이상입니다"
-          textStyle={{textDecorationLine: 'none'}}
-          onPress={ageBtnEvent}
-        />
+        <View style={styles.btnWrap}>
+          <CheckBox
+            disabled={false}
+            value={ageCheck}
+            onValueChange={ageBtnEvent}
+            tintColors={{true: '#44bcd8'}}
+          />
+          <Text>[필수] 만 14세 이상입니다</Text>
+        </View>
       </View>
       <Progress.Bar
         progress={1.0}
@@ -161,7 +158,6 @@ const styles = StyleSheet.create({
   },
   agreeText: {
     fontSize: 15,
-    marginTop: 10,
     color: 'black',
   },
   form: {
@@ -169,7 +165,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'flex-start',
   },
-  buttonGo: {
+  btnWrap: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',

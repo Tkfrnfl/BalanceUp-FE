@@ -1321,11 +1321,6 @@
 "@react-native-community/eslint-plugin@^1.1.0":
   "version" "1.2.0"
 
-"@react-native-community/masked-view@^0.1.11":
-  "integrity" "sha512-rQfMIGSR/1r/SyN87+VD8xHHzDYeHaJq6elOSCAD+0iLagXkSI2pfA0LmSXP21uw5i3em7GkkRjfJ8wpqWXZNw=="
-  "resolved" "https://registry.npmjs.org/@react-native-community/masked-view/-/masked-view-0.1.11.tgz"
-  "version" "0.1.11"
-
 "@react-native-seoul/naver-login@^3.0.0-rc.1":
   "version" "3.0.0-rc.1"
   dependencies:
@@ -1334,7 +1329,7 @@
 "@react-native/assets@1.0.0":
   "version" "1.0.0"
 
-"@react-native/normalize-color@*", "@react-native/normalize-color@2.0.0":
+"@react-native/normalize-color@2.0.0":
   "version" "2.0.0"
 
 "@react-native/polyfills@2.0.0":
@@ -1710,7 +1705,7 @@
     "es-abstract" "^1.19.2"
     "es-shim-unscopables" "^1.0.0"
 
-"asap@~2.0.3", "asap@~2.0.6":
+"asap@~2.0.6":
   "version" "2.0.6"
 
 "assign-symbols@^1.0.0":
@@ -2227,11 +2222,6 @@
   dependencies:
     "browserslist" "^4.21.4"
 
-"core-js@^1.0.0":
-  "integrity" "sha512-ZiPp9pZlgxpWRu0M+YWbm6+aQ84XEfH1JRXvfOc/fILWI0VKhLC2LX13X1NYq4fULzLMq7Hfh43CSo2/aIaUPA=="
-  "resolved" "https://registry.npmjs.org/core-js/-/core-js-1.2.7.tgz"
-  "version" "1.2.7"
-
 "core-util-is@~1.0.0":
   "version" "1.0.3"
 
@@ -2411,15 +2401,6 @@
 "depd@2.0.0":
   "version" "2.0.0"
 
-"deprecated-react-native-prop-types@^2.3.0":
-  "integrity" "sha512-pWD0voFtNYxrVqvBMYf5gq3NA2GCpfodS1yNynTPc93AYA/KEMGeWDqqeUB6R2Z9ZofVhks2aeJXiuQqKNpesA=="
-  "resolved" "https://registry.npmjs.org/deprecated-react-native-prop-types/-/deprecated-react-native-prop-types-2.3.0.tgz"
-  "version" "2.3.0"
-  dependencies:
-    "@react-native/normalize-color" "*"
-    "invariant" "*"
-    "prop-types" "*"
-
 "destroy@1.2.0":
   "version" "1.2.0"
 
@@ -2510,7 +2491,7 @@
 "encodeurl@^1.0.2", "encodeurl@~1.0.2":
   "version" "1.0.2"
 
-"encoding@^0.1.0", "encoding@^0.1.11":
+"encoding@^0.1.0":
   "integrity" "sha512-ETBauow1T35Y/WZMkio9jiM0Z5xjHHmJ4XmjZOq1l/dXz3lr2sRn87nJy20RupqSh1F2m3HHPSp8ShIPQJrJ3A=="
   "resolved" "https://registry.npmjs.org/encoding/-/encoding-0.1.13.tgz"
   "version" "0.1.13"
@@ -2889,19 +2870,6 @@
   "version" "2.0.2"
   dependencies:
     "bser" "2.1.1"
-
-"fbjs@^0.8.4":
-  "integrity" "sha512-EQaWFK+fEPSoibjNy8IxUtaFOMXcWsY0JaVrQoZR9zC8N2Ygf9iDITPWjUTVIax95b6I742JFLqASHfsag/vKA=="
-  "resolved" "https://registry.npmjs.org/fbjs/-/fbjs-0.8.18.tgz"
-  "version" "0.8.18"
-  dependencies:
-    "core-js" "^1.0.0"
-    "isomorphic-fetch" "^2.1.1"
-    "loose-envify" "^1.0.0"
-    "object-assign" "^4.1.0"
-    "promise" "^7.1.1"
-    "setimmediate" "^1.0.5"
-    "ua-parser-js" "^0.7.30"
 
 "fd-slicer@~1.1.0":
   "version" "1.1.0"
@@ -3347,7 +3315,7 @@
     "has" "^1.0.3"
     "side-channel" "^1.0.4"
 
-"invariant@*", "invariant@^2.2.4":
+"invariant@^2.2.4":
   "version" "2.2.4"
   dependencies:
     "loose-envify" "^1.0.0"
@@ -3526,7 +3494,7 @@
   dependencies:
     "call-bind" "^1.0.2"
 
-"is-stream@^1.0.0", "is-stream@^1.0.1", "is-stream@^1.1.0":
+"is-stream@^1.0.0", "is-stream@^1.1.0":
   "version" "1.1.0"
 
 "is-stream@^2.0.0":
@@ -3577,14 +3545,6 @@
 
 "isobject@^3.0.0", "isobject@^3.0.1":
   "version" "3.0.1"
-
-"isomorphic-fetch@^2.1.1":
-  "integrity" "sha512-9c4TNAKYXM5PRyVcwUZrF3W09nQ+sO7+jydgs4ZGW9dhsLG2VOlISJABombdQqQRXCwuYG3sYV/puGf5rp0qmA=="
-  "resolved" "https://registry.npmjs.org/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz"
-  "version" "2.2.1"
-  dependencies:
-    "node-fetch" "^1.0.1"
-    "whatwg-fetch" ">=0.10.0"
 
 "istanbul-lib-coverage@^3.0.0", "istanbul-lib-coverage@^3.2.0":
   "version" "3.2.0"
@@ -4630,14 +4590,6 @@
   dependencies:
     "minimatch" "^3.0.2"
 
-"node-fetch@^1.0.1":
-  "integrity" "sha512-NhZ4CsKx7cYm2vSrBAr2PvFOe6sWDf0UYLRqA6svUYg7+/TSfVAu49jYC4BvQ4Sms9SZgdqGBgroqfDhJdTyKQ=="
-  "resolved" "https://registry.npmjs.org/node-fetch/-/node-fetch-1.7.3.tgz"
-  "version" "1.7.3"
-  dependencies:
-    "encoding" "^0.1.11"
-    "is-stream" "^1.0.1"
-
 "node-fetch@^2.2.0", "node-fetch@^2.6.0":
   "version" "2.6.7"
   dependencies:
@@ -4713,7 +4665,7 @@
 "ob1@0.72.3":
   "version" "0.72.3"
 
-"object-assign@^4.1.0", "object-assign@^4.1.1":
+"object-assign@^4.1.1":
   "version" "4.1.1"
 
 "object-copy@^0.1.0":
@@ -5000,13 +4952,6 @@
 "progress@^2.0.0", "progress@^2.0.3":
   "version" "2.0.3"
 
-"promise@^7.1.1":
-  "integrity" "sha512-nolQXZ/4L+bP/UGlkfaIujX9BKxGwmQ9OT4mOt5yvy8iK1h3wqTEJCijzGANTCCl9nWjY41juyAn2K3Q1hLLTg=="
-  "resolved" "https://registry.npmjs.org/promise/-/promise-7.3.1.tgz"
-  "version" "7.3.1"
-  dependencies:
-    "asap" "~2.0.3"
-
 "promise@^8.0.3":
   "version" "8.3.0"
   dependencies:
@@ -5018,7 +4963,7 @@
     "kleur" "^3.0.3"
     "sisteransi" "^1.0.5"
 
-"prop-types@*", "prop-types@^15.6.1", "prop-types@^15.7.2", "prop-types@^15.8.1":
+"prop-types@^15.7.2", "prop-types@^15.8.1":
   "version" "15.8.1"
   dependencies:
     "loose-envify" "^1.4.0"
@@ -5066,14 +5011,6 @@
     "ini" "~1.3.0"
     "minimist" "^1.2.0"
     "strip-json-comments" "~2.0.1"
-
-"react-addons-shallow-compare@15.6.2":
-  "integrity" "sha512-yAV9tOObmKPiohqne1jiMcx6kDjfz7GeL8K9KHgI+HvDsbrRv148uyUzrPc6GwepZnQcJ59Q3lp1ghrkyPwtjg=="
-  "resolved" "https://registry.npmjs.org/react-addons-shallow-compare/-/react-addons-shallow-compare-15.6.2.tgz"
-  "version" "15.6.2"
-  dependencies:
-    "fbjs" "^0.8.4"
-    "object-assign" "^4.1.0"
 
 "react-devtools-core@4.24.0":
   "version" "4.24.0"
@@ -5191,14 +5128,6 @@
     "react-freeze" "^1.0.0"
     "warn-once" "^0.1.0"
 
-"react-native-snap-carousel@^3.9.1":
-  "integrity" "sha512-xWEGusacIgK1YaDXLi7Gao2+ISLoGPVEBR8fcMf4tOOJQufutlNwkoLu0l6B8Qgsrre0nTxoVZikRgGRDWlLaQ=="
-  "resolved" "https://registry.npmjs.org/react-native-snap-carousel/-/react-native-snap-carousel-3.9.1.tgz"
-  "version" "3.9.1"
-  dependencies:
-    "prop-types" "^15.6.1"
-    "react-addons-shallow-compare" "15.6.2"
-
 "react-native-svg@*":
   "integrity" "sha512-JWou/k4zfXRY6TsVgM4i30D0z54McqQ64D5cAfOzX17ThZwFjOheN24owmbAs7Y+naD0Bk5j409kT/6FZEop4g=="
   "resolved" "https://registry.npmjs.org/react-native-svg/-/react-native-svg-13.5.0.tgz"
@@ -5207,7 +5136,7 @@
     "css-select" "^5.1.0"
     "css-tree" "^1.1.3"
 
-"react-native@*", "react-native@>= 0.55.x", "react-native@>= 0.62", "react-native@>=0.57", "react-native@>=0.6.0", "react-native@>=0.60.0", "react-native@0.70.4":
+"react-native@*", "react-native@>= 0.55.x", "react-native@>= 0.62", "react-native@>=0.6.0", "react-native@>=0.60.0", "react-native@0.70.4":
   "version" "0.70.4"
   dependencies:
     "@jest/create-cache-key-function" "^29.0.3"
@@ -5259,7 +5188,7 @@
     "react-shallow-renderer" "^16.15.0"
     "scheduler" "^0.22.0"
 
-"react@*", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^17 || ^18", "react@^18.1.0", "react@>= 16.x.x", "react@>=15.0.0", "react@>=16.0", "react@>=16.8.0", "react@>=17.0.0", "react@18.1.0":
+"react@*", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^17 || ^18", "react@^18.1.0", "react@>= 16.x.x", "react@>=16.8.0", "react@>=17.0.0", "react@18.1.0":
   "version" "18.1.0"
   dependencies:
     "loose-envify" "^1.1.0"
@@ -6095,11 +6024,6 @@
 "typescript@>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta":
   "version" "4.8.4"
 
-"ua-parser-js@^0.7.30":
-  "integrity" "sha512-f9BESNVhzlhEFf2CHMSj40NWOjYPl1YKYbrvIr/hFTDEmLq7SRbWvm7FcdcpCYT95zrOhC7gZSxjdnnTpBcwVw=="
-  "resolved" "https://registry.npmjs.org/ua-parser-js/-/ua-parser-js-0.7.32.tgz"
-  "version" "0.7.32"
-
 "uglify-es@^3.1.9":
   "version" "3.3.9"
   dependencies:
@@ -6285,7 +6209,7 @@
   dependencies:
     "iconv-lite" "0.4.24"
 
-"whatwg-fetch@^3.0.0", "whatwg-fetch@>=0.10.0":
+"whatwg-fetch@^3.0.0":
   "version" "3.6.2"
 
 "whatwg-mimetype@^2.3.0":

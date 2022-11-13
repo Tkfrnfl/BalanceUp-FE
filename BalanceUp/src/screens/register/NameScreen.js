@@ -10,10 +10,10 @@ import {
   Keyboard,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
+import FastImage from 'react-native-fast-image';
 
 import {validateText, removeWhitespace} from '../../utils/regex';
 import duplicationCheckAPI from '../../actions/duplicationCheckAPI';
-import FastImage from 'react-native-fast-image';
 
 const NameScreen = ({navigation}) => {
   const [userName, setUserName] = useState('');
@@ -26,12 +26,21 @@ const NameScreen = ({navigation}) => {
   }, [userName, checkTextError]);
 
   const handleTextChange = userName => {
-    const changedText = removeWhitespace(userName);
+    // const changedText = removeWhitespace(userName); // 이 코드 사용할경우 공백 제거 가능(아예 막는거)
+    const changedText = validateText(userName);
     setUserName(changedText);
     setCheckTextError(
-      validateText(userName) ? '' : '글자, 특수문자, 공백은 사용 불가능합니다.',
+      validateText(userName) ? '' : '초성, 특수문자, 공백은 사용 불가능합니다.',
     );
-    // console.log(userName, validateText(userName), setCheckTextError);
+
+    // 글자수 제한
+    if (userName.length >= 11) {
+      setCheckTextError('11글자 이하 사용 불가능합니다.');
+    } else if (userName.length === 0) {
+      setUserName('');
+      setCheckTextError('');
+    }
+    console.log(userName.length);
   };
 
   // 중복 확인 부분은 아직 미완성
@@ -72,7 +81,7 @@ const NameScreen = ({navigation}) => {
               value={userName}
               onChangeText={handleTextChange}
               style={styles.textInput}
-              maxLength={11}
+              // maxLength={11} : 코드로 제한해도 input으로 글자가 계속 입력되는 버그 확인
               autoCapitalize="none"
               fontSize={15}
             />
@@ -86,7 +95,7 @@ const NameScreen = ({navigation}) => {
             </TouchableOpacity>
           </View>
           <Text style={{marginTop: -15}}>
-            11글자 이하 / 글자, 특수문자 사용 불가
+            11글자 이하 / 초성, 공백, 특수문자 사용 불가
           </Text>
           <Text style={{color: 'red', marginTop: 2}}>{checkTextError}</Text>
         </View>
