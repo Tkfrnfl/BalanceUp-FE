@@ -25,8 +25,11 @@ import NaverLogin, {
   GetProfileResponse,
   NaverLoginRequest,
 } from '@react-native-seoul/naver-login';
-import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
-import auth from '@react-native-firebase/auth'
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+} from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
 
 const signInWithKakao = async (): Promise<void> => {
   const token: KakaoOAuthToken = await login();
@@ -39,16 +42,18 @@ const naverLogin = async (): Promise<void> => {
   const token: NaverLoginResponse = await NaverLogin.login(info);
   console.log(token);
 };
-const googleSigninConfigure = () => { 
-  GoogleSignin.configure({ webClientId: '702679288927-s3riqhj1pv7uvc4vlnhp5o8823mqjpkh.apps.googleusercontent.com'}) 
+const googleSigninConfigure = () => {
+  GoogleSignin.configure({
+    webClientId:
+      '702679288927-s3riqhj1pv7uvc4vlnhp5o8823mqjpkh.apps.googleusercontent.com',
+  });
 };
 
-
 const onGoogleButtonPress = async () => {
-  const { idToken } = await GoogleSignin.signIn();
+  const {idToken} = await GoogleSignin.signIn();
   const googleCredential = auth.GoogleAuthProvider.credential(idToken);
   return auth().signInWithCredential(googleCredential);
-}
+};
 
 const signOutWithKakao = async (): Promise<void> => {
   const message = await logout();
@@ -85,16 +90,16 @@ const consumerKey = 'emLJacIpqC1VGarFjLHx';
 const serviceUrlScheme = 'navertest';
 const initials = Platform.OS === 'ios' ? '' : androidKeys;
 
-export default function Login() {
+export default function Login({navigation}) {
   const [success, setSuccessResponse] = React.useState(null);
 
   // const [failure, setFailureResponse] =
   //   useState<NaverLoginResponse['failureResponse']>();
   const [naverToken, setNaverToken] = React.useState(null);
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
     googleSigninConfigure();
-  })
+  });
   // const getNaverUserProfile = async () => {
   //   const profileResult = await getProfile(naverToken.accessToken);
   //   if (profileResult.resultcode === "024") {
@@ -110,6 +115,7 @@ export default function Login() {
       <Button title="네이버 로그인" onPress={naverLogin} />
       <Button title="카카오 로그인" onPress={signInWithKakao} />
       <GoogleSigninButton onPress={() => onGoogleButtonPress()} />
+      <Button title="닉네임 설정" onPress={()=>navigation.push('NickName')} />
     </View>
   );
 }

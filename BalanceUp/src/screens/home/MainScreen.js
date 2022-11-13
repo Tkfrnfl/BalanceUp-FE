@@ -6,8 +6,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-
-// dd
+import MainCarousel from '../../utils/MainCarousel';
 
 const MainScreen = ({navigation}) => {
   function onStart() {
@@ -17,8 +16,7 @@ const MainScreen = ({navigation}) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.titleWrapper}>
         <Text style={styles.title1}>KEYUM</Text>
-        <Text style={styles.title1}>Project!</Text>
-        <Text style={styles.title2}>(온보딩 예정)</Text>
+        <MainCarousel>// 캐러셀 임시 구현</MainCarousel>
       </View>
       <View style={styles.buttonWrapper}>
         <TouchableOpacity style={styles.button} onPress={onStart}>

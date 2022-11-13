@@ -3,12 +3,13 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
 import OnBoarding from '../screens/Login/OnBoarding';
 import Login from '../screens/Login/Login';
+import { NickNameRouter } from './nickNameRouter';
 
 const HomeStack = createStackNavigator();
 
 export function HomeStackScreen() {
   return (
-    <NavigationContainer>
+    <NavigationContainer  independent={true}>
       <HomeStack.Navigator>
         <HomeStack.Screen 
         name="OnBoarding" 
@@ -16,6 +17,7 @@ export function HomeStackScreen() {
         options={{headerShown: false}}
         />
         <HomeStack.Screen name="Login" component={Login} />
+        <HomeStack.Screen name="NickName" component={NickNameRouter}/>
       </HomeStack.Navigator>
     </NavigationContainer>
   );
