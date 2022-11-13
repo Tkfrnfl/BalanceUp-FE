@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "702679288927",
+    "project_id": "keyum-2adc1",
+    "storage_bucket": "keyum-2adc1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:702679288927:android:270fab6aa182581efb9fea",
+        "android_client_info": {
+          "package_name": "com.balanceup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "702679288927-ugmus95i6ivl56suqdnn2097276mntj1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.balanceup",
+            "certificate_hash": "8db08f87e13608d00569aaaaf942ace1d6641b30"
+          }
+        },
+        {
+          "client_id": "702679288927-s3riqhj1pv7uvc4vlnhp5o8823mqjpkh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfag7p0AoyDcPG9phl4ao-1H1ntZjj_Es"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "702679288927-s3riqhj1pv7uvc4vlnhp5o8823mqjpkh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
