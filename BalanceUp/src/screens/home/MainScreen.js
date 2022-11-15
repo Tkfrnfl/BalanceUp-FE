@@ -16,7 +16,7 @@ const MainScreen = ({navigation}) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.titleWrapper}>
         <Text style={styles.title1}>KEYUM</Text>
-        <MainCarousel>// 캐러셀 임시 구현</MainCarousel>
+        <MainCarousel> 캐러셀 임시 구현</MainCarousel>
       </View>
       <View style={styles.buttonWrapper}>
         <TouchableOpacity style={styles.button} onPress={onStart}>

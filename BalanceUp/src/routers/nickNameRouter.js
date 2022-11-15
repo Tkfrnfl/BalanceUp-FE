@@ -8,6 +8,25 @@ import ServiceInfoScreen from '../screens/register/ServiceInfoScreen';
 
 const NickNameStack = createStackNavigator();
 
+// const routeInfo = [
+//   {
+//     name: "Name",
+//     component: NameScreen,
+//   },
+//   {
+//     name: "Agree",
+//     component:AgreeScreen,
+//   },
+//   {
+//     name: "UseInfo",
+//     component: UseInfoScreen,
+//   },
+//   {
+//     name: "ServiceInfo",
+//     component: ServiceInfoScreen,
+//   },
+// ];
+
 export function NickNameRouter() {
   return (
     <NavigationContainer independent={true}>
@@ -36,4 +55,16 @@ export function NickNameRouter() {
     </NavigationContainer>
   );
 }
-exports.default = NickNameRouter;
+// const NickNameRouter=[];
+
+// routeInfo.map(res=>{
+//   NickNameRouter.push(
+//     <NickNameStack.Screen
+//       key={res.name}
+//       name={res.name}
+//       component={res.component}
+//     />
+//   )
+// })
+
+exports.defulat = NickNameRouter;

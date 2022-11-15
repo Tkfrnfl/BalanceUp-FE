@@ -19,7 +19,6 @@ import {
   logout,
   unlink,
 } from '@react-native-seoul/kakao-login';
-// import { NaverLogin, getProfile } from "@react-native-seoul/naver-login";
 import {
   GoogleSignin,
   GoogleSigninButton,
@@ -36,11 +35,11 @@ const signInWithKakao = async (): Promise<void> => {
   console.log(JSON.stringify(token));
 };
 
-const naverLogin = async (): Promise<void> => {
-  console.log('dd');
-  const token: NaverLoginResponse = await NaverLogin.login(info);
-  console.log(token);
-};
+// const naverLogin = async (): Promise<void> => {
+//   console.log('dd');
+//   const token: NaverLoginResponse = await NaverLogin.login(info);
+//   console.log(token);
+// };
 const googleSigninConfigure = () => {
   GoogleSignin.configure({
     webClientId:
@@ -72,41 +71,16 @@ const unlinkKakao = async (): Promise<void> => {
   // setResult(message);
 };
 
-const info: NaverLoginRequest = {
-  appName: 'keyum',
-  consumerKey: 'emLJacIpqC1VGarFjLHx',
-  consumerSecret: 'z_Q_8LbpiI',
-};
-
 const androidKeys = {
   kConsumerKey: 'emLJacIpqC1VGarFjLHx',
   kConsumerSecret: 'z_Q_8LbpiI',
   kServiceAppName: 'keyum',
-};
-const appName = 'keyum';
-const consumerSecret = 'z_Q_8LbpiI';
-const consumerKey = 'emLJacIpqC1VGarFjLHx';
-const serviceUrlScheme = 'navertest';
-const initials = Platform.OS === 'ios' ? '' : androidKeys;
+}; // 추후에 process.env로 빼기
 
 export default function Login({navigation}) {
-  const [success, setSuccessResponse] = React.useState(null);
-
-  // const [failure, setFailureResponse] =
-  //   useState<NaverLoginResponse['failureResponse']>();
-  const [naverToken, setNaverToken] = React.useState(null);
-
   React.useEffect(() => {
     googleSigninConfigure();
   });
-  // const getNaverUserProfile = async () => {
-  //   const profileResult = await getProfile(naverToken.accessToken);
-  //   if (profileResult.resultcode === "024") {
-  //     Alert.alert("로그인 실패", profileResult.message);
-  //     return;
-  //   }
-  //   console.log("profileResult", profileResult);
-  // };
 
   return (
     <View style={styles.container}>
