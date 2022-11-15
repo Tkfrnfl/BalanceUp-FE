@@ -8,9 +8,9 @@ import {
   TextInput,
   Button,
   Alert,
+  Image,
   Platform,
 } from 'react-native';
-import Swiper from 'react-native-swiper';
 import {
   KakaoOAuthToken,
   KakaoProfile,
@@ -20,16 +20,15 @@ import {
   unlink,
 } from '@react-native-seoul/kakao-login';
 // import { NaverLogin, getProfile } from "@react-native-seoul/naver-login";
-import NaverLogin, {
-  NaverLoginResponse,
-  GetProfileResponse,
-  NaverLoginRequest,
-} from '@react-native-seoul/naver-login';
 import {
   GoogleSignin,
   GoogleSigninButton,
 } from '@react-native-google-signin/google-signin';
+import FastImage from 'react-native-fast-image';
 import auth from '@react-native-firebase/auth';
+
+import KeyumTypo from '../../resource/image/KeyumLOGOTYPO_1.png';
+import testGif from '../../resource/image/testGif.gif';
 
 const signInWithKakao = async (): Promise<void> => {
   const token: KakaoOAuthToken = await login();
@@ -111,26 +110,64 @@ export default function Login({navigation}) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>test555</Text>
-      <Button title="네이버 로그인" onPress={naverLogin} />
-      <Button title="카카오 로그인" onPress={signInWithKakao} />
-      <GoogleSigninButton onPress={() => onGoogleButtonPress()} />
-      <Button title="닉네임 설정" onPress={()=>navigation.push('NickName')} />
+      <View style={styles.imgView}>
+        <Image source={KeyumTypo} />
+      </View>
+      <FastImage // 임시 GIF
+        style={{width: 250, height: 250}}
+        source={testGif}
+      />
+
+      <TouchableOpacity onPress={signInWithKakao} style={styles.btnKakao}>
+        <Text style={styles.btnText}>카카오로 시작하기</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.btnGoogle}
+        onPress={() => onGoogleButtonPress()}>
+        <Text style={styles.btnText}>구글로 시작하기</Text>
+      </TouchableOpacity>
+      <Button
+        title="닉네임 설정 (임시 구현)"
+        onPress={() => navigation.push('NickName')}
+      />
     </View>
   );
 }
 const styles = StyleSheet.create({
-  wrapper: {
-    // backgroundColor: '#f00'
-  },
   container: {
+    backgroundColor: '#FFFFFF',
     flex: 1,
-    marginLeft: 20,
-    marginRight: 20,
+    alignItems: 'center',
   },
   title: {
     width: '100%',
-    height: '15%',
-    justifyContent: 'center',
+    fontSize: 70,
+    textAlign: 'center',
+  },
+  imgView: {
+    flexDirection: 'row',
+    marginTop: 60,
+    marginBottom: 40,
+  },
+  btnKakao: {
+    backgroundColor: '#FFF62B',
+    fontWeight: 'bold',
+    padding: 10,
+    margin: 15,
+    marginTop: 50,
+    width: '60%',
+  },
+  btnGoogle: {
+    backgroundColor: '#E4E4E4',
+    fontWeight: 'bold',
+    padding: 10,
+    margin: 15,
+    marginTop: 50,
+    width: '60%',
+  },
+  btnText: {
+    color: '#000',
+    fontSize: 15,
+    textAlign: 'center',
   },
 });

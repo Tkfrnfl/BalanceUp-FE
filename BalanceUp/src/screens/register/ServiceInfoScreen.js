@@ -24,14 +24,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   title: {
-    fontWeight: 'bold',
     fontSize: 25,
     color: 'black',
     marginLeft: 70,
   },
   btn: {
     fontSize: 20,
-    fontWeight: 'bold',
     color: 'black',
     marginLeft: 10,
   },
