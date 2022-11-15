@@ -14,6 +14,7 @@ import FastImage from 'react-native-fast-image';
 
 import {validateText, removeWhitespace} from '../../utils/regex';
 import duplicationCheckAPI from '../../actions/duplicationCheckAPI';
+import testGif from '../../resource/image/testGif.gif';
 
 const NameScreen = ({navigation}) => {
   const [userName, setUserName] = useState('');
@@ -30,7 +31,9 @@ const NameScreen = ({navigation}) => {
     const changedText = validateText(userName);
     setUserName(changedText);
     setCheckTextError(
-      validateText(userName) ? '' : '초성, 특수문자, 공백은 사용 불가능합니다.',
+      validateText(userName)
+        ? ''
+        : '닉네임에 특수문자 및 공백을 포함 할 수 없어요',
     );
 
     // 글자수 제한
@@ -43,7 +46,7 @@ const NameScreen = ({navigation}) => {
     console.log(userName.length);
   };
 
-  // 중복 확인 부분은 아직 미완성
+  // 중복 확인 부분 임시 구현
   const duplicationCheck = () => {
     duplicationCheckAPI(userName).then(response => {
       console.log(response);
@@ -75,7 +78,6 @@ const NameScreen = ({navigation}) => {
           <Text style={styles.titleText}>닉네임을 입력해주세요</Text>
         </View>
         <View style={styles.form}>
-          <Text style={styles.label}>닉네임</Text>
           <View style={styles.inputWrapper}>
             <TextInput
               value={userName}
@@ -83,7 +85,9 @@ const NameScreen = ({navigation}) => {
               style={styles.textInput}
               // maxLength={11} : 코드로 제한해도 input으로 글자가 계속 입력되는 버그 확인
               autoCapitalize="none"
-              fontSize={15}
+              fontSize={17}
+              placeholder={'11자 내 작성 (공백, 특수문자 불가)'}
+              placeholderTextColor={'D0D0D0'}
             />
             <TouchableOpacity style={styles.inputBtn} onPress={handleRemove}>
               <Text>X</Text>
@@ -94,15 +98,12 @@ const NameScreen = ({navigation}) => {
               <Text>중복확인</Text>
             </TouchableOpacity>
           </View>
-          <Text style={{marginTop: -15}}>
-            11글자 이하 / 초성, 공백, 특수문자 사용 불가
-          </Text>
-          <Text style={{color: 'red', marginTop: 2}}>{checkTextError}</Text>
+          <Text style={styles.errorText}>{checkTextError}</Text>
         </View>
         <View style={styles.gifView}>
           <FastImage // 캐릭터 GIF 예정
-            style={{width: 300, height: 300}}
-            source={{uri: 'https://unsplash.it/400/400?image=1'}}
+            style={{width: 250, height: 300}}
+            source={testGif}
           />
         </View>
         <Progress.Bar
@@ -117,11 +118,17 @@ const NameScreen = ({navigation}) => {
         <TouchableOpacity
           style={[
             styles.Nextbutton,
-            {backgroundColor: disabled ? '#d3eaf2' : '#9ce4ff'},
+            {backgroundColor: disabled ? '#D9D9D9' : '#272727'},
           ]}
           onPress={goAgree}
           disabled={disabled}>
-          <Text style={styles.NextbuttonText}>다음</Text>
+          <Text
+            style={[
+              styles.NextbuttonText,
+              {color: disabled ? '#000000' : '#FFFFFF'},
+            ]}>
+            다음
+          </Text>
         </TouchableOpacity>
       </SafeAreaView>
     </TouchableWithoutFeedback>
@@ -141,7 +148,6 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 30,
-    fontWeight: 'bold',
     color: 'black',
   },
   form: {
@@ -200,7 +206,11 @@ const styles = StyleSheet.create({
   gifView: {
     alignItems: 'center',
     width: '100%',
-    flex: 8,
+    flex: 13,
+  },
+  errorText: {
+    color: '#FF0000',
+    marginTop: -10,
   },
 });
 

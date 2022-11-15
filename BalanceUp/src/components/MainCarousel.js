@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Dimensions, Text, View} from 'react-native';
 import Carousel from 'react-native-reanimated-carousel'; // https://www.npmjs.com/package/react-native-reanimated-carousel
+
 // 캐러셀 임시 구현
 const MainCarousel = () => {
   const width = Dimensions.get('window').width;

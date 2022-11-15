@@ -1,4 +1,4 @@
-// 중복 확인 부분은 아직 미완성
+// 중복 확인 부분 임시  API
 
 const duplicationCheckAPI = async userid => {
   let return_value;

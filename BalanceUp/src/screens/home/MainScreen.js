@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import MainCarousel from '../../utils/MainCarousel';
+import MainCarousel from '../../components/MainCarousel';
 
 const MainScreen = ({navigation}) => {
   function onStart() {

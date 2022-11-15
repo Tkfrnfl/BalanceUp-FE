@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   SafeAreaView,
+  Image,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
 import CheckBox from '@react-native-community/checkbox';
@@ -83,20 +84,20 @@ const AgreeScreen = ({navigation}) => {
             disabled={false}
             value={allCheck}
             onValueChange={allBtnEvent}
-            tintColors={{true: '#44bcd8'}}
+            tintColors={{true: '#525151'}}
           />
-          <Text>모두 동의합니다</Text>
+          <Text style={styles.agreeText}>모두 동의합니다</Text>
         </View>
         <View style={styles.btnWrap}>
           <CheckBox
             disabled={false}
             value={useCheck}
             onValueChange={useBtnEvent}
-            tintColors={{true: '#44bcd8'}}
+            tintColors={{true: '#525151'}}
           />
-          <Text>[필수] 개인정보 처리 방침</Text>
+          <Text style={styles.agreeText}>[필수] 개인정보 처리 방침</Text>
           <TouchableOpacity onPress={useInfo}>
-            <Text style={styles.agreeText}> [더보기]</Text>
+            <Text style={(styles.agreeText, {fontWeight: 'bold'})}> ➡️ </Text>
           </TouchableOpacity>
         </View>
         <View style={styles.btnWrap}>
@@ -104,11 +105,11 @@ const AgreeScreen = ({navigation}) => {
             disabled={false}
             value={serviceCheck}
             onValueChange={serviceBtnEvent}
-            tintColors={{true: '#44bcd8'}}
+            tintColors={{true: '#525151'}}
           />
-          <Text>[필수] 서비스 이용 약관</Text>
+          <Text style={styles.agreeText}>[필수] 서비스 이용 약관</Text>
           <TouchableOpacity onPress={serviceInfo}>
-            <Text style={styles.agreeText}> [더보기]</Text>
+            <Text style={(styles.agreeText, {fontWeight: 'bold'})}> ➡️ </Text>
           </TouchableOpacity>
         </View>
         <View style={styles.btnWrap}>
@@ -116,9 +117,9 @@ const AgreeScreen = ({navigation}) => {
             disabled={false}
             value={ageCheck}
             onValueChange={ageBtnEvent}
-            tintColors={{true: '#44bcd8'}}
+            tintColors={{true: '#525151'}}
           />
-          <Text>[필수] 만 14세 이상입니다</Text>
+          <Text style={styles.agreeText}>[필수] 만 14세 이상입니다</Text>
         </View>
       </View>
       <Progress.Bar
@@ -132,10 +133,16 @@ const AgreeScreen = ({navigation}) => {
       <TouchableOpacity
         style={[
           styles.Nextbutton,
-          {backgroundColor: disabled ? '#d3eaf2' : '#9ce4ff'},
+          {backgroundColor: disabled ? '#D9D9D9' : '#272727'},
         ]}
         disabled={disabled}>
-        <Text style={styles.NextbuttonText}>다음</Text>
+        <Text
+          style={[
+            styles.NextbuttonText,
+            {color: disabled ? '#000000' : '#FFFFFF'},
+          ]}>
+          다음
+        </Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -150,15 +157,14 @@ const styles = StyleSheet.create({
   title: {
     width: '100%',
     height: '15%',
-    fontSize: 35,
+    fontSize: 30,
     justifyContent: 'center',
-    color: 'black',
-    fontWeight: 'bold',
-    marginTop: 20,
+    color: '#000000',
+    marginTop: 30,
   },
   agreeText: {
     fontSize: 15,
-    color: 'black',
+    color: '#000000',
   },
   form: {
     flex: 4,
