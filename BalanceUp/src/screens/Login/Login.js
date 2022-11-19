@@ -104,6 +104,10 @@ export default function Login({navigation}) {
         title="닉네임 설정 (임시 구현)"
         onPress={() => navigation.push('NickName')}
       />
+      <Button
+        title="홈 화면으로 가기 (임시 구현)"
+        onPress={() => navigation.push('Main')}
+      />
     </View>
   );
 }
