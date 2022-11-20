@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  SafeAreaView,
-  TextInput,
-  Button,
-} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Swiper from 'react-native-swiper';
 
@@ -17,37 +8,34 @@ import KeyumTypo from '../../resource/image/KeyumLOGOTYPO_1.png';
 import testGif from '../../resource/image/testGif.gif';
 
 export default function OnBoarding({navigation}) {
+  const TextData = [
+    {
+      id: 1,
+      title: '성취감을 느끼며 루틴 형성',
+      text: '소소한 성취감을 2주 간 느끼며 \n 자연스러운 루틴형성을 도와드려요',
+    },
+    {
+      id: 2,
+      title: '캐릭터와 같이 성장',
+      text: '루틴 성공 시 설정 한 카테고리에 맞는 \n 캐릭터 능력치가 성장해요!',
+    },
+    {
+      id: 3,
+      title: '원하는 시간에 알림',
+      text: '내가 원하는 시간에 알림을 보내 \n 루틴을 잊지 않을 수 있어요',
+    },
+  ];
+
   return (
     <View style={styles.container}>
       <Swiper
         style={styles.wrapper}
-        dot={
-          <View
-            style={{
-              backgroundColor: '#a3a3a3',
-              width: 15,
-              height: 15,
-              borderRadius: 10,
-              marginLeft: 7,
-              marginRight: 7,
-              marginBottom: 80,
-            }}
-          />
-        }
-        activeDot={
-          <View
-            style={{
-              backgroundColor: '#0a0a0a',
-              width: 15,
-              height: 15,
-              borderRadius: 10,
-              marginLeft: 7,
-              marginRight: 7,
-              marginBottom: 80,
-            }}
-          />
-        }
-        loop={false}>
+        dot={<View style={styles.dotStyle} />}
+        activeDot={<View style={styles.activeDotStyle} />}
+        loop={false}
+        nextButton={<Text>Next</Text>} // 임시 버튼
+        prevButton={<Text>prev</Text>} // 임시 버튼
+        showsButtons={true}>
         <View style={styles.slide}>
           <View style={styles.imgView}>
             <Image source={KeyumIcon} />
@@ -57,12 +45,10 @@ export default function OnBoarding({navigation}) {
             style={{width: 250, height: 250}}
             source={testGif}
           />
-          <Text style={styles.title}>성취감을 느끼며 루틴 형성</Text>
-          <Text style={styles.subTitle}>
-            소소한 성취감을 2주 간 느끼며 {'\n'} 자연스러운 루틴형성을
-            도와드려요
-          </Text>
+          <Text style={styles.title}>{TextData[0].title}</Text>
+          <Text style={styles.subTitle}>{TextData[0].text}</Text>
         </View>
+
         <View style={styles.slide}>
           <View style={styles.imgView}>
             <Image source={KeyumIcon} />
@@ -72,12 +58,10 @@ export default function OnBoarding({navigation}) {
             style={{width: 250, height: 250}}
             source={testGif}
           />
-          <Text style={styles.title}>캐릭터와 같이 성장</Text>
-          <Text style={styles.subTitle}>
-            루틴 성공 시 설정 한 카테고리에 맞는 {'\n'} 캐릭터 능력치가
-            성장해요!
-          </Text>
+          <Text style={styles.title}>{TextData[1].title}</Text>
+          <Text style={styles.subTitle}>{TextData[1].text}</Text>
         </View>
+
         <View style={styles.slide}>
           <View style={styles.imgView}>
             <Image source={KeyumIcon} />
@@ -87,10 +71,8 @@ export default function OnBoarding({navigation}) {
             style={{width: 250, height: 250}}
             source={testGif}
           />
-          <Text style={styles.title}>원하는 시간에 알림</Text>
-          <Text style={styles.subTitle}>
-            내가 원하는 시간에 알림을 보내 {'\n'} 루틴을 잊지 않을 수 있어요
-          </Text>
+          <Text style={styles.title}>{TextData[2].title}</Text>
+          <Text style={styles.subTitle}>{TextData[2].text}</Text>
           <TouchableOpacity
             onPress={() => navigation.push('Login')}
             style={styles.btnStart}>
@@ -134,13 +116,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#00D1FF',
     fontWeight: 'bold',
     padding: 10,
-    margin: 15,
-    marginTop: 80,
     width: '60%',
+    marginTop: 70,
   },
   btnText: {
     color: '#ffffff',
     fontSize: 20,
     textAlign: 'center',
+  },
+  dotStyle: {
+    backgroundColor: '#c9eeff',
+    width: 15,
+    height: 15,
+    borderRadius: 10,
+    marginLeft: 5,
+    marginRight: 5,
+    marginBottom: 80,
+  },
+  activeDotStyle: {
+    backgroundColor: '#5dccff',
+    width: 30,
+    height: 15,
+    borderRadius: 10,
+    marginLeft: 5,
+    marginRight: 5,
+    marginBottom: 80,
   },
 });
