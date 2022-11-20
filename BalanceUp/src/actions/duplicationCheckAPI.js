@@ -1,10 +1,10 @@
 // 중복 확인 부분 임시  API
 
-const duplicationCheckAPI = async userid => {
+const duplicationCheckAPI = async userName => {
   let return_value;
   await axios
-    .post('주소', {
-      userid: userid,
+    .post('전송할 주소', {
+      userName: userName,
     })
     .then(response => {
       return_value = response.data;

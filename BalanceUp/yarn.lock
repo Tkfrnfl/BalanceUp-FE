@@ -6781,6 +6781,13 @@
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
   "version" "17.0.2"
 
+"react-native-animatable@^1.3.3":
+  "integrity" "sha512-2ckIxZQAsvWn25Ho+DK3d1mXIgj7tITkrS4pYDvx96WyOttSvzzFeQnM2od0+FUMzILbdHDsDEqZvnz1DYNQ1w=="
+  "resolved" "https://registry.npmjs.org/react-native-animatable/-/react-native-animatable-1.3.3.tgz"
+  "version" "1.3.3"
+  dependencies:
+    "prop-types" "^15.7.2"
+
 "react-native-animated-pagination-dot@^0.4.0":
   "integrity" "sha512-MiIPB6qe8lc6a+nhzvQHOi5x/bZlZ8hBH4HWiorPps3gTJZgxfX3abuYvVjN94egA8Z3HlE9pptz8OQfdL5IzQ=="
   "resolved" "https://registry.npmjs.org/react-native-animated-pagination-dot/-/react-native-animated-pagination-dot-0.4.0.tgz"
