@@ -43,7 +43,6 @@ const NameScreen = ({navigation}) => {
       setUserName('');
       setCheckTextError('');
     }
-    console.log(userName.length);
   };
 
   // 중복 확인 부분 임시 구현
@@ -51,12 +50,12 @@ const NameScreen = ({navigation}) => {
     duplicationCheckAPI(userName).then(response => {
       console.log(response);
       if (response === false) {
+        // [response = false] -> 아이디가 중복되지 않음
         alert('사용 가능한 아이디입니다.');
         setUsableId(response);
       } else {
         alert('중복된 아이디입니다. 다시 시도하세요.');
         setUsableId(response);
-        // setUserid('');
       }
     });
   };
@@ -94,7 +93,8 @@ const NameScreen = ({navigation}) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.inputBtn}
-              onPress={duplicationCheck}>
+              onPress={duplicationCheck}
+              disabled={disabled}>
               <Text>중복확인</Text>
             </TouchableOpacity>
           </View>

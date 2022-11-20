@@ -130,14 +130,16 @@ const styles = StyleSheet.create({
     margin: 15,
     marginTop: 50,
     width: '60%',
+    borderRadius: 10,
   },
   btnGoogle: {
     backgroundColor: '#E4E4E4',
     fontWeight: 'bold',
     padding: 10,
     margin: 15,
-    marginTop: 50,
+    marginTop: 30,
     width: '60%',
+    borderRadius: 10,
   },
   btnText: {
     color: '#000',

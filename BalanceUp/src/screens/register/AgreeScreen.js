@@ -5,7 +5,6 @@ import {
   View,
   TouchableOpacity,
   SafeAreaView,
-  Image,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
 import CheckBox from '@react-native-community/checkbox';
