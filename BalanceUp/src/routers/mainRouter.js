@@ -19,4 +19,4 @@ export function MainRouter() {
   );
 }
 
-exports.defulat = MainRouter;
+exports.default = MainRouter;
