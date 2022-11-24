@@ -11,8 +11,8 @@ import commonStyles from '../../css/commonStyles';
 import ProgressCircle from 'react-native-progress-circle';
 
 const MainScreen = ({navigation}) => {
-  function onStart() {
-    navigation.navigate('Name');
+  function onSet() {
+    navigation.navigate('Set');
   }
   return (
     <SafeAreaView style={styles.container}>
@@ -70,6 +70,21 @@ const MainScreen = ({navigation}) => {
         </View>
         <View style={commonStyles.spacing}>
           <Text> </Text>
+        </View>
+
+        {/* 루틴 설정 이동 버튼 **임시** */}
+        <View style={{alignItems: 'center'}}>
+          <TouchableOpacity
+            style={{
+              width: '70%',
+              alignItems: 'center',
+              backgroundColor: '#b779ed',
+            }}
+            onPress={onSet}>
+            <Text style={{color: '#fff', fontSize: 20}}>
+              루틴 설정하기(임시 구현)
+            </Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
