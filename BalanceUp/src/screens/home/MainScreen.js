@@ -11,9 +11,9 @@ import commonStyles from '../../css/commonStyles';
 import ProgressCircle from 'react-native-progress-circle';
 
 const MainScreen = ({navigation}) => {
-  function onSet() {
+  const onSet = () => {
     navigation.navigate('Set');
-  }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollview}>

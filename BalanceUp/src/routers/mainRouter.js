@@ -2,7 +2,8 @@ import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
 import MainScreen from '../screens/home/MainScreen';
-import SetTodoScreen from '../screens/Set/SetTodoScreen';
+import SetTodoScreen from '../screens/SetTodo/SetTodoScreen';
+import SetPlanScreen from '../screens/SetTodo/SetPlanScreen';
 
 const MainStack = createStackNavigator();
 
@@ -18,6 +19,11 @@ export function MainRouter() {
         <MainStack.Screen
           name="Set"
           component={SetTodoScreen}
+          options={{headerShown: false}}
+        />
+        <MainStack.Screen
+          name="Plan"
+          component={SetPlanScreen}
           options={{headerShown: false}}
         />
       </MainStack.Navigator>
