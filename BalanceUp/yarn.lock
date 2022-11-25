@@ -1574,6 +1574,13 @@
     "prompts" "^2.4.0"
     "semver" "^6.3.0"
 
+"@react-native-community/datetimepicker@^6.7.0", "@react-native-community/datetimepicker@>=3.0.0":
+  "integrity" "sha512-R8WA1nv6j2Q54+QFNkhzUzkOcN5lrtOCPyker272e8PopduAiirDMgu9hxNnfxd6NuB4n0VbRbRc7yl0O1V72Q=="
+  "resolved" "https://registry.npmjs.org/@react-native-community/datetimepicker/-/datetimepicker-6.7.0.tgz"
+  "version" "6.7.0"
+  dependencies:
+    "invariant" "^2.2.4"
+
 "@react-native-community/eslint-config@^2.0.0":
   "integrity" "sha512-vHaMMfvMp9BWCQQ0lNIXibOJTcXIbYUQ8dSUsMOsrXgVkeVQJj88OwrKS00rQyqwMaC4/a6HuDiFzYUkGKOpVg=="
   "resolved" "https://registry.npmjs.org/@react-native-community/eslint-config/-/eslint-config-2.0.0.tgz"
@@ -1627,13 +1634,6 @@
   "integrity" "sha512-8A0LilkjuZGckZvBBeYVnlpzfGuxl1ExYTKnrVXh8B9A/7X8ygT18zE8CL3fUceotZOH6nNjBtt7krOsU95/EQ=="
   "resolved" "https://registry.npmjs.org/@react-native-seoul/kakao-login/-/kakao-login-5.2.4.tgz"
   "version" "5.2.4"
-  dependencies:
-    "dooboolab-welcome" "^1.3.2"
-
-"@react-native-seoul/naver-login@^3.0.0-rc.1":
-  "integrity" "sha512-EAIkqjiaJfpqHc7V82n6DTMxmdYhkkKL6sM+YBh3Ua3gI1m81sM6dlhYQLzPfXnQ6Y/3nktuVPlruNuFKDeNFQ=="
-  "resolved" "https://registry.npmjs.org/@react-native-seoul/naver-login/-/naver-login-3.0.0-rc.1.tgz"
-  "version" "3.0.0-rc.1"
   dependencies:
     "dooboolab-welcome" "^1.3.2"
 
@@ -1994,6 +1994,11 @@
   "integrity" "sha512-7zFpHzhnqYKrkYdUjF1HI1bzd0VygEGX8lFk4k5zVMqHEoES+P+7TKI+EvLO9WVMJ8eekdO0aDEK044xTXwPPA=="
   "resolved" "https://registry.npmjs.org/acorn/-/acorn-8.8.1.tgz"
   "version" "8.8.1"
+
+"add@^2.0.6":
+  "integrity" "sha512-j5QzrmsokwWWp6kUcJQySpbG+xfOBqqKnup3OIk1pz+kB/80SLorZ9V8zHFLO92Lcd+hbvq8bT+zOGoPkmBV0Q=="
+  "resolved" "https://registry.npmjs.org/add/-/add-2.0.6.tgz"
+  "version" "2.0.6"
 
 "agent-base@6":
   "integrity" "sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ=="
@@ -6810,6 +6815,13 @@
     "jscodeshift" "^0.13.1"
     "nullthrows" "^1.1.1"
 
+"react-native-date-picker@^4.2.6":
+  "integrity" "sha512-qnSLefvCInFp1etQ27AsDzpCJgvi0Q0eIYRtIzjBp5WC5hzINIY7WWeQESAA/QUPbwFJU7Vk06ouQc51dC1Qaw=="
+  "resolved" "https://registry.npmjs.org/react-native-date-picker/-/react-native-date-picker-4.2.6.tgz"
+  "version" "4.2.6"
+  dependencies:
+    "prop-types" "^15.8.1"
+
 "react-native-fast-image@^8.6.3":
   "integrity" "sha512-Sdw4ESidXCXOmQ9EcYguNY2swyoWmx53kym2zRsvi+VeFCHEdkO+WG1DK+6W81juot40bbfLNhkc63QnWtesNg=="
   "resolved" "https://registry.npmjs.org/react-native-fast-image/-/react-native-fast-image-8.6.3.tgz"
@@ -6830,6 +6842,13 @@
   "integrity" "sha512-oOanj84fJEXUg9FoEAQomA8ISG+DVIrTZ3qF7m69VQUJyOGYyDZmPqKcjvRku4KXlEH6hWO9i4ACLzNBh8gC0A=="
   "resolved" "https://registry.npmjs.org/react-native-gradle-plugin/-/react-native-gradle-plugin-0.70.3.tgz"
   "version" "0.70.3"
+
+"react-native-modal-datetime-picker@^14.0.0":
+  "integrity" "sha512-orI0BMgX9uooSZWYIILmMaZXqi8Ebr0vqsLUFL03zORpv9NvkBlLMQ8dZVdDxWUc1Lbx/N5DJskC16AOypPy8Q=="
+  "resolved" "https://registry.npmjs.org/react-native-modal-datetime-picker/-/react-native-modal-datetime-picker-14.0.0.tgz"
+  "version" "14.0.0"
+  dependencies:
+    "prop-types" "^15.7.2"
 
 "react-native-percentage-circle@^1.0.7":
   "integrity" "sha512-5NCtwcxUu0Uflg12d0u++rswimDK5V6K0W0VBwM/E+8ZjzjNLjYbbJVrGoqr7YH65JYRw2oYrkX2JORR/0o7/A=="
@@ -6891,7 +6910,7 @@
   dependencies:
     "prop-types" "^15.5.10"
 
-"react-native@*", "react-native@>= 0.62", "react-native@>=0.57", "react-native@>=0.60.0", "react-native@0.70.4":
+"react-native@*", "react-native@>= 0.62", "react-native@>=0.57", "react-native@>=0.60.0", "react-native@>=0.65.0", "react-native@0.70.4":
   "integrity" "sha512-1e4jWotS20AJ/4lGVkZQs2wE0PvCpIRmPQEQ1FyH7wdyuewFFIxbUHqy6vAj1JWVFfAzbDakOQofrIkkHWLqNA=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.70.4.tgz"
   "version" "0.70.4"
