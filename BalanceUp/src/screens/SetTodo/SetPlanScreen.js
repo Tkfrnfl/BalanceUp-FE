@@ -13,8 +13,6 @@ import {
   TextInput,
   Keyboard,
   Switch,
-  Platform,
-  Button,
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import modalInnerStyles from '../../css/modalStyles';
@@ -30,6 +28,11 @@ const SetPlanScreen = ({navigation}) => {
   const [satActive, setSatActive] = useState(0, false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
+  const [alertHour, setAlertHour] = useState('09');
+  const [alertMin, setAlertMin] = useState('00');
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
+  const [shouldShow, setShouldShow] = useState(false);
 
   // 모달 기능 구현
   const screenHeight = Dimensions.get('screen').height;
@@ -148,11 +151,6 @@ const SetPlanScreen = ({navigation}) => {
     navigation.navigate('Set');
   };
 
-  // useState Hook를 사용하여 날짜와 모달 유형, 노출 여부를 설정할 변수를 생성
-  const [date, setDate] = useState(new Date());
-  const [open, setOpen] = useState(false);
-  const [shouldShow, setShouldShow] = useState(false);
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
@@ -269,6 +267,7 @@ const SetPlanScreen = ({navigation}) => {
             </Text>
           </TouchableOpacity>
         </View>
+
         {/* 시간 알림 코드 */}
         <View style={styles.alertView}>
           <Text style={styles.alertText}>루틴 알림</Text>
@@ -288,19 +287,28 @@ const SetPlanScreen = ({navigation}) => {
         {/* 시간 설정 모달 코드 */}
         <View>
           {shouldShow ? (
-            <TouchableOpacity onPress={() => setOpen(true)}>
-              <Text style={styles.timeModalText}>시간변경</Text>
-            </TouchableOpacity>
+            <View style={styles.timeView}>
+              <Text style={styles.timeText}>
+                {alertHour}:{alertMin}
+              </Text>
+              <TouchableOpacity onPress={() => setOpen(true)}>
+                <Text style={styles.timeModalText}>시간변경</Text>
+              </TouchableOpacity>
+            </View>
           ) : null}
           <DatePicker
             modal
             mode="time"
             open={open}
-            androidVariant="iosClone"
             date={date}
+            locale={'en_GB'}
+            is24hourSource="locale"
+            minuteInterval={5}
             onConfirm={date => {
               setOpen(false);
               setDate(date);
+              setAlertHour(('0' + date.getHours()).slice(-2));
+              setAlertMin(('0' + date.getMinutes()).slice(-2));
             }}
             onCancel={() => {
               setOpen(false);
@@ -461,9 +469,19 @@ const styles = StyleSheet.create({
   timeModalText: {
     color: '#3C64B1',
     borderBottomWidth: 1,
-    width: '15%',
     borderBottomColor: '#3C64B1',
-    marginLeft: 20,
+    marginTop: 20,
+    marginLeft: 150,
+  },
+  timeText: {
+    color: '#000',
+    fontSize: 35,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  timeView: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
 });
 
