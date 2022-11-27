@@ -17,8 +17,11 @@ import {
 import DatePicker from 'react-native-date-picker';
 import modalInnerStyles from '../../css/modalStyles';
 
-const SetPlanScreen = ({navigation}) => {
+const SetPlanScreen = ({navigation, route}) => {
+  const {planText} = route.params;
+  console.log(planText);
   const [lengthTodo, setLengthTodo] = useState(0);
+
   const [sunActive, setSunActive] = useState(0, false);
   const [monActive, setMonActive] = useState(1, true);
   const [tueActive, setTueActive] = useState(1, true);
@@ -26,13 +29,20 @@ const SetPlanScreen = ({navigation}) => {
   const [thurActive, setThurActive] = useState(1, true);
   const [friActive, setFriActive] = useState(1, true);
   const [satActive, setSatActive] = useState(0, false);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isEnabled, setIsEnabled] = useState(false);
+  const [clearModalVisible, setClearModalVisible] = useState(false);
+
+  const [isEnabled, setIsEnabled] = useState(true);
+
   const [alertHour, setAlertHour] = useState('09');
   const [alertMin, setAlertMin] = useState('00');
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-  const [shouldShow, setShouldShow] = useState(false);
+
+  const [shouldShow, setShouldShow] = useState(true);
+
+  const [disabled, setDisabled] = useState(false);
 
   // 모달 기능 구현
   const screenHeight = Dimensions.get('screen').height;
@@ -73,6 +83,7 @@ const SetPlanScreen = ({navigation}) => {
 
   const closeModal = () => {
     closeBottomSheet.start(() => setIsModalVisible(false));
+    closeBottomSheet.start(() => setClearModalVisible(false));
   };
 
   useEffect(() => {
@@ -80,6 +91,12 @@ const SetPlanScreen = ({navigation}) => {
       resetBottomSheet.start();
     }
   }, [isModalVisible]);
+
+  useEffect(() => {
+    if (clearModalVisible) {
+      resetBottomSheet.start();
+    }
+  }, [clearModalVisible]);
 
   // input 기능 구현
   const handleTextChange = toDo => {
@@ -91,55 +108,80 @@ const SetPlanScreen = ({navigation}) => {
   const handelSunActive = () => {
     setSunActive(sunActive + 1);
     sunActive % 2 === 0 ? setSunActive(true) : setSunActive(false);
-    sunActive % 2 === 0
-      ? console.log('일요일 선택')
-      : console.log('일요일 선택 취소');
+    // sunActive % 2 === 0
+    //   ? console.log('일요일 선택')
+    //   : console.log('일요일 선택 취소');
   };
   const handelMonActive = () => {
     setMonActive(monActive + 1);
     monActive % 2 === 0 ? setMonActive(true) : setMonActive(false);
-    monActive % 2 === 0
-      ? console.log('월요일 선택')
-      : console.log('월요일 선택 취소');
+    // monActive % 2 === 0
+    //   ? console.log('월요일 선택')
+    //   : console.log('월요일 선택 취소');
   };
   const handelTueActive = () => {
     setTueActive(tueActive + 1);
     tueActive % 2 === 0 ? setTueActive(true) : setTueActive(false);
-    tueActive % 2 === 0
-      ? console.log('화요일 선택')
-      : console.log('화요일 선택 취소');
+    // tueActive % 2 === 0
+    //   ? console.log('화요일 선택')
+    //   : console.log('화요일 선택 취소');
   };
   const handelWenActive = () => {
     setWenActive(wenActive + 1);
     wenActive % 2 === 0 ? setWenActive(true) : setWenActive(false);
-    wenActive % 2 === 0
-      ? console.log('수요일 선택')
-      : console.log('수요일 선택 취소');
+    // wenActive % 2 === 0
+    //   ? console.log('수요일 선택')
+    //   : console.log('수요일 선택 취소');
   };
   const handelThurActive = () => {
     setThurActive(thurActive + 1);
     thurActive % 2 === 0 ? setThurActive(true) : setThurActive(false);
-    thurActive % 2 === 0
-      ? console.log('목요일 선택')
-      : console.log('목요일 선택 취소');
+    // thurActive % 2 === 0
+    //   ? console.log('목요일 선택')
+    //   : console.log('목요일 선택 취소');
   };
   const handelFriActive = () => {
     setFriActive(friActive + 1);
     friActive % 2 === 0 ? setFriActive(true) : setFriActive(false);
-    friActive % 2 === 0
-      ? console.log('금요일 선택')
-      : console.log('금요일 선택 취소');
+    // friActive % 2 === 0
+    //   ? console.log('금요일 선택')
+    //   : console.log('금요일 선택 취소');
   };
   const handelSatActive = () => {
     setSatActive(satActive + 1);
     satActive % 2 === 0 ? setSatActive(true) : setSatActive(false);
-    satActive % 2 === 0
-      ? console.log('토요일 선택')
-      : console.log('토요일 선택 취소');
+    // satActive % 2 === 0
+    //   ? console.log('토요일 선택')
+    //   : console.log('토요일 선택 취소');
   };
 
   // 토글 스위치 구현
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+  // 버튼 활성화/비활성화
+  useEffect(() => {
+    setDisabled(
+      !(
+        lengthTodo &&
+        (sunActive ||
+          monActive ||
+          tueActive ||
+          wenActive ||
+          thurActive ||
+          friActive ||
+          satActive)
+      ),
+    );
+  }, [
+    lengthTodo,
+    sunActive,
+    monActive,
+    tueActive,
+    wenActive,
+    thurActive,
+    friActive,
+    satActive,
+  ]);
 
   // 네비게이션 구현
   const goNext = () => {
@@ -315,6 +357,60 @@ const SetPlanScreen = ({navigation}) => {
             }}
           />
         </View>
+        <View style={{alignItems: 'center'}}>
+          <TouchableOpacity
+            style={[
+              styles.Nextbutton,
+              {backgroundColor: disabled ? '#ADADAD' : '#6D81FA'},
+            ]}
+            disabled={disabled}
+            onPress={() => setClearModalVisible(!clearModalVisible)}>
+            <Text style={styles.NextbuttonText}>완료</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* 완료 모달 구현 코드 */}
+        <Modal
+          visible={clearModalVisible}
+          animationType={'fade'}
+          transparent={true}
+          statusBarTranslucent={true}>
+          <Pressable
+            style={modalInnerStyles.modalOverlay}
+            onPress={() => setClearModalVisible(!clearModalVisible)}>
+            <TouchableWithoutFeedback>
+              <Animated.View
+                style={{
+                  ...modalInnerStyles.bottomSheetContainer,
+                  transform: [{translateY: translateY}],
+                }}
+                {...panResponder.panHandlers}>
+                {/* 모달에 들어갈 내용을 아래에 작성 */}
+                <Text style={modalInnerStyles.clearModalTitle}>
+                  설정 루틴이 맞나요?
+                </Text>
+                <View>
+                  <Text>{planText}</Text>
+                  <Text>루틴명</Text>
+                  <Text>요일</Text>
+                  <Text>
+                    {alertHour}:{alertMin}
+                  </Text>
+                </View>
+                <View style={modalInnerStyles.modalFlex}>
+                  <TouchableOpacity
+                    style={modalInnerStyles.noBtn}
+                    onPress={() => setClearModalVisible(false)}>
+                    <Text style={modalInnerStyles.noText}>아니요</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={modalInnerStyles.nextBtn}>
+                    <Text style={modalInnerStyles.nextText}>맞습니다!</Text>
+                  </TouchableOpacity>
+                </View>
+              </Animated.View>
+            </TouchableWithoutFeedback>
+          </Pressable>
+        </Modal>
 
         {/* close 모달 구현 코드 */}
         <Modal
@@ -482,6 +578,17 @@ const styles = StyleSheet.create({
   timeView: {
     flexDirection: 'row',
     justifyContent: 'space-around',
+  },
+  Nextbutton: {
+    width: '90%',
+    borderRadius: 15,
+    padding: 10,
+    marginTop: 60,
+  },
+  NextbuttonText: {
+    textAlign: 'center',
+    fontSize: 20,
+    color: '#fff',
   },
 });
 

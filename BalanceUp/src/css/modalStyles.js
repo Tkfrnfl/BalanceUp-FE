@@ -54,6 +54,14 @@ const modalInnerStyles = StyleSheet.create({
     justifyContent: 'flex-end',
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
   }, // 모달이 띄워졌을 때 화면을 어둡게 하기 위한 오버레이
+  clearModalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#000',
+    borderBottomWidth: 1,
+    borderBottomColor: '#CACACA',
+  },
 });
 
 export default modalInnerStyles;

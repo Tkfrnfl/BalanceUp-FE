@@ -16,6 +16,7 @@ import modalInnerStyles from '../../css/modalStyles';
 
 const SetTodoScreen = ({navigation}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [plan, setPlan] = useState('');
 
   const screenHeight = Dimensions.get('screen').height;
 
@@ -68,9 +69,21 @@ const SetTodoScreen = ({navigation}) => {
     setIsModalVisible(false);
   };
 
-  const goPlan = () => {
-    navigation.navigate('Plan');
-    console.log(TodoData[0].title);
+  const goSportPlan = () => {
+    setPlan('운동');
+    navigation.navigate('Plan', {planText: plan});
+  };
+  const goStudyPlan = () => {
+    setPlan('학습');
+    navigation.navigate('Plan', {planText: plan});
+  };
+  const goDailyPlan = () => {
+    setPlan('일상');
+    navigation.navigate('Plan', {planText: plan});
+  };
+  const goCarePlan = () => {
+    setPlan('마음관리');
+    navigation.navigate('Plan', {planText: plan});
   };
 
   const TodoData = [
@@ -113,21 +126,21 @@ const SetTodoScreen = ({navigation}) => {
 
       {/* 루틴 설정 */}
       <View style={styles.bntSheet}>
-        <TouchableOpacity style={styles.todoBtn} onPress={goPlan}>
+        <TouchableOpacity style={styles.todoBtn} onPress={goSportPlan}>
           <Text style={styles.todoText}>{TodoData[0].title}</Text>
           <Text style={styles.todoSubText}>{TodoData[0].subTitle}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.todoBtn}>
+        <TouchableOpacity style={styles.todoBtn} onPress={goStudyPlan}>
           <Text style={styles.todoText}>{TodoData[1].title}</Text>
           <Text style={styles.todoSubText}>{TodoData[1].subTitle}</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.bntSheet}>
-        <TouchableOpacity style={styles.todoBtn}>
+        <TouchableOpacity style={styles.todoBtn} onPress={goDailyPlan}>
           <Text style={styles.todoText}>{TodoData[2].title}</Text>
           <Text style={styles.todoSubText}>{TodoData[2].subTitle}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.todoBtn}>
+        <TouchableOpacity style={styles.todoBtn} onPress={goCarePlan}>
           <Text style={styles.todoText}>{TodoData[3].title}</Text>
           <Text style={styles.todoSubText}>{TodoData[3].subTitle}</Text>
         </TouchableOpacity>
