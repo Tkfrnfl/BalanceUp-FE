@@ -1,13 +1,7 @@
 import * as React from 'react';
 
 import {HomeStackScreen} from './src/routers';
-import {
-  RecoilRoot,
-  atom,
-  selector,
-  useRecoilState,
-  useRecoilValue,
-} from 'recoil';
+import {RecoilRoot} from 'recoil';
 
 function App() {
   return (
