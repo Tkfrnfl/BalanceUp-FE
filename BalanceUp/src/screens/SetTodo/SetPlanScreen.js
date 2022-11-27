@@ -19,8 +19,8 @@ import modalInnerStyles from '../../css/modalStyles';
 
 const SetPlanScreen = ({navigation, route}) => {
   const {planText} = route.params;
-  console.log(planText);
   const [lengthTodo, setLengthTodo] = useState(0);
+  const [todoText, setTodoText] = useState('');
 
   const [sunActive, setSunActive] = useState(0, false);
   const [monActive, setMonActive] = useState(1, true);
@@ -29,6 +29,8 @@ const SetPlanScreen = ({navigation, route}) => {
   const [thurActive, setThurActive] = useState(1, true);
   const [friActive, setFriActive] = useState(1, true);
   const [satActive, setSatActive] = useState(0, false);
+  const [dayText, setDayText] = useState(['월', '화', '수', '목', '금']);
+  console.log(dayText);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [clearModalVisible, setClearModalVisible] = useState(false);
@@ -101,58 +103,59 @@ const SetPlanScreen = ({navigation, route}) => {
   // input 기능 구현
   const handleTextChange = toDo => {
     setLengthTodo(toDo.length);
-    console.log(toDo);
+    setTodoText(toDo);
+    console.log(todoText);
   };
 
   // 요일 선택 기능 구현
   const handelSunActive = () => {
     setSunActive(sunActive + 1);
     sunActive % 2 === 0 ? setSunActive(true) : setSunActive(false);
-    // sunActive % 2 === 0
-    //   ? console.log('일요일 선택')
-    //   : console.log('일요일 선택 취소');
+    sunActive
+      ? setDayText(dayText.filter(str => str !== '일'))
+      : setDayText([...dayText, '일']);
   };
   const handelMonActive = () => {
     setMonActive(monActive + 1);
     monActive % 2 === 0 ? setMonActive(true) : setMonActive(false);
-    // monActive % 2 === 0
-    //   ? console.log('월요일 선택')
-    //   : console.log('월요일 선택 취소');
+    monActive
+      ? setDayText(dayText.filter(str => str !== '월'))
+      : setDayText([...dayText, '월']);
   };
   const handelTueActive = () => {
     setTueActive(tueActive + 1);
     tueActive % 2 === 0 ? setTueActive(true) : setTueActive(false);
-    // tueActive % 2 === 0
-    //   ? console.log('화요일 선택')
-    //   : console.log('화요일 선택 취소');
+    tueActive
+      ? setDayText(dayText.filter(str => str !== '화'))
+      : setDayText([...dayText, '화']);
   };
   const handelWenActive = () => {
     setWenActive(wenActive + 1);
     wenActive % 2 === 0 ? setWenActive(true) : setWenActive(false);
-    // wenActive % 2 === 0
-    //   ? console.log('수요일 선택')
-    //   : console.log('수요일 선택 취소');
+    wenActive
+      ? setDayText(dayText.filter(str => str !== '수'))
+      : setDayText([...dayText, '수']);
   };
   const handelThurActive = () => {
     setThurActive(thurActive + 1);
     thurActive % 2 === 0 ? setThurActive(true) : setThurActive(false);
-    // thurActive % 2 === 0
-    //   ? console.log('목요일 선택')
-    //   : console.log('목요일 선택 취소');
+    thurActive
+      ? setDayText(dayText.filter(str => str !== '목'))
+      : setDayText([...dayText, '목']);
   };
   const handelFriActive = () => {
     setFriActive(friActive + 1);
     friActive % 2 === 0 ? setFriActive(true) : setFriActive(false);
-    // friActive % 2 === 0
-    //   ? console.log('금요일 선택')
-    //   : console.log('금요일 선택 취소');
+    friActive
+      ? setDayText(dayText.filter(str => str !== '금'))
+      : setDayText([...dayText, '금']);
   };
   const handelSatActive = () => {
     setSatActive(satActive + 1);
     satActive % 2 === 0 ? setSatActive(true) : setSatActive(false);
-    // satActive % 2 === 0
-    //   ? console.log('토요일 선택')
-    //   : console.log('토요일 선택 취소');
+    satActive
+      ? setDayText(dayText.filter(str => str !== '토'))
+      : setDayText([...dayText, '토']);
   };
 
   // 토글 스위치 구현
@@ -212,6 +215,7 @@ const SetPlanScreen = ({navigation, route}) => {
             나를 키울 루틴은 {'\n'}어떻게 진행되나요?
           </Text>
         </View>
+
         {/* input 구현 코드*/}
         <View style={styles.inputSheet}>
           <Text style={styles.inputText}>루틴명</Text>
@@ -225,6 +229,7 @@ const SetPlanScreen = ({navigation, route}) => {
           />
           <Text style={styles.count}>{lengthTodo}/20</Text>
         </View>
+
         {/* 요일 선택 구현 코드 */}
         <View style={styles.daySelect}>
           <Text style={styles.daySelectText}>진행 요일</Text>
@@ -391,8 +396,8 @@ const SetPlanScreen = ({navigation, route}) => {
                 </Text>
                 <View>
                   <Text>{planText}</Text>
-                  <Text>루틴명</Text>
-                  <Text>요일</Text>
+                  <Text>{todoText}</Text>
+                  <Text>{dayText}</Text>
                   <Text>
                     {alertHour}:{alertMin}
                   </Text>
