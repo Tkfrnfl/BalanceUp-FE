@@ -10,8 +10,6 @@ import {
   ViewStyle,
   Button,
 } from 'react-native';
-import MainCarousel from '../../components/MainCarousel';
-import ProgressCircle from 'react-native-progress-circle';
 // import WeekCalendar from '../../components/WeekCalendar';
 // import WeekCalendar from 'react-native-calendars';
 import {Theme} from '../../utils/theme';

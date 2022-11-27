@@ -10,7 +10,7 @@ import {
   ViewStyle,
   Button,
 } from 'react-native';
-import MainCarousel from '../../components/MainCarousel';
+import commonStyles from '../../css/commonStyles';
 import ProgressCircle from 'react-native-progress-circle';
 // import WeekCalendar from '../../components/WeekCalendar';
 // import WeekCalendar from 'react-native-calendars';
@@ -18,7 +18,6 @@ import {Theme} from '../../utils/theme';
 import {MarkingProps} from '../../utils/MarkingProps';
 import moment from 'moment';
 import {format} from 'date-fns';
-import commonStyles from '../../css/commonStyles';
 import * as Progress from 'react-native-progress';
 import KeyumIcon from '../../resource/image/KeyumEmoticon.png';
 import Svg, {
@@ -146,6 +145,9 @@ const MainScreen = ({navigation}) => {
       marked: markedDates[selectedDate]?.marked,
     },
   };
+  const onSet = () => {
+    navigation.navigate('Set');
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -161,7 +163,7 @@ const MainScreen = ({navigation}) => {
             color={'#626262'}
           />
           <View style={commonStyles.spacing2} />
-          <MainCarousel> 캐러셀 임시 구현</MainCarousel>
+          {/* <MainCarousel> 캐러셀 임시 구현</MainCarousel> */}
         </View>
         <View style={commonStyles.spacing} />
         <View style={commonStyles.spacing} />
@@ -266,6 +268,21 @@ const MainScreen = ({navigation}) => {
         <View style={commonStyles.spacing}>
           <Text> </Text>
         </View>
+
+        {/* 루틴 설정 이동 버튼 **임시** */}
+        <View style={{alignItems: 'center'}}>
+          <TouchableOpacity
+            style={{
+              width: '70%',
+              alignItems: 'center',
+              backgroundColor: '#b779ed',
+            }}
+            onPress={onSet}>
+            <Text style={{color: '#fff', fontSize: 20}}>
+              루틴 설정하기(임시 구현)
+            </Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -282,12 +299,6 @@ const styles = StyleSheet.create({
     height: 100,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  buttonWrapper: {
-    width: '100%',
-    alignItems: 'center',
-    paddingTop: 250,
-    paddingBottom: 250,
   },
   title1: {
     fontSize: 65,

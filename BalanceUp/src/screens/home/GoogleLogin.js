@@ -3,12 +3,8 @@ import styled from 'styled-components/native';
 import {colors} from '../Color';
 
 import auth from '@react-native-firebase/auth';
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-  statusCodes,
-} from '@react-native-google-signin/google-signin';
-import { Button } from 'react-native';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {Button} from 'react-native';
 
 const SocialSign = styled.TouchableOpacity`
   flex-direction: row;
