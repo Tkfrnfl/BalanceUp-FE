@@ -19,6 +19,7 @@ import modalInnerStyles from '../../css/modalStyles';
 
 const SetPlanScreen = ({navigation, route}) => {
   const {planText} = route.params;
+
   const [lengthTodo, setLengthTodo] = useState(0);
   const [todoText, setTodoText] = useState('');
 
