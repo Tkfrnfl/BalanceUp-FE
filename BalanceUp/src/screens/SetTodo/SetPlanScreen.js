@@ -31,6 +31,8 @@ const SetPlanScreen = ({navigation, route}) => {
   const [friActive, setFriActive] = useState(1, true);
   const [satActive, setSatActive] = useState(0, false);
   const [dayText, setDayText] = useState(['월', '화', '수', '목', '금']);
+  const dayBy = ['일', '월', '화', '수', '목', '금', '토'];
+
   console.log(dayText);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -162,6 +164,20 @@ const SetPlanScreen = ({navigation, route}) => {
   // 토글 스위치 구현
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
+  const handleSwitchOn = () => {
+    setShouldShow(!shouldShow);
+    isEnabled ? setAlertHour('') : setAlertHour('09');
+    isEnabled ? setAlertMin('') : setAlertMin('00');
+  };
+
+  // 완료 버튼 구현
+  const handleCheck = () => {
+    setClearModalVisible(!clearModalVisible);
+    setDayText(
+      [...dayText].sort((a, b) => dayBy.indexOf(a) - dayBy.indexOf(b)),
+    );
+  };
+
   // 버튼 활성화/비활성화
   useEffect(() => {
     setDisabled(
@@ -206,12 +222,6 @@ const SetPlanScreen = ({navigation, route}) => {
       time: alertHour + alertMin,
     });
     setClearModalVisible(false);
-  };
-
-  const handleSwitchOn = () => {
-    setShouldShow(!shouldShow);
-    isEnabled ? setAlertHour('') : setAlertHour('09');
-    isEnabled ? setAlertMin('') : setAlertMin('00');
   };
 
   return (
@@ -387,7 +397,7 @@ const SetPlanScreen = ({navigation, route}) => {
               {backgroundColor: disabled ? '#ADADAD' : '#6D81FA'},
             ]}
             disabled={disabled}
-            onPress={() => setClearModalVisible(!clearModalVisible)}>
+            onPress={handleCheck}>
             <Text style={styles.NextbuttonText}>완료</Text>
           </TouchableOpacity>
         </View>
