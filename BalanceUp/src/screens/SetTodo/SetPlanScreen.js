@@ -4,7 +4,6 @@ import {
   Text,
   Modal,
   Pressable,
-  StyleSheet,
   TouchableOpacity,
   Dimensions,
   Animated,
@@ -198,6 +197,23 @@ const SetPlanScreen = ({navigation, route}) => {
     navigation.navigate('Set');
   };
 
+  const goClear = () => {
+    // state props 값 잘 넘어가는지 check
+    navigation.navigate('Main', {
+      planText: planText,
+      dayText: dayText,
+      todoText: todoText,
+      time: alertHour + alertMin,
+    });
+    setClearModalVisible(false);
+  };
+
+  const handleSwitchOn = () => {
+    setShouldShow(!shouldShow);
+    isEnabled ? setAlertHour('') : setAlertHour('09');
+    isEnabled ? setAlertMin('') : setAlertMin('00');
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
@@ -325,7 +341,7 @@ const SetPlanScreen = ({navigation, route}) => {
             thumbColor={isEnabled ? '#fff' : '#f4f3f4'}
             onValueChange={toggleSwitch}
             value={isEnabled}
-            onChange={() => setShouldShow(!shouldShow)}
+            onChange={handleSwitchOn}
             style={[
               styles.switchStyle,
               {transform: [{scaleX: 1.3}, {scaleY: 1.3}]},
@@ -388,7 +404,7 @@ const SetPlanScreen = ({navigation, route}) => {
             <TouchableWithoutFeedback>
               <Animated.View
                 style={{
-                  ...modalInnerStyles.bottomSheetContainer,
+                  ...modalInnerStyles.clearSheetContainer,
                   transform: [{translateY: translateY}],
                 }}
                 {...panResponder.panHandlers}>
@@ -396,21 +412,27 @@ const SetPlanScreen = ({navigation, route}) => {
                 <Text style={modalInnerStyles.clearModalTitle}>
                   설정 루틴이 맞나요?
                 </Text>
-                <View>
-                  <Text>{planText}</Text>
-                  <Text>{todoText}</Text>
-                  <Text>{dayText}</Text>
-                  <Text>
-                    {alertHour}:{alertMin}
+                <View style={styles.checkView}>
+                  <Text style={{color: '#000', fontWeight: 'bold'}}>
+                    [{planText}]
                   </Text>
+                  <Text style={modalInnerStyles.todoText}>{todoText}</Text>
+                  <Text style={modalInnerStyles.dayText}>{dayText}</Text>
+                  {shouldShow ? (
+                    <Text style={modalInnerStyles.timeText}>
+                      {alertHour}:{alertMin}에 알림
+                    </Text>
+                  ) : null}
                 </View>
                 <View style={modalInnerStyles.modalFlex}>
                   <TouchableOpacity
-                    style={modalInnerStyles.noBtn}
+                    style={modalInnerStyles.noCheckBtn}
                     onPress={() => setClearModalVisible(false)}>
                     <Text style={modalInnerStyles.noText}>아니요</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={modalInnerStyles.nextBtn}>
+                  <TouchableOpacity
+                    style={modalInnerStyles.yesBtn}
+                    onPress={goClear}>
                     <Text style={modalInnerStyles.nextText}>맞습니다!</Text>
                   </TouchableOpacity>
                 </View>

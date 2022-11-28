@@ -135,6 +135,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#fff',
   },
+  checkView: {
+    alignItems: 'center',
+    padding: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#CACACA',
+    borderBottomWidth: 1,
+    borderBottomColor: '#CACACA',
+  },
 });
 
 export default styles;
