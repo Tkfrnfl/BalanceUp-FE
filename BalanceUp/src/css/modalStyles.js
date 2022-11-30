@@ -104,6 +104,30 @@ const modalInnerStyles = StyleSheet.create({
     marginBottom: 30,
     width: '45%',
   },
+
+  // MyPage 닉네임 변경 모달 style
+  nameText: {
+    color: '#000',
+    fontWeight: '300',
+    fontSize: 15,
+  },
+  saveBtn: {
+    padding: 8,
+    backgroundColor: '#6D81FA',
+    borderRadius: 10,
+    marginTop: 30,
+    marginBottom: 30,
+    width: '45%',
+  },
+  saveText: {
+    padding: 6,
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#fff',
+    textAlign: 'center',
+    marginLeft: 40,
+    marginRight: 40,
+  },
 });
 
 export default modalInnerStyles;

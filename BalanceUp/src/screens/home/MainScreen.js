@@ -158,6 +158,9 @@ const MainScreen = ({navigation, route}) => {
   const onSet = () => {
     navigation.navigate('Set');
   };
+  const onMyPage = () => {
+    navigation.navigate('MyPage');
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -286,10 +289,26 @@ const MainScreen = ({navigation, route}) => {
               width: '70%',
               alignItems: 'center',
               backgroundColor: '#b779ed',
+              marginBottom: 10,
             }}
             onPress={onSet}>
             <Text style={{color: '#fff', fontSize: 20}}>
               루틴 설정하기(임시 구현)
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* 마이페이지 이동 버튼 **임시** */}
+        <View style={{alignItems: 'center'}}>
+          <TouchableOpacity
+            style={{
+              width: '70%',
+              alignItems: 'center',
+              backgroundColor: '#b779ed',
+            }}
+            onPress={onMyPage}>
+            <Text style={{color: '#fff', fontSize: 20}}>
+              마이페이지(임시 구현)
             </Text>
           </TouchableOpacity>
         </View>
