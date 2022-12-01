@@ -128,8 +128,13 @@ const MyPage = ({navigation}) => {
     setCheckTextError('');
   };
 
+  // 네이게이션 구현
   const goBack = () => {
     navigation.navigate('Main');
+  };
+
+  const goWithdrawal = () => {
+    navigation.navigate('Withdrawal');
   };
 
   return (
@@ -142,7 +147,7 @@ const MyPage = ({navigation}) => {
           </TouchableOpacity>
           <Text style={styles.topTitle}>마이페이지</Text>
         </View>
-        <Shadow distance={4}>
+        <Shadow distance={5}>
           <View style={styles.nameSheet}>
             <Text style={styles.nameText}>닉네임</Text>
             <Text style={styles.userNameText}>김루틴</Text>
@@ -153,7 +158,7 @@ const MyPage = ({navigation}) => {
           </View>
         </Shadow>
         <View style={{marginTop: 10}}>
-          <Shadow distance={4}>
+          <Shadow distance={5}>
             <View style={styles.nameSheet}>
               <Text style={styles.nameText}>로그아웃</Text>
               <TouchableOpacity
@@ -166,8 +171,8 @@ const MyPage = ({navigation}) => {
         <Text style={styles.verText}>Ver 1.0.0</Text>
         <View style={styles.typoSheet}>
           <Image source={KeyumTypo} />
-          <TouchableOpacity>
-            <Text>회원탈퇴</Text>
+          <TouchableOpacity onPress={goWithdrawal}>
+            <Text style={styles.withdrawalText}>회원탈퇴</Text>
           </TouchableOpacity>
         </View>
 
@@ -321,6 +326,12 @@ const styles = StyleSheet.create({
   logoutBtnStyle: {
     marginLeft: 230,
     marginTop: 15,
+  },
+  withdrawalText: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#606060',
+    marginTop: 80,
+    color: '#606060',
   },
   verText: {
     color: '#000',

@@ -6,6 +6,7 @@ import LookAll from '../screens/home/LookAll';
 import SetTodoScreen from '../screens/SetTodo/SetTodoScreen';
 import SetPlanScreen from '../screens/SetTodo/SetPlanScreen';
 import MyPage from '../screens/myPage/MyPage';
+import Withdrawal from '../screens/myPage/Withdrawal';
 
 const MainStack = createStackNavigator();
 
@@ -32,6 +33,11 @@ export function MainRouter() {
         <MainStack.Screen
           name="MyPage"
           component={MyPage}
+          options={{headerShown: false}}
+        />
+        <MainStack.Screen
+          name="Withdrawal"
+          component={Withdrawal}
           options={{headerShown: false}}
         />
       </MainStack.Navigator>
