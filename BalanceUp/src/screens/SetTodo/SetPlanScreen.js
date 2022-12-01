@@ -366,9 +366,9 @@ const SetPlanScreen = ({navigation, route}) => {
               <Text style={styles.timeText}>
                 {alertHour}:{alertMin}
               </Text>
-              <TouchableOpacity onPress={() => setOpen(true)}>
+              <TouchableWithoutFeedback onPress={() => setOpen(true)}>
                 <Text style={styles.timeModalText}>시간변경</Text>
-              </TouchableOpacity>
+              </TouchableWithoutFeedback>
             </View>
           ) : null}
           <DatePicker

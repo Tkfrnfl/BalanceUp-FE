@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
   },
   timeModalText: {
     color: '#3C64B1',
+    height: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#3C64B1',
     marginTop: 20,
