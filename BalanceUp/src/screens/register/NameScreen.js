@@ -88,17 +88,19 @@ const NameScreen = ({navigation}) => {
               placeholder={'11자 내 작성 (공백, 특수문자 불가)'}
               placeholderTextColor={'D0D0D0'}
             />
-            <TouchableWithoutFeedback
+            <TouchableOpacity
               style={styles.inputBtn}
+              activeOpacity={0.8}
               onPress={handleRemove}>
               <Text style={styles.inputBtnText}>X</Text>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback
+            </TouchableOpacity>
+            <TouchableOpacity
               style={styles.inputBtn}
+              activeOpacity={0.8}
               onPress={duplicationCheck}
               disabled={disabled}>
               <Text style={styles.inputBtnText}>중복확인</Text>
-            </TouchableWithoutFeedback>
+            </TouchableOpacity>
           </View>
           <Text style={styles.errorText}>{checkTextError}</Text>
         </View>
@@ -218,7 +220,7 @@ const styles = StyleSheet.create({
     color: '#000',
     width: 60,
     marginLeft: -10,
-    marginRight: -28,
+    marginRight: -40,
     height: 33,
     marginTop: 6.5,
     borderBottomWidth: 1.5,

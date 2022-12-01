@@ -10,7 +10,6 @@ import {
   Keyboard,
   Dimensions,
   Animated,
-  Platform,
   PanResponder,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
@@ -198,17 +197,19 @@ const MyPage = ({navigation}) => {
                         placeholder={'11자 내 작성 (공백, 특수문자 불가)'}
                         placeholderTextColor={'D0D0D0'}
                       />
-                      <TouchableWithoutFeedback
+                      <TouchableOpacity
                         style={styles.inputBtn}
+                        activeOpacity={0.8}
                         onPress={handleRemove}>
                         <Text style={styles.inputBtnText}>X</Text>
-                      </TouchableWithoutFeedback>
-                      <TouchableWithoutFeedback
+                      </TouchableOpacity>
+                      <TouchableOpacity
                         style={styles.inputBtn}
                         onPress={duplicationCheck}
+                        activeOpacity={0.8}
                         disabled={disabled}>
                         <Text style={styles.inputBtnText}>중복확인</Text>
-                      </TouchableWithoutFeedback>
+                      </TouchableOpacity>
                     </View>
                     <Text style={styles.errorText}>{checkTextError}</Text>
                   </View>
