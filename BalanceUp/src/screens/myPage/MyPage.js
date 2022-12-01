@@ -137,6 +137,11 @@ const MyPage = ({navigation}) => {
     navigation.navigate('Withdrawal');
   };
 
+  const goLogout = () => {
+    setLogoutModalVisible(false);
+    navigation.navigate('Login');
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
@@ -228,7 +233,11 @@ const MyPage = ({navigation}) => {
                     <Text style={styles.errorText}>{checkTextError}</Text>
                   </View>
                   <View style={modalInnerStyles.modalFlex}>
-                    <TouchableOpacity style={modalInnerStyles.saveBtn}>
+                    <TouchableOpacity
+                      style={[
+                        modalInnerStyles.saveBtn,
+                        {backgroundColor: disabled ? '#979797' : '#6D81FA'},
+                      ]}>
                       <Text style={modalInnerStyles.saveText}>저장</Text>
                     </TouchableOpacity>
                   </View>
@@ -265,7 +274,9 @@ const MyPage = ({navigation}) => {
                     onPress={() => setLogoutModalVisible(false)}>
                     <Text style={modalInnerStyles.noText}>아니요</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={modalInnerStyles.yesBtn}>
+                  <TouchableOpacity
+                    onPress={goLogout}
+                    style={modalInnerStyles.yesBtn}>
                     <Text style={modalInnerStyles.nextText}>네</Text>
                   </TouchableOpacity>
                 </View>

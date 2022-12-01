@@ -23,6 +23,10 @@ const Withdrawal = ({navigation}) => {
     navigation.navigate('MyPage');
   };
 
+  const goWithdrawal = () => {
+    navigation.navigate('Login');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.topSheet}>
@@ -63,6 +67,7 @@ const Withdrawal = ({navigation}) => {
           styles.Nextbutton,
           {backgroundColor: disabled ? '#979797' : '#CB0707'},
         ]}
+        onPress={goWithdrawal}
         disabled={disabled}>
         <Text style={styles.NextbuttonText}>탈퇴하기</Text>
       </TouchableOpacity>
