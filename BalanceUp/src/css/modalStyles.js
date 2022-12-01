@@ -128,6 +128,21 @@ const modalInnerStyles = StyleSheet.create({
     marginLeft: 40,
     marginRight: 40,
   },
+
+  // MyPage 로그아웃 모달 style
+  logoutModalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#000',
+  },
+  logoutModalText: {
+    fontSize: 15,
+    marginTop: 20,
+    fontWeight: '600',
+    textAlign: 'center',
+    color: '#000',
+  },
 });
 
 export default modalInnerStyles;

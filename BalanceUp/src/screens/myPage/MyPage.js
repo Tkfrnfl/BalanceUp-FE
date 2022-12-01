@@ -28,6 +28,7 @@ const MyPage = ({navigation}) => {
   const [usableId, setUsableId] = useState(false);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
 
   // 모달 기능 구현
   const screenHeight = Dimensions.get('screen').height;
@@ -68,6 +69,7 @@ const MyPage = ({navigation}) => {
 
   const closeModal = () => {
     closeBottomSheet.start(() => setIsModalVisible(false));
+    closeBottomSheet.start(() => setLogoutModalVisible(false));
   };
 
   useEffect(() => {
@@ -75,6 +77,12 @@ const MyPage = ({navigation}) => {
       resetBottomSheet.start();
     }
   }, [isModalVisible]);
+
+  useEffect(() => {
+    if (logoutModalVisible) {
+      resetBottomSheet.start();
+    }
+  }, [logoutModalVisible]);
 
   // Text Input 기능
   useEffect(() => {
@@ -148,7 +156,8 @@ const MyPage = ({navigation}) => {
           <Shadow distance={4}>
             <View style={styles.nameSheet}>
               <Text style={styles.nameText}>로그아웃</Text>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setLogoutModalVisible(!logoutModalVisible)}>
                 <Text style={styles.logoutBtnStyle}>➡️</Text>
               </TouchableOpacity>
             </View>
@@ -162,7 +171,7 @@ const MyPage = ({navigation}) => {
           </TouchableOpacity>
         </View>
 
-        {/* 모달 구현 코드 */}
+        {/* 닉네임 구현 코드 */}
         <Modal
           visible={isModalVisible}
           animationType={'fade'}
@@ -222,6 +231,42 @@ const MyPage = ({navigation}) => {
               </TouchableWithoutFeedback>
             </Pressable>
           </KeyboardAvoidingView>
+        </Modal>
+
+        {/* 로그아웃 모달 구현 코드 */}
+        <Modal
+          visible={logoutModalVisible}
+          animationType={'fade'}
+          transparent={true}
+          statusBarTranslucent={true}>
+          <Pressable
+            style={modalInnerStyles.modalOverlay}
+            onPress={() => setLogoutModalVisible(!logoutModalVisible)}>
+            <TouchableWithoutFeedback>
+              <Animated.View
+                style={{
+                  ...modalInnerStyles.bottomSheetContainer,
+                  transform: [{translateY: translateY}],
+                }}
+                {...panResponder.panHandlers}>
+                {/* 모달에 들어갈 내용을 아래에 작성 */}
+                <Text style={modalInnerStyles.logoutModalTitle}>로그아웃</Text>
+                <Text style={modalInnerStyles.logoutModalText}>
+                  로그아웃 하시겠습니까?
+                </Text>
+                <View style={modalInnerStyles.modalFlex}>
+                  <TouchableOpacity
+                    style={modalInnerStyles.noBtn}
+                    onPress={() => setLogoutModalVisible(false)}>
+                    <Text style={modalInnerStyles.noText}>아니요</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={modalInnerStyles.yesBtn}>
+                    <Text style={modalInnerStyles.nextText}>네</Text>
+                  </TouchableOpacity>
+                </View>
+              </Animated.View>
+            </TouchableWithoutFeedback>
+          </Pressable>
         </Modal>
       </View>
     </TouchableWithoutFeedback>
