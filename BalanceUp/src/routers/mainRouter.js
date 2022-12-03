@@ -20,6 +20,7 @@ export function MainRouter() {
         <MainStack.Screen
           name="LookAll"
           component={LookAll}
+          options={{headerShown: false}}
           />
         <MainStack.Screen
           name="Set"

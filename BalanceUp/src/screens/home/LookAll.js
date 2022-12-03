@@ -9,6 +9,7 @@ import {
   ScrollView,
   ViewStyle,
   Button,
+  useWindowDimensions,
 } from 'react-native';
 // import WeekCalendar from '../../components/WeekCalendar';
 // import WeekCalendar from 'react-native-calendars';
@@ -17,7 +18,7 @@ import {MarkingProps} from '../../utils/MarkingProps';
 import moment from 'moment';
 import {format} from 'date-fns';
 import commonStyles from '../../css/commonStyles';
-import * as Progress from 'react-native-progress';
+// import * as Progress from 'react-native-progress';
 import KeyumIcon from '../../resource/image/KeyumEmoticon.png';
 import Svg, {
   Circle,
@@ -49,6 +50,9 @@ import {
   ExpandableCalendar,
   CalendarProvider,
 } from 'react-native-calendars';
+import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
+import Progress from './Progress';
+import Complete from './Complete';
 
 LocaleConfig.locales.fr = {
   monthNames: [
@@ -89,10 +93,28 @@ let year = today.getFullYear(); // 년도
 let month = today.getMonth() + 1; // 월
 let date = today.getDate(); // 날짜
 
+const FirstRoute = () => <View style={{flex: 1, backgroundColor: '#ff4081'}} />;
+
+const SecondRoute = () => (
+  <View style={{flex: 1, backgroundColor: '#673ab7'}} />
+);
+
+const renderScene = SceneMap({
+  first: Progress,
+  second: Complete,
+});
+
 const LookAll = ({navigation}) => {
   const todo = ['할일1', '할일2', '할일3', '할일4'];
   const todoTmp = ['item1', 'item2', 'item3'];
   const todoTmpSub = ['itemSub1', 'itemSub2', 'itemSub3'];
+
+  const layout = useWindowDimensions();
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    {key: 'first', title: '진행'},
+    {key: 'second', title: '완료'},
+  ]);
 
   const [selectedDate, setSelectedDate] = useState(
     format(new Date(), 'yyyy-MM-dd'),
@@ -134,6 +156,7 @@ const LookAll = ({navigation}) => {
           <Text style={styles.title2}>루틴</Text>
         </View>
         <View style={commonStyles.spacing2} />
+
         <Calendar
           date={fomatToday}
           monthFormat={'yyyy년 MM월'}
@@ -151,46 +174,33 @@ const LookAll = ({navigation}) => {
           }}
           // onDayPress={day => this.setState({selected_date: day.dateString})}
         />
-
         <View style={commonStyles.spacing2} />
-        <View>
-          {todoTmp.map((value, index) => (
-            <View style={commonStyles.row}>
-              <View style={styles.img1}>
-                <Image source={KeyumIcon} style={styles.img2} />
-              </View>
-              <View style={styles.aimText1}>
-                <Text style={commonStyles.boldText}>item1</Text>
-                <Text>{todoTmpSub[index]}</Text>
-              </View>
-
-              <Svg height={80} style={styles.svg2}>
-                <Circle cx="30" cy="30" r="25" fill="#626262" />
-                <SvgText
-                  x="15"
-                  y="35"
-                  text-anchor="middle"
-                  fill="white"
-                  style={styles.mainText2}>
-                  test
-                </SvgText>
-              </Svg>
-
-              {/* <ProgressCircle
-            percent={30}
-            radius={50}
-            borderWidth={8}
-            color="#3399FF"
-            shadowColor="#999"
-            bgColor="#fff">
-            <Text style={{fontSize: 18}}>{'30%'}</Text>
-          </ProgressCircle> */}
-            </View>
-          ))}
-        </View>
-        <View style={commonStyles.spacing}>
-          <Text> </Text>
-        </View>
+        <TabView
+          style={styles.tabview}
+          navigationState={{index, routes}}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={{width: layout.width}}
+          renderTabBar={props => (
+            <TabBar
+              {...props}
+              activeColor="black"
+              inactiveColor="gray"
+              indicatorStyle={{
+                backgroundColor: 'black',
+                width: 70,
+                alignItems: 'center',
+                marginHorizontal: 65,
+                borderWidth: 2,
+              }}
+              style={{
+                backgroundColor: 'white',
+                shadowColor: 'transparent',
+                shadowOpacity: 0,
+              }}
+            />
+          )}
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -207,12 +217,6 @@ const styles = StyleSheet.create({
     height: 100,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  buttonWrapper: {
-    width: '100%',
-    alignItems: 'center',
-    paddingTop: 250,
-    paddingBottom: 250,
   },
   title1: {
     fontSize: 65,
@@ -236,10 +240,6 @@ const styles = StyleSheet.create({
   },
   scrollview: {
     width: '100%',
-  },
-  aimText1: {
-    paddingLeft: 50,
-    paddingRight: 100,
   },
   mainText: {
     fontSize: 20,
@@ -277,9 +277,9 @@ const styles = StyleSheet.create({
     width: 150,
     zIndex: 10,
   },
-  // button2: {
-  //   color: '#626262',
-  // },
+  tabview: {
+    height: 500,
+  },
 });
 
 export default LookAll;
