@@ -90,7 +90,17 @@ let year = today.getFullYear(); // 년도
 let month = today.getMonth() + 1; // 월
 let date = today.getDate(); // 날짜
 
-const MainScreen = ({navigation}) => {
+const MainScreen = ({navigation, route}) => {
+  // 루틴 넘기는거 확인
+  // const {planText} = route.params;
+  // const {dayText} = route.params;
+  // const {todoText} = route.params;
+  // const {time} = route.params;
+  // console.log('카테고리:' + planText);
+  // console.log('루틴명:' + todoText);
+  // console.log('선택 요일:' + dayText);
+  // console.log('선택 시간:' + time);
+
   const todo = ['할일1', '할일2', '할일3', '할일4'];
   const todoTmp = ['item1', 'item2', 'item3'];
   const todoTmpSub = ['itemSub1', 'itemSub2', 'itemSub3'];
@@ -147,6 +157,9 @@ const MainScreen = ({navigation}) => {
   };
   const onSet = () => {
     navigation.navigate('Set');
+  };
+  const onMyPage = () => {
+    navigation.navigate('MyPage');
   };
 
   return (
@@ -276,10 +289,26 @@ const MainScreen = ({navigation}) => {
               width: '70%',
               alignItems: 'center',
               backgroundColor: '#b779ed',
+              marginBottom: 10,
             }}
             onPress={onSet}>
             <Text style={{color: '#fff', fontSize: 20}}>
               루틴 설정하기(임시 구현)
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* 마이페이지 이동 버튼 **임시** */}
+        <View style={{alignItems: 'center'}}>
+          <TouchableOpacity
+            style={{
+              width: '70%',
+              alignItems: 'center',
+              backgroundColor: '#b779ed',
+            }}
+            onPress={onMyPage}>
+            <Text style={{color: '#fff', fontSize: 20}}>
+              마이페이지(임시 구현)
             </Text>
           </TouchableOpacity>
         </View>

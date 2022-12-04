@@ -4,7 +4,6 @@ import {
   Text,
   Modal,
   Pressable,
-  StyleSheet,
   TouchableOpacity,
   Dimensions,
   Animated,
@@ -16,9 +15,11 @@ import {
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import modalInnerStyles from '../../css/modalStyles';
+import styles from '../../css/SetPlanScreenStyles';
 
 const SetPlanScreen = ({navigation, route}) => {
   const {planText} = route.params;
+
   const [lengthTodo, setLengthTodo] = useState(0);
   const [todoText, setTodoText] = useState('');
 
@@ -30,6 +31,8 @@ const SetPlanScreen = ({navigation, route}) => {
   const [friActive, setFriActive] = useState(1, true);
   const [satActive, setSatActive] = useState(0, false);
   const [dayText, setDayText] = useState(['월', '화', '수', '목', '금']);
+  const dayBy = ['일', '월', '화', '수', '목', '금', '토'];
+
   console.log(dayText);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -161,6 +164,20 @@ const SetPlanScreen = ({navigation, route}) => {
   // 토글 스위치 구현
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
+  const handleSwitchOn = () => {
+    setShouldShow(!shouldShow);
+    isEnabled ? setAlertHour('') : setAlertHour('09');
+    isEnabled ? setAlertMin('') : setAlertMin('00');
+  };
+
+  // 완료 버튼 구현
+  const handleCheck = () => {
+    setClearModalVisible(!clearModalVisible);
+    setDayText(
+      [...dayText].sort((a, b) => dayBy.indexOf(a) - dayBy.indexOf(b)),
+    );
+  };
+
   // 버튼 활성화/비활성화
   useEffect(() => {
     setDisabled(
@@ -194,6 +211,17 @@ const SetPlanScreen = ({navigation, route}) => {
 
   const goBack = () => {
     navigation.navigate('Set');
+  };
+
+  const goClear = () => {
+    // state props 값 잘 넘어가는지 check
+    navigation.navigate('Main', {
+      planText: planText,
+      dayText: dayText,
+      todoText: todoText,
+      time: alertHour + alertMin,
+    });
+    setClearModalVisible(false);
   };
 
   return (
@@ -323,7 +351,7 @@ const SetPlanScreen = ({navigation, route}) => {
             thumbColor={isEnabled ? '#fff' : '#f4f3f4'}
             onValueChange={toggleSwitch}
             value={isEnabled}
-            onChange={() => setShouldShow(!shouldShow)}
+            onChange={handleSwitchOn}
             style={[
               styles.switchStyle,
               {transform: [{scaleX: 1.3}, {scaleY: 1.3}]},
@@ -338,9 +366,9 @@ const SetPlanScreen = ({navigation, route}) => {
               <Text style={styles.timeText}>
                 {alertHour}:{alertMin}
               </Text>
-              <TouchableOpacity onPress={() => setOpen(true)}>
+              <TouchableWithoutFeedback onPress={() => setOpen(true)}>
                 <Text style={styles.timeModalText}>시간변경</Text>
-              </TouchableOpacity>
+              </TouchableWithoutFeedback>
             </View>
           ) : null}
           <DatePicker
@@ -369,7 +397,7 @@ const SetPlanScreen = ({navigation, route}) => {
               {backgroundColor: disabled ? '#ADADAD' : '#6D81FA'},
             ]}
             disabled={disabled}
-            onPress={() => setClearModalVisible(!clearModalVisible)}>
+            onPress={handleCheck}>
             <Text style={styles.NextbuttonText}>완료</Text>
           </TouchableOpacity>
         </View>
@@ -386,7 +414,7 @@ const SetPlanScreen = ({navigation, route}) => {
             <TouchableWithoutFeedback>
               <Animated.View
                 style={{
-                  ...modalInnerStyles.bottomSheetContainer,
+                  ...modalInnerStyles.clearSheetContainer,
                   transform: [{translateY: translateY}],
                 }}
                 {...panResponder.panHandlers}>
@@ -394,21 +422,27 @@ const SetPlanScreen = ({navigation, route}) => {
                 <Text style={modalInnerStyles.clearModalTitle}>
                   설정 루틴이 맞나요?
                 </Text>
-                <View>
-                  <Text>{planText}</Text>
-                  <Text>{todoText}</Text>
-                  <Text>{dayText}</Text>
-                  <Text>
-                    {alertHour}:{alertMin}
+                <View style={styles.checkView}>
+                  <Text style={{color: '#000', fontWeight: 'bold'}}>
+                    [{planText}]
                   </Text>
+                  <Text style={modalInnerStyles.todoText}>{todoText}</Text>
+                  <Text style={modalInnerStyles.dayText}>{dayText}</Text>
+                  {shouldShow ? (
+                    <Text style={modalInnerStyles.timeText}>
+                      {alertHour}:{alertMin}에 알림
+                    </Text>
+                  ) : null}
                 </View>
                 <View style={modalInnerStyles.modalFlex}>
                   <TouchableOpacity
-                    style={modalInnerStyles.noBtn}
+                    style={modalInnerStyles.noCheckBtn}
                     onPress={() => setClearModalVisible(false)}>
                     <Text style={modalInnerStyles.noText}>아니요</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={modalInnerStyles.nextBtn}>
+                  <TouchableOpacity
+                    style={modalInnerStyles.yesBtn}
+                    onPress={goClear}>
                     <Text style={modalInnerStyles.nextText}>맞습니다!</Text>
                   </TouchableOpacity>
                 </View>
@@ -459,142 +493,5 @@ const SetPlanScreen = ({navigation, route}) => {
     </TouchableWithoutFeedback>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-    flex: 1,
-  },
-  topSheet: {
-    alignItems: 'center',
-    marginTop: 10,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  topTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#000',
-  },
-  arrowBtn: {
-    marginRight: 100,
-    marginBottom: 25,
-    fontSize: 60,
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  xBtn: {
-    marginLeft: 120,
-    marginRight: 20,
-    fontSize: 30,
-    fontWeight: '400',
-    color: '#000',
-  },
-  subTitle: {
-    marginTop: 10,
-    marginLeft: 30,
-    marginBottom: 20,
-  },
-  subText: {
-    color: '#000',
-    fontSize: 22,
-    fontWeight: 'bold',
-  },
-  inputSheet: {
-    marginTop: 15,
-    marginLeft: 30,
-  },
-  inputText: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  inputStyle: {
-    marginTop: 8,
-    borderBottomWidth: 4,
-    width: '90%',
-    fontWeight: 'bold',
-  },
-  count: {
-    marginLeft: 297,
-    marginTop: 5,
-    color: '#000',
-  },
-  daySelect: {
-    marginTop: 50,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  daySelectText: {
-    color: '#000',
-    fontWeight: 'bold',
-    fontSize: 15,
-  },
-  recText: {
-    color: '#3C64B1',
-    fontWeight: '500',
-  },
-  daySelectBtnView: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  daySelectBtn: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 10,
-    borderRadius: 100,
-    marginLeft: 10,
-    marginTop: 15,
-  },
-  btnText: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  alertView: {
-    marginTop: 40,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  alertText: {
-    color: '#000',
-    fontWeight: 'bold',
-    fontSize: 15,
-    marginLeft: 35,
-  },
-  switchStyle: {
-    marginRight: 35,
-    marginTop: -8,
-  },
-  timeModalText: {
-    color: '#3C64B1',
-    borderBottomWidth: 1,
-    borderBottomColor: '#3C64B1',
-    marginTop: 20,
-    marginLeft: 150,
-  },
-  timeText: {
-    color: '#000',
-    fontSize: 35,
-    fontWeight: 'bold',
-    marginTop: 10,
-  },
-  timeView: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  Nextbutton: {
-    width: '90%',
-    borderRadius: 15,
-    padding: 10,
-    marginTop: 60,
-  },
-  NextbuttonText: {
-    textAlign: 'center',
-    fontSize: 20,
-    color: '#fff',
-  },
-});
 
 export default SetPlanScreen;

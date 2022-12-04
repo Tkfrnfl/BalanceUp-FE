@@ -16,7 +16,13 @@ import modalInnerStyles from '../../css/modalStyles';
 
 const SetTodoScreen = ({navigation}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [plan, setPlan] = useState('');
+
+  const [plan, setPlan] = useState({
+    sportPlan: '운동',
+    studyPlan: '학습',
+    dailyPlan: '일상',
+    carePlan: '마음관리',
+  });
 
   const screenHeight = Dimensions.get('screen').height;
 
@@ -70,20 +76,16 @@ const SetTodoScreen = ({navigation}) => {
   };
 
   const goSportPlan = () => {
-    setPlan('운동');
-    navigation.navigate('Plan', {planText: plan});
+    navigation.navigate('Plan', {planText: plan.sportPlan});
   };
   const goStudyPlan = () => {
-    setPlan('학습');
-    navigation.navigate('Plan', {planText: plan});
+    navigation.navigate('Plan', {planText: plan.studyPlan});
   };
   const goDailyPlan = () => {
-    setPlan('일상');
-    navigation.navigate('Plan', {planText: plan});
+    navigation.navigate('Plan', {planText: plan.dailyPlan});
   };
   const goCarePlan = () => {
-    setPlan('마음관리');
-    navigation.navigate('Plan', {planText: plan});
+    navigation.navigate('Plan', {planText: plan.carePlan});
   };
 
   const TodoData = [
