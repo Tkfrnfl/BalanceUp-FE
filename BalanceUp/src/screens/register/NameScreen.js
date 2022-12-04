@@ -12,7 +12,7 @@ import {
 import * as Progress from 'react-native-progress';
 import FastImage from 'react-native-fast-image';
 
-import {validateText, removeWhitespace} from '../../utils/regex';
+import {validateText} from '../../utils/regex';
 import duplicationCheckAPI from '../../actions/duplicationCheckAPI';
 import testGif from '../../resource/image/testGif.gif';
 
@@ -88,14 +88,18 @@ const NameScreen = ({navigation}) => {
               placeholder={'11자 내 작성 (공백, 특수문자 불가)'}
               placeholderTextColor={'D0D0D0'}
             />
-            <TouchableOpacity style={styles.inputBtn} onPress={handleRemove}>
-              <Text>X</Text>
+            <TouchableOpacity
+              style={styles.inputBtn}
+              activeOpacity={0.8}
+              onPress={handleRemove}>
+              <Text style={styles.inputBtnText}>X</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.inputBtn}
+              activeOpacity={0.8}
               onPress={duplicationCheck}
               disabled={disabled}>
-              <Text>중복확인</Text>
+              <Text style={styles.inputBtnText}>중복확인</Text>
             </TouchableOpacity>
           </View>
           <Text style={styles.errorText}>{checkTextError}</Text>
@@ -211,6 +215,16 @@ const styles = StyleSheet.create({
   errorText: {
     color: '#FF0000',
     marginTop: -10,
+  },
+  inputBtnText: {
+    color: '#000',
+    width: 60,
+    marginLeft: -10,
+    marginRight: -40,
+    height: 33,
+    marginTop: 6.5,
+    borderBottomWidth: 1.5,
+    fontSize: 16,
   },
 });
 
