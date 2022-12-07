@@ -221,27 +221,27 @@ const LookAll = ({navigation}) => {
 
         {/* 하단 탭바 */}
         <Shadow distance={3}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              backgroundColor: '#F3F3F3',
-              height: 55,
-              width: '100%',
-            }}>
+          <View style={commonStyles.bottomTabSheet}>
             <TouchableOpacity onPress={goHome}>
-              <Text style={{marginTop: 15}}>홈</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={goSet}>
-              <Text style={{marginTop: 15}}>작성</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={goLookAll}>
-              <Text style={{marginTop: 15, color: '#000', fontWeight: 'bold'}}>
-                루틴
+              <Text
+                style={[
+                  commonStyles.commonText,
+                  {
+                    marginTop: 15,
+                    marginLeft: 15,
+                  },
+                ]}>
+                홈
               </Text>
             </TouchableOpacity>
+            <TouchableOpacity onPress={goSet}>
+              <Text style={commonStyles.commonText}>작성</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={goLookAll}>
+              <Text style={commonStyles.selectText}>루틴</Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={goMyPage}>
-              <Text style={{marginTop: 15}}>마이페이지</Text>
+              <Text style={commonStyles.commonText}>마이페이지</Text>
             </TouchableOpacity>
           </View>
         </Shadow>

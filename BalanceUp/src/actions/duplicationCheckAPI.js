@@ -3,7 +3,7 @@
 const duplicationCheckAPI = async userName => {
   let return_value;
   await axios
-    .post('전송할 주소', {
+    .post('http://ec2-15-165-88-42.ap-northeast-2.compute.amazonaws.com:8080', {
       userName: userName,
     })
     .then(response => {

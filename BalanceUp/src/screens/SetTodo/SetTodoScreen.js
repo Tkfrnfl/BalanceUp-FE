@@ -12,6 +12,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
+import commonStyles from '../../css/commonStyles';
 
 import modalInnerStyles from '../../css/modalStyles';
 
@@ -203,27 +204,18 @@ const SetTodoScreen = ({navigation}) => {
       {/* 하단 탭바 */}
       <View style={{flex: 1, marginTop: 100}}>
         <Shadow distance={3}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              backgroundColor: '#F3F3F3',
-              height: 50,
-              width: '100%',
-            }}>
+          <View style={commonStyles.bottomTabSheet}>
             <TouchableOpacity onPress={goHome}>
-              <Text style={{marginTop: 15}}>홈</Text>
+              <Text style={commonStyles.commonText}>홈</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={goSet}>
-              <Text style={{marginTop: 15, color: '#000', fontWeight: 'bold'}}>
-                작성
-              </Text>
+              <Text style={commonStyles.selectText}>작성</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={goLookAll}>
-              <Text style={{marginTop: 15}}>루틴</Text>
+              <Text style={commonStyles.commonText}>루틴</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={goMyPage}>
-              <Text style={{marginTop: 15}}>마이페이지</Text>
+              <Text style={commonStyles.commonText}>마이페이지</Text>
             </TouchableOpacity>
           </View>
         </Shadow>

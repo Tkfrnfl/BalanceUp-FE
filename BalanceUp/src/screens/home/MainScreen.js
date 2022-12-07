@@ -171,114 +171,108 @@ const MainScreen = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{flex: 1}}>
-        <ScrollView style={styles.scrollview}>
-          <View style={styles.titleWrapper}>
-            <View style={commonStyles.spacing} />
-            <Text style={styles.title1}>KEYUM</Text>
-            <Text style={styles.mainText}>Lv.2</Text>
-            <Progress.Bar
-              progress={0.3}
-              width={200}
-              height={10}
-              color={'#626262'}
-              style={{marginRight: 30}}
-            />
-            <View style={commonStyles.spacing2} />
-            {/* <MainCarousel> 캐러셀 임시 구현</MainCarousel> */}
-          </View>
+      <ScrollView style={styles.scrollview}>
+        <View style={styles.titleWrapper}>
           <View style={commonStyles.spacing} />
-          <View style={commonStyles.spacing} />
-          <View style={commonStyles.spacing} />
-          <View>
-            <Text style={[commonStyles.boldText, styles.centering]}>
-              아직 완료하지 않은 루틴이 있어요!
-            </Text>
-            <View style={commonStyles.row}>
-              {todo.map((value, index) => (
-                <View style={styles.svg1}>
-                  <View style={styles.img1}>
-                    <Image source={KeyumIcon} style={styles.img2} />
-                  </View>
-                  <Svg height={100}>
-                    <Circle cx="48" cy="50" r="43" fill="#626262" />
-                    <SvgText
-                      x="28"
-                      y="55"
-                      text-anchor="middle"
-                      fill="white"
-                      style={styles.mainText2}
-                      key={index}>
-                      {value}
-                    </SvgText>
-                  </Svg>
-                </View>
-              ))}
-            </View>
-          </View>
+          <Text style={styles.title1}>KEYUM</Text>
+          <Text style={styles.mainText}>Lv.2</Text>
+          <Progress.Bar
+            progress={0.3}
+            width={200}
+            height={10}
+            color={'#626262'}
+          />
           <View style={commonStyles.spacing2} />
-          <View style={[commonStyles.row]}>
-            <Text
-              style={[
-                commonStyles.boldText,
-                styles.centering,
-                styles.mainText4,
-              ]}>
-              이번 주 루틴 기록이에요
-            </Text>
-            <TouchableOpacity
-              style={styles.button2}
-              onPress={() => navigation.push('LookAll')}>
-              <Text>전체보기 </Text>
-            </TouchableOpacity>
-          </View>
-          <CalendarProvider
-            // todayButtonStyle={buttonStyle}
-            // style={styles.button2}
-            // theme={theme}
-            date={fomatToday}>
-            <ExpandableCalendar
-              monthFormat={'yyyy년 MM월'}
-              leftArrowImageSource=""
-              rightArrowImageSource=""
-              allowShadow={false}
-              markedDates={markedSelectedDates}
-              theme={{
-                selectedDayBackgroundColor: '#626262',
-                dotColor: '#626262',
-                todayTextColor: '#009688',
-              }}
-              onDayPress={day => {
-                setSelectedDate(day.dateString);
-              }}
-              // onDayPress={day => this.setState({selected_date: day.dateString})}
-            />
-          </CalendarProvider>
-          <View style={commonStyles.spacing2} />
-          <View>
-            {todoTmp.map((value, index) => (
-              <View style={commonStyles.row}>
+          {/* <MainCarousel> 캐러셀 임시 구현</MainCarousel> */}
+        </View>
+        <View style={commonStyles.spacing} />
+        <View style={commonStyles.spacing} />
+        <View style={commonStyles.spacing} />
+        <View>
+          <Text style={[commonStyles.boldText, styles.centering]}>
+            아직 완료하지 않은 루틴이 있어요!
+          </Text>
+          <View style={commonStyles.row}>
+            {todo.map((value, index) => (
+              <View style={styles.svg1}>
                 <View style={styles.img1}>
                   <Image source={KeyumIcon} style={styles.img2} />
                 </View>
-                <View style={styles.aimText1}>
-                  <Text style={commonStyles.boldText}>item1</Text>
-                  <Text>{todoTmpSub[index]}</Text>
-                </View>
-
-                <Svg height={80} style={styles.svg2}>
-                  <Circle cx="30" cy="30" r="25" fill="#626262" />
+                <Svg height={100}>
+                  <Circle cx="48" cy="50" r="43" fill="#626262" />
                   <SvgText
-                    x="15"
-                    y="35"
+                    x="28"
+                    y="55"
                     text-anchor="middle"
                     fill="white"
-                    style={styles.mainText2}>
-                    test
+                    style={styles.mainText2}
+                    key={index}>
+                    {value}
                   </SvgText>
                 </Svg>
+              </View>
+            ))}
+          </View>
+        </View>
+        <View style={commonStyles.spacing2} />
+        <View style={[commonStyles.row]}>
+          <Text
+            style={[commonStyles.boldText, styles.centering, styles.mainText4]}>
+            이번 주 루틴 기록이에요
+          </Text>
+          <TouchableOpacity
+            style={styles.button2}
+            onPress={() => navigation.push('LookAll')}>
+            <Text>전체보기 </Text>
+          </TouchableOpacity>
+        </View>
+        <CalendarProvider
+          // todayButtonStyle={buttonStyle}
+          // style={styles.button2}
+          // theme={theme}
+          date={fomatToday}>
+          <ExpandableCalendar
+            monthFormat={'yyyy년 MM월'}
+            leftArrowImageSource=""
+            rightArrowImageSource=""
+            allowShadow={false}
+            markedDates={markedSelectedDates}
+            theme={{
+              selectedDayBackgroundColor: '#626262',
+              dotColor: '#626262',
+              todayTextColor: '#009688',
+            }}
+            onDayPress={day => {
+              setSelectedDate(day.dateString);
+            }}
+            // onDayPress={day => this.setState({selected_date: day.dateString})}
+          />
+        </CalendarProvider>
+        <View style={commonStyles.spacing2} />
+        <View>
+          {todoTmp.map((value, index) => (
+            <View style={commonStyles.row}>
+              <View style={styles.img1}>
+                <Image source={KeyumIcon} style={styles.img2} />
+              </View>
+              <View style={styles.aimText1}>
+                <Text style={commonStyles.boldText}>item1</Text>
+                <Text>{todoTmpSub[index]}</Text>
+              </View>
 
-                {/* <ProgressCircle
+              <Svg height={80} style={styles.svg2}>
+                <Circle cx="30" cy="30" r="25" fill="#626262" />
+                <SvgText
+                  x="15"
+                  y="35"
+                  text-anchor="middle"
+                  fill="white"
+                  style={styles.mainText2}>
+                  test
+                </SvgText>
+              </Svg>
+
+              {/* <ProgressCircle
             percent={30}
             radius={50}
             borderWidth={8}
@@ -287,43 +281,37 @@ const MainScreen = ({navigation, route}) => {
             bgColor="#fff">
             <Text style={{fontSize: 18}}>{'30%'}</Text>
           </ProgressCircle> */}
-              </View>
-            ))}
-          </View>
-          <View style={commonStyles.spacing}>
-            <Text> </Text>
-          </View>
-        </ScrollView>
-
+            </View>
+          ))}
+        </View>
+        <View style={commonStyles.spacing}>
+          <Text> </Text>
+        </View>
+      </ScrollView>
+      <View>
         {/* 하단 탭바 */}
         <Shadow distance={3}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              backgroundColor: '#F3F3F3',
-              height: 55,
-              width: '100%',
-            }}>
+          <View style={commonStyles.bottomTabSheet}>
             <TouchableOpacity>
               <Text
-                style={{
-                  marginTop: 15,
-                  marginLeft: 15,
-                  color: '#000',
-                  fontWeight: 'bold',
-                }}>
+                style={[
+                  commonStyles.selectText,
+                  {
+                    marginTop: 15,
+                    marginLeft: 15,
+                  },
+                ]}>
                 홈
               </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={goSet}>
-              <Text style={{marginTop: 15}}>작성</Text>
+              <Text style={commonStyles.commonText}>작성</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={goLookAll}>
-              <Text style={{marginTop: 15}}>루틴</Text>
+              <Text style={commonStyles.commonText}>루틴</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={goMyPage}>
-              <Text style={{marginTop: 15, marginRight: 15}}>마이페이지</Text>
+              <Text style={commonStyles.commonText}>마이페이지</Text>
             </TouchableOpacity>
           </View>
         </Shadow>
@@ -346,7 +334,6 @@ const styles = StyleSheet.create({
   },
   title1: {
     fontSize: 65,
-    marginRight: 30,
   },
   title2: {
     fontSize: 40,
@@ -367,7 +354,6 @@ const styles = StyleSheet.create({
   },
   scrollview: {
     width: '100%',
-    marginLeft: 30,
   },
   aimText1: {
     paddingLeft: 50,
@@ -375,7 +361,6 @@ const styles = StyleSheet.create({
   },
   mainText: {
     fontSize: 20,
-    marginRight: 30,
   },
   mainText2: {
     fontSize: 20,
