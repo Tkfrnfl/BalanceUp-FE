@@ -24,7 +24,7 @@ export function MainRouter() {
           name="LookAll"
           component={LookAll}
           options={{headerShown: false}}
-          />
+        />
         <MainStack.Screen
           name="Set"
           component={SetTodoScreen}

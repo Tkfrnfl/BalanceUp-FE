@@ -20,9 +20,9 @@ const commonStyles = StyleSheet.create({
     marginTop: 60,
     marginBottom: 40,
   },
-  rowSpacing:{
-    width:100,
-  }
+  rowSpacing: {
+    width: 100,
+  },
 });
 
 export default commonStyles;

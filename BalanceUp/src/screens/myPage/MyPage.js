@@ -142,6 +142,20 @@ const MyPage = ({navigation}) => {
     navigation.navigate('Login');
   };
 
+  // 하단 탭바 네이게이션
+  const goHome = () => {
+    navigation.navigate('Main');
+  };
+  const goSet = () => {
+    navigation.navigate('Set');
+  };
+  const goLookAll = () => {
+    navigation.navigate('LookAll');
+  };
+  const goMyPage = () => {
+    navigation.navigate('MyPage');
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
@@ -179,6 +193,36 @@ const MyPage = ({navigation}) => {
           <TouchableOpacity onPress={goWithdrawal}>
             <Text style={styles.withdrawalText}>회원탈퇴</Text>
           </TouchableOpacity>
+        </View>
+
+        {/* 하단 탭바 */}
+        <View style={{flex: 1, marginTop: 25}}>
+          <Shadow distance={3}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+                backgroundColor: '#F3F3F3',
+                height: 50,
+                width: '100%',
+              }}>
+              <TouchableOpacity onPress={goHome}>
+                <Text style={{marginTop: 15}}>홈</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={goSet}>
+                <Text style={{marginTop: 15}}>작성</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={goLookAll}>
+                <Text style={{marginTop: 15}}>루틴</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={goMyPage}>
+                <Text
+                  style={{marginTop: 15, color: '#000', fontWeight: 'bold'}}>
+                  마이페이지
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Shadow>
         </View>
 
         {/* 닉네임 구현 코드 */}
@@ -234,6 +278,7 @@ const MyPage = ({navigation}) => {
                   </View>
                   <View style={modalInnerStyles.modalFlex}>
                     <TouchableOpacity
+                      disabled={disabled}
                       style={[
                         modalInnerStyles.saveBtn,
                         {backgroundColor: disabled ? '#979797' : '#6D81FA'},
@@ -341,7 +386,7 @@ const styles = StyleSheet.create({
   withdrawalText: {
     borderBottomWidth: 1,
     borderBottomColor: '#606060',
-    marginTop: 80,
+    marginTop: 50,
     color: '#606060',
   },
   verText: {
