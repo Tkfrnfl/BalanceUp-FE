@@ -133,14 +133,15 @@ const MyPage = ({navigation}) => {
   const goBack = () => {
     navigation.navigate('Main');
   };
-
   const goWithdrawal = () => {
     navigation.navigate('Withdrawal');
   };
-
   const goLogout = () => {
     setLogoutModalVisible(false);
     navigation.navigate('Login');
+  };
+  const goNotice = () => {
+    navigation.navigate('Notice');
   };
 
   // 하단 탭바 네이게이션
@@ -177,6 +178,16 @@ const MyPage = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </Shadow>
+        <View style={{marginTop: 10}}>
+          <Shadow distance={5}>
+            <View style={styles.nameSheet}>
+              <Text style={styles.nameText}>공지사항</Text>
+              <TouchableOpacity onPress={goNotice}>
+                <Text style={styles.logoutBtnStyle}>➡️</Text>
+              </TouchableOpacity>
+            </View>
+          </Shadow>
+        </View>
         <View style={{marginTop: 10}}>
           <Shadow distance={5}>
             <View style={styles.nameSheet}>
