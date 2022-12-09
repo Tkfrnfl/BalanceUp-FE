@@ -50,7 +50,7 @@ const NameScreen = ({navigation}) => {
     }
   };
 
-  // 중복 확인 부분 임시 구현
+  // 중복 확인 구현
   const duplicationCheck = () => {
     duplicationCheckAPI(userName).then(response => {
       if (response === true) {
