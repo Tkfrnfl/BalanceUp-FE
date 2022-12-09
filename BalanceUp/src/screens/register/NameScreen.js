@@ -19,43 +19,44 @@ import testGif from '../../resource/image/testGif.gif';
 const NameScreen = ({navigation}) => {
   const [userName, setUserName] = useState('');
   const [checkTextError, setCheckTextError] = useState('');
-  const [disabled, setDisabled] = useState(false);
-  const [usableId, setUsableId] = useState(false);
+  const [checkTextPass, setCheckTextPass] = useState('');
+  const [checkDisabled, setCheckDisabled] = useState(true);
+  const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
-    setDisabled(!(userName && !checkTextError));
+    setDisabled(!checkTextPass);
+  }, [checkTextPass]);
+
+  useEffect(() => {
+    setCheckDisabled(!(userName && !checkTextError));
   }, [userName, checkTextError]);
 
   const handleTextChange = userName => {
-    // const changedText = removeWhitespace(userName); // 이 코드 사용할경우 공백 제거 가능(아예 막는거)
-    const changedText = validateText(userName);
-    setUserName(changedText);
+    setUserName(userName);
     setCheckTextError(
       validateText(userName)
         ? ''
         : '닉네임에 특수문자 및 공백을 포함 할 수 없어요',
     );
+    setCheckTextPass(validateText(userName) ? '' : null);
 
     // 글자수 제한
     if (userName.length >= 11) {
-      setCheckTextError('11글자 이하 사용 불가능합니다.');
+      setCheckTextError('11글자 이하 사용 불가능합니다');
     } else if (userName.length === 0) {
       setUserName('');
       setCheckTextError('');
+      setCheckTextPass('');
     }
   };
 
   // 중복 확인 부분 임시 구현
   const duplicationCheck = () => {
     duplicationCheckAPI(userName).then(response => {
-      console.log(response);
-      if (response === false) {
-        // [response = false] -> 아이디가 중복되지 않음
-        alert('사용 가능한 아이디입니다.');
-        setUsableId(response);
+      if (response === true) {
+        setCheckTextPass('사용 가능한 닉네임입니다');
       } else {
-        alert('중복된 아이디입니다. 다시 시도하세요.');
-        setUsableId(response);
+        setCheckTextError('이미 존재하는 닉네임입니다');
       }
     });
   };
@@ -63,6 +64,7 @@ const NameScreen = ({navigation}) => {
   const handleRemove = () => {
     setUserName('');
     setCheckTextError('');
+    setCheckTextPass('');
   };
 
   const goAgree = () => {
@@ -98,11 +100,12 @@ const NameScreen = ({navigation}) => {
               style={styles.inputBtn}
               activeOpacity={0.8}
               onPress={duplicationCheck}
-              disabled={disabled}>
+              disabled={checkDisabled}>
               <Text style={styles.inputBtnText}>중복확인</Text>
             </TouchableOpacity>
           </View>
           <Text style={styles.errorText}>{checkTextError}</Text>
+          <Text style={styles.passText}>{checkTextPass}</Text>
         </View>
         <View style={styles.gifView}>
           <FastImage // 캐릭터 GIF 예정
@@ -215,6 +218,10 @@ const styles = StyleSheet.create({
   errorText: {
     color: '#FF0000',
     marginTop: -10,
+  },
+  passText: {
+    color: 'green',
+    marginTop: -20,
   },
   inputBtnText: {
     color: '#000',
