@@ -33,8 +33,6 @@ export default function OnBoarding({navigation}) {
         dot={<View style={styles.dotStyle} />}
         activeDot={<View style={styles.activeDotStyle} />}
         loop={false}
-        nextButton={<Text>Next</Text>} // 임시 버튼
-        prevButton={<Text>prev</Text>} // 임시 버튼
         showsButtons={true}>
         <View style={styles.slide}>
           <View style={styles.imgView}>

@@ -7,8 +7,6 @@ import {
   SafeAreaView,
   Image,
   ScrollView,
-  ViewStyle,
-  Button,
 } from 'react-native';
 import commonStyles from '../../css/commonStyles';
 import ProgressCircle from 'react-native-progress-circle';
@@ -17,6 +15,7 @@ import ProgressCircle from 'react-native-progress-circle';
 import {Theme} from '../../utils/theme';
 import {MarkingProps} from '../../utils/MarkingProps';
 import moment from 'moment';
+import {Shadow} from 'react-native-shadow-2';
 import {format} from 'date-fns';
 import * as Progress from 'react-native-progress';
 import KeyumIcon from '../../resource/image/KeyumEmoticon.png';
@@ -155,10 +154,18 @@ const MainScreen = ({navigation, route}) => {
       marked: markedDates[selectedDate]?.marked,
     },
   };
-  const onSet = () => {
+
+  // 하단 탭바 네이게이션
+  const goHome = () => {
+    navigation.navigate('Main');
+  };
+  const goSet = () => {
     navigation.navigate('Set');
   };
-  const onMyPage = () => {
+  const goLookAll = () => {
+    navigation.navigate('LookAll');
+  };
+  const goMyPage = () => {
     navigation.navigate('MyPage');
   };
 
@@ -216,7 +223,7 @@ const MainScreen = ({navigation, route}) => {
           <TouchableOpacity
             style={styles.button2}
             onPress={() => navigation.push('LookAll')}>
-            <Text>전체보기 ></Text>
+            <Text>전체보기 </Text>
           </TouchableOpacity>
         </View>
         <CalendarProvider
@@ -241,7 +248,6 @@ const MainScreen = ({navigation, route}) => {
             // onDayPress={day => this.setState({selected_date: day.dateString})}
           />
         </CalendarProvider>
-
         <View style={commonStyles.spacing2} />
         <View>
           {todoTmp.map((value, index) => (
@@ -281,38 +287,35 @@ const MainScreen = ({navigation, route}) => {
         <View style={commonStyles.spacing}>
           <Text> </Text>
         </View>
-
-        {/* 루틴 설정 이동 버튼 **임시** */}
-        <View style={{alignItems: 'center'}}>
-          <TouchableOpacity
-            style={{
-              width: '70%',
-              alignItems: 'center',
-              backgroundColor: '#b779ed',
-              marginBottom: 10,
-            }}
-            onPress={onSet}>
-            <Text style={{color: '#fff', fontSize: 20}}>
-              루틴 설정하기(임시 구현)
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* 마이페이지 이동 버튼 **임시** */}
-        <View style={{alignItems: 'center'}}>
-          <TouchableOpacity
-            style={{
-              width: '70%',
-              alignItems: 'center',
-              backgroundColor: '#b779ed',
-            }}
-            onPress={onMyPage}>
-            <Text style={{color: '#fff', fontSize: 20}}>
-              마이페이지(임시 구현)
-            </Text>
-          </TouchableOpacity>
-        </View>
       </ScrollView>
+      <View>
+        {/* 하단 탭바 */}
+        <Shadow distance={3}>
+          <View style={commonStyles.bottomTabSheet}>
+            <TouchableOpacity>
+              <Text
+                style={[
+                  commonStyles.selectText,
+                  {
+                    marginTop: 15,
+                    marginLeft: 15,
+                  },
+                ]}>
+                홈
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={goSet}>
+              <Text style={commonStyles.commonText}>작성</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={goLookAll}>
+              <Text style={commonStyles.commonText}>루틴</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={goMyPage}>
+              <Text style={commonStyles.commonText}>마이페이지</Text>
+            </TouchableOpacity>
+          </View>
+        </Shadow>
+      </View>
     </SafeAreaView>
   );
 };

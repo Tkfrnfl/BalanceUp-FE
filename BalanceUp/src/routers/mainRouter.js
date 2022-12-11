@@ -8,6 +8,7 @@ import SetPlanScreen from '../screens/SetTodo/SetPlanScreen';
 import MyPage from '../screens/myPage/MyPage';
 import Withdrawal from '../screens/myPage/Withdrawal';
 import Login from '../screens/Login/Login';
+import Notice from '../screens/myPage/Notice';
 
 const MainStack = createStackNavigator();
 
@@ -24,7 +25,7 @@ export function MainRouter() {
           name="LookAll"
           component={LookAll}
           options={{headerShown: false}}
-          />
+        />
         <MainStack.Screen
           name="Set"
           component={SetTodoScreen}
@@ -48,6 +49,11 @@ export function MainRouter() {
         <MainStack.Screen
           name="Login"
           component={Login}
+          options={{headerShown: false}}
+        />
+        <MainStack.Screen
+          name="Notice"
+          component={Notice}
           options={{headerShown: false}}
         />
       </MainStack.Navigator>

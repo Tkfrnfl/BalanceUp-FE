@@ -20,12 +20,14 @@ import KeyumTypo from '../../resource/image/KeyumLOGOTYPO_1.png';
 import modalInnerStyles from '../../css/modalStyles';
 import duplicationCheckAPI from '../../actions/duplicationCheckAPI';
 import {validateText} from '../../utils/regex';
+import commonStyles from '../../css/commonStyles';
 
 const MyPage = ({navigation}) => {
   const [userName, setUserName] = useState('');
   const [checkTextError, setCheckTextError] = useState('');
-  const [disabled, setDisabled] = useState(false);
-  const [usableId, setUsableId] = useState(false);
+  const [checkTextPass, setCheckTextPass] = useState('');
+  const [checkDisabled, setCheckDisabled] = useState(true);
+  const [disabled, setDisabled] = useState(true);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
@@ -86,39 +88,39 @@ const MyPage = ({navigation}) => {
 
   // Text Input 기능
   useEffect(() => {
-    setDisabled(!(userName && !checkTextError));
+    setDisabled(!checkTextPass);
+  }, [checkTextPass]);
+
+  useEffect(() => {
+    setCheckDisabled(!(userName && !checkTextError));
   }, [userName, checkTextError]);
 
   const handleTextChange = userName => {
-    // const changedText = removeWhitespace(userName); // 이 코드 사용할경우 공백 제거 가능(아예 막는거)
-    const changedText = validateText(userName);
-    setUserName(changedText);
+    setUserName(userName);
     setCheckTextError(
       validateText(userName)
         ? ''
         : '닉네임에 특수문자 및 공백을 포함 할 수 없어요',
     );
+    setCheckTextPass(validateText(userName) ? '' : null);
 
     // 글자수 제한
     if (userName.length >= 11) {
-      setCheckTextError('11글자 이하 사용 불가능합니다.');
+      setCheckTextError('11글자 이하 사용 불가능합니다');
     } else if (userName.length === 0) {
       setUserName('');
       setCheckTextError('');
+      setCheckTextPass('');
     }
   };
 
-  // 중복 확인 부분 임시 구현
+  // 중복 확인 구현
   const duplicationCheck = () => {
     duplicationCheckAPI(userName).then(response => {
-      console.log(response);
-      if (response === false) {
-        // [response = false] -> 아이디가 중복되지 않음
-        alert('사용 가능한 아이디입니다.');
-        setUsableId(response);
+      if (response === true) {
+        setCheckTextPass('사용 가능한 닉네임입니다');
       } else {
-        alert('중복된 아이디입니다. 다시 시도하세요.');
-        setUsableId(response);
+        setCheckTextError('이미 존재하는 닉네임입니다');
       }
     });
   };
@@ -126,20 +128,36 @@ const MyPage = ({navigation}) => {
   const handleRemove = () => {
     setUserName('');
     setCheckTextError('');
+    setCheckTextPass('');
   };
 
   // 네이게이션 구현
   const goBack = () => {
     navigation.navigate('Main');
   };
-
   const goWithdrawal = () => {
     navigation.navigate('Withdrawal');
   };
-
   const goLogout = () => {
     setLogoutModalVisible(false);
     navigation.navigate('Login');
+  };
+  const goNotice = () => {
+    navigation.navigate('Notice');
+  };
+
+  // 하단 탭바 네이게이션
+  const goHome = () => {
+    navigation.navigate('Main');
+  };
+  const goSet = () => {
+    navigation.navigate('Set');
+  };
+  const goLookAll = () => {
+    navigation.navigate('LookAll');
+  };
+  const goMyPage = () => {
+    navigation.navigate('MyPage');
   };
 
   return (
@@ -165,6 +183,16 @@ const MyPage = ({navigation}) => {
         <View style={{marginTop: 10}}>
           <Shadow distance={5}>
             <View style={styles.nameSheet}>
+              <Text style={styles.nameText}>공지사항</Text>
+              <TouchableOpacity onPress={goNotice}>
+                <Text style={styles.logoutBtnStyle}>➡️</Text>
+              </TouchableOpacity>
+            </View>
+          </Shadow>
+        </View>
+        <View style={{marginTop: 10}}>
+          <Shadow distance={5}>
+            <View style={styles.nameSheet}>
               <Text style={styles.nameText}>로그아웃</Text>
               <TouchableOpacity
                 onPress={() => setLogoutModalVisible(!logoutModalVisible)}>
@@ -179,6 +207,26 @@ const MyPage = ({navigation}) => {
           <TouchableOpacity onPress={goWithdrawal}>
             <Text style={styles.withdrawalText}>회원탈퇴</Text>
           </TouchableOpacity>
+        </View>
+
+        {/* 하단 탭바 */}
+        <View style={{flex: 1, marginTop: 40}}>
+          <Shadow distance={3}>
+            <View style={commonStyles.bottomTabSheet}>
+              <TouchableOpacity onPress={goHome}>
+                <Text style={commonStyles.commonText}>홈</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={goSet}>
+                <Text style={commonStyles.commonText}>작성</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={goLookAll}>
+                <Text style={commonStyles.commonText}>루틴</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={goMyPage}>
+                <Text style={commonStyles.selectText}>마이페이지</Text>
+              </TouchableOpacity>
+            </View>
+          </Shadow>
         </View>
 
         {/* 닉네임 구현 코드 */}
@@ -226,14 +274,16 @@ const MyPage = ({navigation}) => {
                         style={styles.inputBtn}
                         onPress={duplicationCheck}
                         activeOpacity={0.8}
-                        disabled={disabled}>
+                        disabled={checkDisabled}>
                         <Text style={styles.inputBtnText}>중복확인</Text>
                       </TouchableOpacity>
                     </View>
                     <Text style={styles.errorText}>{checkTextError}</Text>
+                    <Text style={styles.passText}>{checkTextPass}</Text>
                   </View>
                   <View style={modalInnerStyles.modalFlex}>
                     <TouchableOpacity
+                      disabled={disabled}
                       style={[
                         modalInnerStyles.saveBtn,
                         {backgroundColor: disabled ? '#979797' : '#6D81FA'},
@@ -341,7 +391,7 @@ const styles = StyleSheet.create({
   withdrawalText: {
     borderBottomWidth: 1,
     borderBottomColor: '#606060',
-    marginTop: 80,
+    marginTop: 50,
     color: '#606060',
   },
   verText: {
@@ -350,7 +400,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   typoSheet: {
-    marginTop: 230,
+    marginTop: 150,
     alignItems: 'center',
   },
   inputWrapper: {
@@ -368,6 +418,10 @@ const styles = StyleSheet.create({
   errorText: {
     color: '#FF0000',
     marginTop: -10,
+  },
+  passText: {
+    color: 'green',
+    marginTop: -20,
   },
   inputBtnText: {
     color: '#000',

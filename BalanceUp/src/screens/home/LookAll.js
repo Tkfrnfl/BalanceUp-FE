@@ -51,6 +51,7 @@ import {
   CalendarProvider,
 } from 'react-native-calendars';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
+import {Shadow} from 'react-native-shadow-2';
 import Progress from './Progress';
 import Complete from './Complete';
 
@@ -148,60 +149,103 @@ const LookAll = ({navigation}) => {
   const fomatToday =
     year.toString() + '-' + month.toString() + '-' + date.toString();
 
+  // 하단 탭바 네이게이션
+  const goHome = () => {
+    navigation.navigate('Main');
+  };
+  const goSet = () => {
+    navigation.navigate('Set');
+  };
+  const goLookAll = () => {
+    navigation.navigate('LookAll');
+  };
+  const goMyPage = () => {
+    navigation.navigate('MyPage');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollview}>
-        <View style={styles.titleWrapper}>
-          <View style={commonStyles.spacing} />
-          <Text style={styles.title2}>루틴</Text>
-        </View>
-        <View style={commonStyles.spacing2} />
+      <View style={{flex: 1}}>
+        <ScrollView style={styles.scrollview}>
+          <View style={styles.titleWrapper}>
+            <View style={commonStyles.spacing} />
+            <Text style={styles.title2}>루틴</Text>
+          </View>
+          <View style={commonStyles.spacing2} />
 
-        <Calendar
-          date={fomatToday}
-          monthFormat={'yyyy년 MM월'}
-          leftArrowImageSource=""
-          rightArrowImageSource=""
-          allowShadow={false}
-          markedDates={markedSelectedDates}
-          theme={{
-            selectedDayBackgroundColor: '#626262',
-            dotColor: '#626262',
-            todayTextColor: '#009688',
-          }}
-          onDayPress={day => {
-            setSelectedDate(day.dateString);
-          }}
-          // onDayPress={day => this.setState({selected_date: day.dateString})}
-        />
-        <View style={commonStyles.spacing2} />
-        <TabView
-          style={styles.tabview}
-          navigationState={{index, routes}}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          initialLayout={{width: layout.width}}
-          renderTabBar={props => (
-            <TabBar
-              {...props}
-              activeColor="black"
-              inactiveColor="gray"
-              indicatorStyle={{
-                backgroundColor: 'black',
-                width: 70,
-                alignItems: 'center',
-                marginHorizontal: 65,
-                borderWidth: 2,
-              }}
-              style={{
-                backgroundColor: 'white',
-                shadowColor: 'transparent',
-                shadowOpacity: 0,
-              }}
-            />
-          )}
-        />
-      </ScrollView>
+          <Calendar
+            date={fomatToday}
+            monthFormat={'yyyy년 MM월'}
+            leftArrowImageSource=""
+            rightArrowImageSource=""
+            allowShadow={false}
+            markedDates={markedSelectedDates}
+            theme={{
+              selectedDayBackgroundColor: '#626262',
+              dotColor: '#626262',
+              todayTextColor: '#009688',
+            }}
+            onDayPress={day => {
+              setSelectedDate(day.dateString);
+            }}
+            // onDayPress={day => this.setState({selected_date: day.dateString})}
+          />
+          <View style={commonStyles.spacing2} />
+          <TabView
+            style={styles.tabview}
+            navigationState={{index, routes}}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+            initialLayout={{width: layout.width}}
+            renderTabBar={props => (
+              <TabBar
+                {...props}
+                activeColor="black"
+                inactiveColor="gray"
+                indicatorStyle={{
+                  backgroundColor: 'black',
+                  width: 70,
+                  alignItems: 'center',
+                  marginHorizontal: 65,
+                  borderWidth: 2,
+                }}
+                style={{
+                  backgroundColor: 'white',
+                  shadowColor: 'transparent',
+                  shadowOpacity: 0,
+                }}
+              />
+            )}
+          />
+        </ScrollView>
+
+        {/* 하단 탭바 */}
+        <Shadow distance={3}>
+          <View style={commonStyles.bottomTabSheet}>
+            <TouchableOpacity onPress={goHome}>
+              <Text
+                style={[
+                  commonStyles.commonText,
+                  {
+                    marginTop: 15,
+                    marginLeft: 15,
+                  },
+                ]}>
+                홈
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={goSet}>
+              <Text style={commonStyles.commonText}>작성</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={goLookAll}>
+              <Text style={commonStyles.selectText}>루틴</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={goMyPage}>
+              <Text style={commonStyles.commonText}>마이페이지</Text>
+            </TouchableOpacity>
+          </View>
+        </Shadow>
+      </View>
     </SafeAreaView>
   );
 };
@@ -239,7 +283,8 @@ const styles = StyleSheet.create({
     fontSize: 25,
   },
   scrollview: {
-    width: '100%',
+    marginLeft: 20,
+    width: 390,
   },
   mainText: {
     fontSize: 20,

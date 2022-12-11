@@ -20,9 +20,24 @@ const commonStyles = StyleSheet.create({
     marginTop: 60,
     marginBottom: 40,
   },
-  rowSpacing:{
-    width:100,
-  }
+  rowSpacing: {
+    width: 100,
+  },
+  bottomTabSheet: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: '#F3F3F3',
+    height: 55,
+    width: '100%',
+  },
+  commonText: {
+    marginTop: 15,
+  },
+  selectText: {
+    marginTop: 15,
+    color: '#000',
+    fontWeight: 'bold',
+  },
 });
 
 export default commonStyles;

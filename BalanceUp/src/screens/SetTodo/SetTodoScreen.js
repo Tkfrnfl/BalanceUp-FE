@@ -11,6 +11,8 @@ import {
   PanResponder,
   TouchableWithoutFeedback,
 } from 'react-native';
+import {Shadow} from 'react-native-shadow-2';
+import commonStyles from '../../css/commonStyles';
 
 import modalInnerStyles from '../../css/modalStyles';
 
@@ -88,6 +90,20 @@ const SetTodoScreen = ({navigation}) => {
     navigation.navigate('Plan', {planText: plan.carePlan});
   };
 
+  // 하단 탭바 네이게이션
+  const goHome = () => {
+    navigation.navigate('Main');
+  };
+  const goSet = () => {
+    navigation.navigate('Set');
+  };
+  const goLookAll = () => {
+    navigation.navigate('LookAll');
+  };
+  const goMyPage = () => {
+    navigation.navigate('MyPage');
+  };
+
   const TodoData = [
     {
       id: 1,
@@ -125,7 +141,6 @@ const SetTodoScreen = ({navigation}) => {
           내가 키울 루틴의 {'\n'}카테고리가 무엇인가요?
         </Text>
       </View>
-
       {/* 루틴 설정 */}
       <View style={styles.bntSheet}>
         <TouchableOpacity style={styles.todoBtn} onPress={goSportPlan}>
@@ -147,7 +162,6 @@ const SetTodoScreen = ({navigation}) => {
           <Text style={styles.todoSubText}>{TodoData[3].subTitle}</Text>
         </TouchableOpacity>
       </View>
-
       {/* 모달 구현 코드 */}
       <Modal
         visible={isModalVisible}
@@ -186,6 +200,26 @@ const SetTodoScreen = ({navigation}) => {
           </TouchableWithoutFeedback>
         </Pressable>
       </Modal>
+
+      {/* 하단 탭바 */}
+      <View style={{flex: 1, marginTop: 100}}>
+        <Shadow distance={3}>
+          <View style={commonStyles.bottomTabSheet}>
+            <TouchableOpacity onPress={goHome}>
+              <Text style={commonStyles.commonText}>홈</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={goSet}>
+              <Text style={commonStyles.selectText}>작성</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={goLookAll}>
+              <Text style={commonStyles.commonText}>루틴</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={goMyPage}>
+              <Text style={commonStyles.commonText}>마이페이지</Text>
+            </TouchableOpacity>
+          </View>
+        </Shadow>
+      </View>
     </View>
   );
 };
