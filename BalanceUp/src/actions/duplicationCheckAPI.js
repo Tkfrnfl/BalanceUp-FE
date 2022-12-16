@@ -11,15 +11,11 @@ const duplicationCheckAPI = async userName => {
     )
     .then(response => {
       console.log(response.data);
-      // 테스트를 위해 임의로 true로 설정해둔 코드
       return_value = true;
-
-      // 정상적 코드
-      // return_value = response.data;
     })
     .catch(function (error) {
       console.log(error);
-      return_value = true;
+      return_value = false;
     });
   return return_value;
 };
