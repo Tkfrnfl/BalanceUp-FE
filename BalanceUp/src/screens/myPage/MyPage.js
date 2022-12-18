@@ -18,9 +18,9 @@ import {
 import {Shadow} from 'react-native-shadow-2';
 import KeyumTypo from '../../resource/image/KeyumLOGOTYPO_1.png';
 import modalInnerStyles from '../../css/modalStyles';
-import duplicationCheckAPI from '../../actions/duplicationCheckAPI';
 import {validateText} from '../../utils/regex';
 import commonStyles from '../../css/commonStyles';
+import ChangeNameAPI from '../../actions/ChangeNameAPI';
 
 const MyPage = ({navigation}) => {
   const [userName, setUserName] = useState('');
@@ -114,9 +114,9 @@ const MyPage = ({navigation}) => {
     }
   };
 
-  // 중복 확인 구현
-  const duplicationCheck = () => {
-    duplicationCheckAPI(userName).then(response => {
+  // 닉네임 변경 구현
+  const handleChangeName = () => {
+    ChangeNameAPI(userName).then(response => {
       if (response === true) {
         setCheckTextPass('사용 가능한 닉네임입니다');
       } else {
@@ -272,7 +272,7 @@ const MyPage = ({navigation}) => {
                       </TouchableOpacity>
                       <TouchableOpacity
                         style={styles.inputBtn}
-                        onPress={duplicationCheck}
+                        onPress={handleChangeName}
                         activeOpacity={0.8}
                         disabled={checkDisabled}>
                         <Text style={styles.inputBtnText}>중복확인</Text>
