@@ -18,6 +18,7 @@ import {
   login,
   logout,
   unlink,
+  loginWithKakaoAccount,
 } from '@react-native-seoul/kakao-login';
 import {
   GoogleSignin,
@@ -25,15 +26,18 @@ import {
 } from '@react-native-google-signin/google-signin';
 import FastImage from 'react-native-fast-image';
 import auth from '@react-native-firebase/auth';
+import {loginKakao} from '../../actions/memberJoinApi';
+import {userNameState} from '../../recoil/atom';
+import {
+  useRecoilState,
+  useRecoilValue,
+  useSetRecoilState,
+  useResetRecoilState,
+} from 'recoil';
 
 import KeyumTypo from '../../resource/image/KeyumLOGOTYPO_1.png';
 import testGif from '../../resource/image/testGif.gif';
-
-const signInWithKakao = async (): Promise<void> => {
-  const token: KakaoOAuthToken = await login();
-
-  console.log(JSON.stringify(token));
-};
+import {response} from 'express/lib/express';
 
 // const naverLogin = async (): Promise<void> => {
 //   console.log('dd');
@@ -45,12 +49,6 @@ const googleSigninConfigure = () => {
     webClientId:
       '702679288927-s3riqhj1pv7uvc4vlnhp5o8823mqjpkh.apps.googleusercontent.com',
   });
-};
-
-const onGoogleButtonPress = async () => {
-  const {idToken} = await GoogleSignin.signIn();
-  const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-  return auth().signInWithCredential(googleCredential);
 };
 
 const signOutWithKakao = async (): Promise<void> => {
@@ -81,6 +79,36 @@ export default function Login({navigation}) {
   React.useEffect(() => {
     googleSigninConfigure();
   });
+ // const [login, setLoginState] = React.useState(0);
+ const [userName, setUserName] = useRecoilState(userNameState);
+
+  const signInWithKakao = async (): Promise<void> => {
+    const token: KakaoOAuthToken = await loginWithKakaoAccount();
+
+    console.log(token.accessToken);
+    let res;
+    await loginKakao(token.accessToken).then(response => {
+      res = response;
+      console.log(res.body);
+      if (res.body.login === 'sign-up') {
+        setUserName(res.body.username);
+        navigation.push('NickName');
+      } else if (res.body.login === 'sign-in') {
+        navigation.push('Main');
+      }
+    });
+
+  };
+
+  const onGoogleButtonPress = async (): Promise<void> => {
+    const {idToken} = await GoogleSignin.signIn();
+    const code = await GoogleSignin.getTokens();
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+    console.log(code);
+  
+    return auth().signInWithCredential(googleCredential);
+  };
+  
 
   return (
     <View style={styles.container}>

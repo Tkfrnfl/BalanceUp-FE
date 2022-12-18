@@ -11,6 +11,13 @@ import {
 } from 'react-native';
 import * as Progress from 'react-native-progress';
 import FastImage from 'react-native-fast-image';
+import {nickNameState} from '../../recoil/atom';
+import {
+  useRecoilState,
+  useRecoilValue,
+  useSetRecoilState,
+  useResetRecoilState,
+} from 'recoil';
 
 import {validateText} from '../../utils/regex';
 import duplicationCheckAPI from '../../actions/duplicationCheckAPI';
@@ -22,6 +29,7 @@ const NameScreen = ({navigation}) => {
   const [checkTextPass, setCheckTextPass] = useState('');
   const [checkDisabled, setCheckDisabled] = useState(true);
   const [disabled, setDisabled] = useState(true);
+  const [nickName, setNickName] = useRecoilState(nickNameState);
 
   useEffect(() => {
     setDisabled(!checkTextPass);
@@ -68,6 +76,7 @@ const NameScreen = ({navigation}) => {
   };
 
   const goAgree = () => {
+    setNickName(userName);
     navigation.navigate('Agree');
   };
 

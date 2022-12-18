@@ -5,7 +5,7 @@ import NameScreen from '../screens/register/NameScreen';
 import AgreeScreen from '../screens/register/AgreeScreen';
 import UseInfoScreen from '../screens/register/UseInfoScreen';
 import ServiceInfoScreen from '../screens/register/ServiceInfoScreen';
-
+import MainScreen from '../screens/home/MainScreen';
 const NickNameStack = createStackNavigator();
 
 // const routeInfo = [
@@ -49,6 +49,11 @@ export function NickNameRouter() {
         <NickNameStack.Screen
           name="ServiceInfo"
           component={ServiceInfoScreen}
+          options={{headerShown: false}}
+        />
+        <NickNameStack.Screen
+          name="Main"
+          component={MainScreen}
           options={{headerShown: false}}
         />
       </NickNameStack.Navigator>

@@ -8,6 +8,20 @@ import {
 } from 'react-native';
 import * as Progress from 'react-native-progress';
 import CheckBox from '@react-native-community/checkbox';
+import {
+  nickNameState,
+  userNameState,
+  jwtState,
+  jwtRefreshState,
+} from '../../recoil/atom';
+import {
+  useRecoilState,
+  useRecoilValue,
+  useSetRecoilState,
+  useResetRecoilState,
+} from 'recoil';
+import {joinKakao} from '../../actions/memberJoinApi';
+import {response} from 'express';
 
 const AgreeScreen = ({navigation}) => {
   const [disabled, setDisabled] = useState(false);
@@ -15,6 +29,10 @@ const AgreeScreen = ({navigation}) => {
   const [useCheck, setUseCheck] = useState(false);
   const [serviceCheck, setServiceCheck] = useState(false);
   const [ageCheck, setAgeCheck] = useState(false);
+  const [nickName, setNickName] = useRecoilState(nickNameState);
+  const [userName, setUserName] = useRecoilState(userNameState);
+  const [jwt, setjwt] = useRecoilState(jwtState);
+  const [jwtRefresh, setJwtRefresh] = useRecoilState(jwtRefreshState);
 
   const allBtnEvent = () => {
     if (allCheck === false) {
@@ -72,6 +90,19 @@ const AgreeScreen = ({navigation}) => {
 
   const serviceInfo = () => {
     navigation.navigate('ServiceInfo');
+  };
+
+  const goJoin = async (): Promise<void> => {
+    let res;
+    await joinKakao(userName, nickName).then(response => {
+      res = response;
+
+      if (res.body.resultCode === 'success') {
+        setjwt(res.body.body.token);
+        setJwtRefresh(res.body.body.refreshToken);
+        navigation.push('Main');
+      }
+    });
   };
 
   return (
@@ -134,7 +165,8 @@ const AgreeScreen = ({navigation}) => {
           styles.Nextbutton,
           {backgroundColor: disabled ? '#D9D9D9' : '#272727'},
         ]}
-        disabled={disabled}>
+        disabled={disabled}
+        onPress={goJoin}>
         <Text
           style={[
             styles.NextbuttonText,
