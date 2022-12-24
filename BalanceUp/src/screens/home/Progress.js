@@ -18,10 +18,12 @@ import modalInnerStyles from '../../css/modalStyles';
 import KeyumIcon from '../../resource/image/KeyumEmoticon.png';
 import Svg, {Circle, Text as SvgText, Rect} from 'react-native-svg';
 import * as ProgressLib from 'react-native-progress';
+import {useNavigation} from '@react-navigation/native';
 
 const todoTmpSub = ['itemSub1', 'itemSub2', 'itemSub3'];
 
-const Progress = ({navigation}) => {
+const Progress = () => {
+  const navigation = useNavigation();
   const [todoTmp, setTodoTmp] = useState([
     {
       id: '1',
@@ -122,9 +124,15 @@ const Progress = ({navigation}) => {
   };
 
   const handleCompleteChange = id => {
-    todoTmp.map(data => {
-      console.log(id, data.id);
+    let newTodoTmp = todoTmp.map(data => {
+      if (data.id === id) {
+        data.completed = !data.completed;
+        setCompleteChangeModalVisible(!completeChangeModalVisible);
+      }
+      console.log('id :', id);
+      return data;
     });
+    setTodoTmp(newTodoTmp);
   };
 
   return (
@@ -199,7 +207,8 @@ const Progress = ({navigation}) => {
                 </SvgText>
               </Svg>
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPress={() => navigation.navigate('Plan')}>
               <Svg height={80} style={styles.svg3}>
                 <Rect width={50} height={60} fill="#F2F2F2" />
                 <SvgText
