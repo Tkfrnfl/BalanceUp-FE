@@ -56,7 +56,7 @@ const Progress = () => {
 
   const resetBottomSheet = Animated.timing(panY, {
     toValue: 0,
-    duration: 300,
+    duration: 10,
     useNativeDriver: true,
   });
 
