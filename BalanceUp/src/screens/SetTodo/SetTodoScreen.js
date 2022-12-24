@@ -202,7 +202,7 @@ const SetTodoScreen = ({navigation}) => {
       </Modal>
 
       {/* 하단 탭바 */}
-      <View style={{flex: 1, marginTop: 95}}>
+      <View style={{flex: 1, marginTop: 98}}>
         <Shadow distance={3}>
           <View style={commonStyles.bottomTabSheet}>
             <TouchableOpacity onPress={goHome}>
