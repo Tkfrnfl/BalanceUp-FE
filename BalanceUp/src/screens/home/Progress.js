@@ -21,7 +21,7 @@ import * as ProgressLib from 'react-native-progress';
 
 const todoTmpSub = ['itemSub1', 'itemSub2', 'itemSub3'];
 
-const Progress = () => {
+const Progress = ({navigation}) => {
   const [todoTmp, setTodoTmp] = useState([
     {
       id: '1',
@@ -43,6 +43,7 @@ const Progress = () => {
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
   const [completeChangeModalVisible, setCompleteChangeModalVisible] =
     useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
   // 모달 기능 구현
   const screenHeight = Dimensions.get('screen').height;
@@ -84,6 +85,7 @@ const Progress = () => {
   const closeModal = () => {
     closeBottomSheet.start(() => setCompleteModalVisible(false));
     closeBottomSheet.start(() => setCompleteChangeModalVisible(false));
+    closeBottomSheet.start(() => setDeleteModalVisible(false));
   };
 
   useEffect(() => {
@@ -97,6 +99,12 @@ const Progress = () => {
       resetBottomSheet.start();
     }
   }, [completeChangeModalVisible]);
+
+  useEffect(() => {
+    if (deleteModalVisible) {
+      resetBottomSheet.start();
+    }
+  }, [deleteModalVisible]);
 
   // 완료 체크 기능 구현
   const handleComplete = id => {
@@ -204,7 +212,8 @@ const Progress = () => {
                 </SvgText>
               </Svg>
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPress={() => setDeleteModalVisible(!deleteModalVisible)}>
               <Svg height={80} style={styles.svg3}>
                 <Rect width={50} height={60} fill="#D9D9D9" />
                 <SvgText
@@ -280,6 +289,46 @@ const Progress = () => {
                     <TouchableOpacity
                       style={modalInnerStyles.yesBtn}
                       onPress={() => handleCompleteChange(data.id)}>
+                      <Text style={modalInnerStyles.nextText}>취소할래요!</Text>
+                    </TouchableOpacity>
+                  </View>
+                </Animated.View>
+              </TouchableWithoutFeedback>
+            </Pressable>
+          </Modal>
+
+          {/* 삭제 모달 구현 코드 */}
+          <Modal
+            visible={deleteModalVisible}
+            animationType={'fade'}
+            transparent={true}
+            statusBarTranslucent={true}>
+            <Pressable
+              style={modalInnerStyles.modalOverlay}
+              onPress={() => setDeleteModalVisible(!deleteModalVisible)}>
+              <TouchableWithoutFeedback>
+                <Animated.View
+                  style={{
+                    ...modalInnerStyles.deleteSheetContainer,
+                    transform: [{translateY: translateY}],
+                  }}
+                  {...panResponder.panHandlers}>
+                  {/* 모달에 들어갈 내용을 아래에 작성 */}
+                  <Text style={modalInnerStyles.logoutModalTitle}>
+                    진행중인 루틴입니다!
+                  </Text>
+                  <Text style={modalInnerStyles.logoutModalText}>
+                    루틴을 삭제하시겠습니까? {'\n'}
+                    해당 루틴에 대한 모든 기록이 사라집니다{'\n'}
+                    *루틴 완료 기록, 획득 RP
+                  </Text>
+                  <View style={modalInnerStyles.modalFlex}>
+                    <TouchableOpacity
+                      style={modalInnerStyles.noBtn}
+                      onPress={() => setDeleteModalVisible(false)}>
+                      <Text style={modalInnerStyles.noText}>아니요</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={modalInnerStyles.yesBtn}>
                       <Text style={modalInnerStyles.nextText}>취소할래요!</Text>
                     </TouchableOpacity>
                   </View>
