@@ -40,8 +40,8 @@ const Progress = () => {
     },
   ]);
 
-  const [complteModalVisible, setComplteModalVisible] = useState(false);
-  const [complteChangeModalVisible, setComplteChangeModalVisible] =
+  const [completeModalVisible, setCompleteModalVisible] = useState(false);
+  const [completeChangeModalVisible, setCompleteChangeModalVisible] =
     useState(false);
 
   // 모달 기능 구현
@@ -82,38 +82,38 @@ const Progress = () => {
   ).current;
 
   const closeModal = () => {
-    closeBottomSheet.start(() => setComplteModalVisible(false));
-    closeBottomSheet.start(() => setComplteChangeModalVisible(false));
+    closeBottomSheet.start(() => setCompleteModalVisible(false));
+    closeBottomSheet.start(() => setCompleteChangeModalVisible(false));
   };
 
   useEffect(() => {
-    if (complteModalVisible) {
+    if (completeModalVisible) {
       resetBottomSheet.start();
     }
-  }, [complteModalVisible]);
+  }, [completeModalVisible]);
 
   useEffect(() => {
-    if (complteChangeModalVisible) {
+    if (completeChangeModalVisible) {
       resetBottomSheet.start();
     }
-  }, [complteChangeModalVisible]);
+  }, [completeChangeModalVisible]);
 
   // 완료 체크 기능 구현
-  const handleComplte = id => {
+  const handleComplete = id => {
     let newTodoTmp = todoTmp.map(data => {
       if (data.id === id && data.completed === false) {
         data.completed = !data.completed;
-        setComplteModalVisible(!complteModalVisible);
+        setCompleteModalVisible(!completeModalVisible);
       } else if (data.id === id && data.completed === true) {
         console.log('data id :', data.id, 'id :', id);
-        setComplteChangeModalVisible(!complteChangeModalVisible);
+        setCompleteChangeModalVisible(!completeChangeModalVisible);
       }
       return data;
     });
     setTodoTmp(newTodoTmp);
   };
 
-  const handleComplteChange = id => {
+  const handleCompleteChange = id => {
     todoTmp.map(data => {
       console.log(id, data.id);
     });
@@ -173,7 +173,7 @@ const Progress = () => {
               <Text>{todoTmpSub[index]}</Text>
             </View>
 
-            <TouchableWithoutFeedback onPress={() => handleComplte(data.id)}>
+            <TouchableWithoutFeedback onPress={() => handleComplete(data.id)}>
               <Svg height={80} style={styles.svg2}>
                 <Circle
                   cx="30"
@@ -221,13 +221,13 @@ const Progress = () => {
 
           {/* 완료 모달 구현 코드 */}
           <Modal
-            visible={complteModalVisible}
+            visible={completeModalVisible}
             animationType={'fade'}
             transparent={true}
             statusBarTranslucent={true}>
             <Pressable
               style={modalInnerStyles.complteModalOverlay}
-              onPress={() => setComplteModalVisible(!complteModalVisible)}>
+              onPress={() => setCompleteModalVisible(!completeModalVisible)}>
               <TouchableWithoutFeedback>
                 <Animated.View
                   style={{
@@ -247,14 +247,14 @@ const Progress = () => {
 
           {/* 완료 취소 모달 구현 코드 */}
           <Modal
-            visible={complteChangeModalVisible}
+            visible={completeChangeModalVisible}
             animationType={'fade'}
             transparent={true}
             statusBarTranslucent={true}>
             <Pressable
               style={modalInnerStyles.modalOverlay}
               onPress={() =>
-                setComplteChangeModalVisible(!complteChangeModalVisible)
+                setCompleteChangeModalVisible(!completeChangeModalVisible)
               }>
               <TouchableWithoutFeedback>
                 <Animated.View
@@ -274,12 +274,12 @@ const Progress = () => {
                   <View style={modalInnerStyles.modalFlex}>
                     <TouchableOpacity
                       style={modalInnerStyles.noBtn}
-                      onPress={() => setComplteChangeModalVisible(false)}>
+                      onPress={() => setCompleteChangeModalVisible(false)}>
                       <Text style={modalInnerStyles.noText}>아니요</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={modalInnerStyles.yesBtn}
-                      onPress={() => handleComplteChange(data.id)}>
+                      onPress={() => handleCompleteChange(data.id)}>
                       <Text style={modalInnerStyles.nextText}>취소할래요!</Text>
                     </TouchableOpacity>
                   </View>
