@@ -135,6 +135,12 @@ const Progress = () => {
     setTodoTmp(newTodoTmp);
   };
 
+  const handleRemove = id => {
+    let newTodoTmp = todoTmp.filter(data => data.id !== id);
+    setDeleteModalVisible(!deleteModalVisible);
+    setTodoTmp(newTodoTmp);
+  };
+
   return (
     <View>
       <View style={commonStyles.spacing2} />
@@ -337,8 +343,10 @@ const Progress = () => {
                       onPress={() => setDeleteModalVisible(false)}>
                       <Text style={modalInnerStyles.noText}>아니요</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={modalInnerStyles.yesBtn}>
-                      <Text style={modalInnerStyles.nextText}>취소할래요!</Text>
+                    <TouchableOpacity
+                      style={modalInnerStyles.yesBtn}
+                      onPress={() => handleRemove(data.id)}>
+                      <Text style={modalInnerStyles.nextText}>삭제할래요!</Text>
                     </TouchableOpacity>
                   </View>
                 </Animated.View>
