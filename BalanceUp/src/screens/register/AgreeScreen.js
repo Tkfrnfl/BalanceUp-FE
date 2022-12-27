@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import * as Progress from 'react-native-progress';
 import CheckBox from '@react-native-community/checkbox';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   nickNameState,
   userNameState,
@@ -97,9 +98,12 @@ const AgreeScreen = ({navigation}) => {
     await joinKakao(userName, nickName).then(response => {
       res = response;
 
-      if (res.body.resultCode === 'success') {
-        setjwt(res.body.body.token);
-        setJwtRefresh(res.body.body.refreshToken);
+      if (res.resultCode === 'success') {
+        // jwt 로컬 스토리지 저장후 메인화면 보내기
+        setjwt(res.body.token);
+        setJwtRefresh(res.body.refreshToken);
+        AsyncStorage.setItem('jwt', res.body.token);
+        AsyncStorage.setItem('jwtRefresh', res.body.refreshToken);
         navigation.push('Main');
       }
     });

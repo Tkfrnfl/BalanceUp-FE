@@ -2,12 +2,83 @@ import React from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Swiper from 'react-native-swiper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  useRecoilState,
+  useRecoilValue,
+  useSetRecoilState,
+  useResetRecoilState,
+} from 'recoil';
+
+import {getRefreshToken} from '../../actions/memberJoinApi';
+import {
+  nickNameState,
+  userNameState,
+  jwtState,
+  jwtRefreshState,
+} from '../../recoil/atom';
 
 import KeyumIcon from '../../resource/image/KeyumEmoticon.png';
 import KeyumTypo from '../../resource/image/KeyumLOGOTYPO_1.png';
 import testGif from '../../resource/image/testGif.gif';
+import jwt_decode from 'jwt-decode';
 
 export default function OnBoarding({navigation}) {
+  const [jwt, setjwt] = useRecoilState(jwtState);
+  const [jwtRefresh, setJwtRefresh] = useRecoilState(jwtRefreshState);
+
+  React.useEffect(() => {
+    checkJwt('jwt');
+  }, []);
+  const getData = async (key: string) => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      if (value !== null) {
+        const data = JSON.parse(value);
+        return data;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const checkJwt = async (key: string) => {
+    try {
+      const dataToken = await getData('jwt');
+      const dataRefreshToekn = await getData('jwtRefresh');
+
+      // jwt 체크후 있으면 main화면으로 이동하며 토큰 재발급
+      if (dataToken !== null) {
+        const decodeUserName = jwt_decode(dataToken);
+        let res;
+
+        await getRefreshToken(
+          decodeUserName.username,
+          dataToken,
+          dataRefreshToekn,
+        ).then(response => {
+          res = response;
+
+          if (res.resultCode === 'success') {
+            // jwt 로컬 스토리지 저장후 메인화면 보내기
+            console.log(res.body.refreshToken);
+            setjwt(res.body.token);
+            setJwtRefresh(res.body.refreshToken);
+
+            AsyncStorage.setItem('jwt', JSON.stringify(res.body.token));
+            AsyncStorage.setItem(
+              'jwtRefresh',
+              JSON.stringify(res.body.refreshToken),
+            );
+            navigation.push('Main');
+          }
+        });
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   const TextData = [
     {
       id: 1,

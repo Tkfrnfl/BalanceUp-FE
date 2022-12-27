@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {response} from 'express';
 import React, {useState, useEffect} from 'react';
+import {api} from '../utils/Api';
 
 const loginKakao = async params => {
   let res;
@@ -45,7 +46,7 @@ const joinKakao = async (userName, nickName) => {
   console.log(nickName);
   let res;
   await axios
-    .get(
+    .post(
       'http://ec2-15-165-88-42.ap-northeast-2.compute.amazonaws.com:8080/auth/sign-up/kakao',
       {
         username: userName,
@@ -58,9 +59,46 @@ const joinKakao = async (userName, nickName) => {
       res = response.data;
     })
     .catch(function (error) {
-      console.log(error);
+      console.log(error.response);
     });
   return res;
 };
 
-export {loginKakao, loginGoogle, joinKakao};
+const SignInKakao = async userName => {
+  console.log(userName);
+  let res;
+  await axios
+    .post(api + '/auth/sign-in/kakao', {
+      username: userName,
+      provider: 'kakao',
+    })
+    .then(response => {
+      console.log(response.data);
+      res = response.data;
+    })
+    .catch(function (error) {
+      console.log(error.response.data);
+    });
+  return res;
+};
+
+const getRefreshToken = async (userName, token, refreshToken) => {
+  let res;
+  console.log(userName);
+  await axios
+    .post(api + '/auth/refresh', {
+      username: userName,
+      accessToken: token,
+      refreshToken: refreshToken,
+    })
+    .then(response => {
+      console.log(response.data);
+      res = response.data;
+    })
+    .catch(function (error) {
+      console.log(error.response.data);
+    });
+  return res;
+};
+
+export {loginKakao, loginGoogle, joinKakao, SignInKakao, getRefreshToken};

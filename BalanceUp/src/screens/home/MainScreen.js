@@ -49,6 +49,7 @@ import {
   ExpandableCalendar,
   CalendarProvider,
 } from 'react-native-calendars';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 LocaleConfig.locales.fr = {
   monthNames: [
@@ -99,6 +100,13 @@ const MainScreen = ({navigation, route}) => {
   // console.log('루틴명:' + todoText);
   // console.log('선택 요일:' + dayText);
   // console.log('선택 시간:' + time);
+
+  // React.useEffect(() => {
+  //   const value = AsyncStorage.getItem('jwt');
+  //   const valueRefresh = AsyncStorage.getItem('jwtRefresh');
+  //   const dataToken = JSON.parse(value);
+  //   console.log(dataToken);
+  // }, []);
 
   const todo = ['할일1', '할일2', '할일3', '할일4'];
   const todoTmp = ['item1', 'item2', 'item3'];

@@ -26,18 +26,18 @@ import {
 } from '@react-native-google-signin/google-signin';
 import FastImage from 'react-native-fast-image';
 import auth from '@react-native-firebase/auth';
-import {loginKakao} from '../../actions/memberJoinApi';
-import {userNameState} from '../../recoil/atom';
+import {loginKakao, SignInKakao} from '../../actions/memberJoinApi';
 import {
   useRecoilState,
   useRecoilValue,
   useSetRecoilState,
   useResetRecoilState,
 } from 'recoil';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {userNameState, jwtState, jwtRefreshState} from '../../recoil/atom';
 
 import KeyumTypo from '../../resource/image/KeyumLOGOTYPO_1.png';
 import testGif from '../../resource/image/testGif.gif';
-import {response} from 'express/lib/express';
 
 // const naverLogin = async (): Promise<void> => {
 //   console.log('dd');
@@ -69,18 +69,20 @@ const unlinkKakao = async (): Promise<void> => {
   // setResult(message);
 };
 
-const androidKeys = {
-  kConsumerKey: 'emLJacIpqC1VGarFjLHx',
-  kConsumerSecret: 'z_Q_8LbpiI',
-  kServiceAppName: 'keyum',
-}; // 추후에 process.env로 빼기
+// const androidKeys = {
+//   kConsumerKey: 'emLJacIpqC1VGarFjLHx',
+//   kConsumerSecret: 'z_Q_8LbpiI',
+//   kServiceAppName: 'keyum',
+// }; // 추후에 process.env로 빼기
 
 export default function Login({navigation}) {
   React.useEffect(() => {
     googleSigninConfigure();
   });
- // const [login, setLoginState] = React.useState(0);
- const [userName, setUserName] = useRecoilState(userNameState);
+  // const [login, setLoginState] = React.useState(0);
+  const [userName, setUserName] = useRecoilState(userNameState);
+  const [jwt, setjwt] = useRecoilState(jwtState);
+  const [jwtRefresh, setJwtRefresh] = useRecoilState(jwtRefreshState);
 
   const signInWithKakao = async (): Promise<void> => {
     const token: KakaoOAuthToken = await loginWithKakaoAccount();
@@ -94,10 +96,28 @@ export default function Login({navigation}) {
         setUserName(res.body.username);
         navigation.push('NickName');
       } else if (res.body.login === 'sign-in') {
+        // setUserName(res.body.username);
+        signInKakao(res.body.username);
+      }
+    });
+  };
+
+  const signInKakao = async (userName): Promise<void> => {
+    let res;
+    await SignInKakao(userName).then(response => {
+      res = response;
+      if (res.resultCode === 'success') {
+        setjwt(res.body.token);
+        setJwtRefresh(res.body.refreshToken);
+        // jwt 로컬 스토리지 저장후 메인화면 보내기
+        AsyncStorage.setItem('jwt', JSON.stringify(res.body.token));
+        AsyncStorage.setItem(
+          'jwtRefresh',
+          JSON.stringify(res.body.refreshToken),
+        );
         navigation.push('Main');
       }
     });
-
   };
 
   const onGoogleButtonPress = async (): Promise<void> => {
@@ -105,10 +125,9 @@ export default function Login({navigation}) {
     const code = await GoogleSignin.getTokens();
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
     console.log(code);
-  
+
     return auth().signInWithCredential(googleCredential);
   };
-  
 
   return (
     <View style={styles.container}>

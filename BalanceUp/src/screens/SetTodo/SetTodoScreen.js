@@ -10,11 +10,16 @@ import {
   Animated,
   PanResponder,
   TouchableWithoutFeedback,
+  Image,
 } from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
 import commonStyles from '../../css/commonStyles';
 
 import modalInnerStyles from '../../css/modalStyles';
+import education from '../../resource/image/education.png';
+import health from '../../resource/image/health.png';
+import life from '../../resource/image/life.png';
+import mental from '../../resource/image/mental.png';
 
 const SetTodoScreen = ({navigation}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -145,20 +150,24 @@ const SetTodoScreen = ({navigation}) => {
       <View style={styles.bntSheet}>
         <TouchableOpacity style={styles.todoBtn} onPress={goSportPlan}>
           <Text style={styles.todoText}>{TodoData[0].title}</Text>
+          <Image source={health} style={styles.btnimg1} />
           <Text style={styles.todoSubText}>{TodoData[0].subTitle}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.todoBtn} onPress={goStudyPlan}>
           <Text style={styles.todoText}>{TodoData[1].title}</Text>
+          <Image source={education} style={styles.btnimg1} />
           <Text style={styles.todoSubText}>{TodoData[1].subTitle}</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.bntSheet}>
         <TouchableOpacity style={styles.todoBtn} onPress={goDailyPlan}>
           <Text style={styles.todoText}>{TodoData[2].title}</Text>
+          <Image source={life} style={styles.btnimg2} />
           <Text style={styles.todoSubText}>{TodoData[2].subTitle}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.todoBtn} onPress={goCarePlan}>
           <Text style={styles.todoText}>{TodoData[3].title}</Text>
+          <Image source={mental} style={styles.btnimg1} />
           <Text style={styles.todoSubText}>{TodoData[3].subTitle}</Text>
         </TouchableOpacity>
       </View>
@@ -281,6 +290,15 @@ const styles = StyleSheet.create({
   bntSheet: {
     flexDirection: 'row',
     justifyContent: 'center',
+  },
+  btnimg1: {
+    marginBottom: -100,
+    marginTop: -20,
+  },
+  btnimg2: {
+    marginBottom: -80,
+    marginTop: -10,
+    marginLeft: 20,
   },
 });
 
