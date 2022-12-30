@@ -1,43 +1,29 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
-  SafeAreaView,
-  TextInput,
   Button,
-  Alert,
   Image,
-  Platform,
 } from 'react-native';
 import {
   KakaoOAuthToken,
-  KakaoProfile,
   getProfile as getKakaoProfile,
-  login,
   logout,
   unlink,
   loginWithKakaoAccount,
 } from '@react-native-seoul/kakao-login';
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-} from '@react-native-google-signin/google-signin';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import FastImage from 'react-native-fast-image';
 import auth from '@react-native-firebase/auth';
 import {loginKakao} from '../../actions/memberJoinApi';
 import {userNameState} from '../../recoil/atom';
-import {
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-  useResetRecoilState,
-} from 'recoil';
-
-import KeyumTypo from '../../resource/image/KeyumLOGOTYPO_1.png';
-import testGif from '../../resource/image/testGif.gif';
-import {response} from 'express/lib/express';
+import {useRecoilState} from 'recoil';
+import {WithLocalSvg} from 'react-native-svg';
+import Login_Onboading from '../../resource/image/login_onborading.png';
+import KakaoSvg from '../../resource/image/Kakao.svg';
+import GoogleSvg from '../../resource/image/Google.svg';
 
 // const naverLogin = async (): Promise<void> => {
 //   console.log('dd');
@@ -79,8 +65,8 @@ export default function Login({navigation}) {
   React.useEffect(() => {
     googleSigninConfigure();
   });
- // const [login, setLoginState] = React.useState(0);
- const [userName, setUserName] = useRecoilState(userNameState);
+  // const [login, setLoginState] = React.useState(0);
+  const [userName, setUserName] = useRecoilState(userNameState);
 
   const signInWithKakao = async (): Promise<void> => {
     const token: KakaoOAuthToken = await loginWithKakaoAccount();
@@ -97,7 +83,6 @@ export default function Login({navigation}) {
         navigation.push('Main');
       }
     });
-
   };
 
   const onGoogleButtonPress = async (): Promise<void> => {
@@ -105,37 +90,40 @@ export default function Login({navigation}) {
     const code = await GoogleSignin.getTokens();
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
     console.log(code);
-  
+
     return auth().signInWithCredential(googleCredential);
   };
-  
 
   return (
     <View style={styles.container}>
       <View style={styles.imgView}>
-        <Image source={KeyumTypo} />
+        <FastImage style={{width: 335, height: 335}} source={Login_Onboading} />
       </View>
-      <FastImage // 임시 GIF
-        style={{width: 250, height: 250}}
-        source={testGif}
-      />
+      <Text style={styles.title}>만나서 반가워요!</Text>
+      <Text style={styles.subTitle}>로그인 할 계정을 선택해 주세요</Text>
 
       <TouchableOpacity onPress={signInWithKakao} style={styles.btnKakao}>
-        <Text style={styles.btnText}>카카오로 시작하기</Text>
+        <WithLocalSvg width={335} height={48} asset={KakaoSvg} />
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.btnGoogle}
         onPress={() => onGoogleButtonPress()}>
-        <Text style={styles.btnText}>구글로 시작하기</Text>
+        <WithLocalSvg width={335} height={48} asset={GoogleSvg} />
       </TouchableOpacity>
-      <Button
-        title="닉네임 설정 (임시 구현)"
-        onPress={() => navigation.push('NickName')}
-      />
-      <Button
-        title="홈 화면으로 가기 (임시 구현)"
-        onPress={() => navigation.push('Main')}
-      />
+      <View
+        style={{
+          flexDirection: 'row',
+          marginTop: 40,
+        }}>
+        <Button
+          title="닉네임 설정 (임시 구현)"
+          onPress={() => navigation.push('NickName')}
+        />
+        <Button
+          title="홈 화면으로 가기 (임시 구현)"
+          onPress={() => navigation.push('Main')}
+        />
+      </View>
     </View>
   );
 }
@@ -147,31 +135,31 @@ const styles = StyleSheet.create({
   },
   title: {
     width: '100%',
-    fontSize: 70,
+    color: '#232323',
     textAlign: 'center',
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+  subTitle: {
+    width: '100%',
+    color: '#888888',
+    textAlign: 'center',
+    marginTop: 5,
+    fontSize: 14,
   },
   imgView: {
-    flexDirection: 'row',
     marginTop: 60,
-    marginBottom: 40,
+    marginBottom: 30,
   },
   btnKakao: {
-    backgroundColor: '#FFF62B',
-    fontWeight: 'bold',
-    padding: 10,
-    margin: 15,
-    marginTop: 50,
-    width: '60%',
-    borderRadius: 10,
+    marginTop: 35,
+    width: 335,
+    height: 48,
   },
   btnGoogle: {
-    backgroundColor: '#E4E4E4',
-    fontWeight: 'bold',
-    padding: 10,
-    margin: 15,
-    marginTop: 30,
-    width: '60%',
-    borderRadius: 10,
+    marginTop: 10,
+    width: 335,
+    height: 48,
   },
   btnText: {
     color: '#000',

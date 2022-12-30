@@ -16,7 +16,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
-import KeyumTypo from '../../resource/image/KeyumLOGOTYPO_1.png';
+import KeyumTypo from '../../resource/image/KeyumLOGOTYPO.png';
 import modalInnerStyles from '../../css/modalStyles';
 import {validateText} from '../../utils/regex';
 import commonStyles from '../../css/commonStyles';
