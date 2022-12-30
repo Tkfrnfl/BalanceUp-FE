@@ -21,9 +21,9 @@ import {loginKakao} from '../../actions/memberJoinApi';
 import {userNameState} from '../../recoil/atom';
 import {useRecoilState} from 'recoil';
 import {WithLocalSvg} from 'react-native-svg';
-import Login_Onboading from '../../resource/image/login_onborading.png';
-import KakaoSvg from '../../resource/image/Kakao.svg';
-import GoogleSvg from '../../resource/image/Google.svg';
+import Login_Onboading from '../../resource/image/Login/login_onborading.png';
+import KakaoSvg from '../../resource/image/Login/Kakao.svg';
+import GoogleSvg from '../../resource/image/Login/Google.svg';
 
 // const naverLogin = async (): Promise<void> => {
 //   console.log('dd');

@@ -1,15 +1,15 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {WithLocalSvg} from 'react-native-svg';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Swiper from 'react-native-swiper';
 
 import KeyumTypo from '../../resource/image/KeyumLOGOTYPO.png';
-import OnBoarding_1 from '../../resource/image/onboarding-1.png';
-import OnBoarding_2 from '../../resource/image/onboarding-2.png';
-import OnBoarding_3 from '../../resource/image/onboarding-3.png';
-import NextBtn from '../../resource/image/NextBtn.svg';
-import PrevBtn from '../../resource/image/PrevBtn.svg';
+import OnBoarding_1 from '../../resource/image/Onboarding/onboarding-1.png';
+import OnBoarding_2 from '../../resource/image/Onboarding/onboarding-2.png';
+import OnBoarding_3 from '../../resource/image/Onboarding/onboarding-3.png';
+import NextBtn from '../../resource/image/Onboarding/NextBtn.svg';
+import PrevBtn from '../../resource/image/Onboarding/PrevBtn.svg';
 
 export default function OnBoarding({navigation}) {
   const TextData = [
