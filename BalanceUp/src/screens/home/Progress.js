@@ -20,14 +20,14 @@ import Svg, {Circle, Text as SvgText, Rect} from 'react-native-svg';
 import * as ProgressLib from 'react-native-progress';
 import {useNavigation} from '@react-navigation/native';
 
-const todoTmpSub = ['itemSub1', 'itemSub2', 'itemSub3'];
+const todoTmpSub = ['운동하기', '청소하기', '공부하기'];
 
 const Progress = () => {
   const navigation = useNavigation();
   const [todoTmp, setTodoTmp] = useState([
     {
       id: '1',
-      title: '공부하기',
+      title: '운동하기',
       completed: false,
     },
     {
@@ -37,7 +37,7 @@ const Progress = () => {
     },
     {
       id: '3',
-      title: '운동하기',
+      title: '공부하기',
       completed: false,
     },
   ]);
@@ -123,18 +123,19 @@ const Progress = () => {
     setTodoTmp(newTodoTmp);
   };
 
+  // 완료 체크 취소 기능 구현(미완성)
   const handleCompleteChange = id => {
     let newTodoTmp = todoTmp.map(data => {
       if (data.id === id) {
         data.completed = !data.completed;
         setCompleteChangeModalVisible(!completeChangeModalVisible);
       }
-      console.log('id :', id);
       return data;
     });
     setTodoTmp(newTodoTmp);
   };
 
+  // 삭제 기능 구현
   const handleRemove = id => {
     let newTodoTmp = todoTmp.filter(data => data.id !== id);
     setDeleteModalVisible(!deleteModalVisible);
@@ -185,16 +186,18 @@ const Progress = () => {
       </Svg>
       <View style={commonStyles.spacing2} />
       {todoTmp.map((data, index) => (
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          key={data.id}>
           <View style={commonStyles.row}>
             <View style={styles.img1}>
               <Image source={KeyumIcon} style={styles.img2} />
             </View>
             <View style={styles.aimText1}>
-              <Text style={commonStyles.boldText}>{data.title}</Text>
-              <Text>{todoTmpSub[index]}</Text>
+              <Text style={commonStyles.mainText}>{data.title}</Text>
+              <Text style={commonStyles.subText}>{todoTmpSub[index]}</Text>
             </View>
-
             <TouchableWithoutFeedback onPress={() => handleComplete(data.id)}>
               <Svg height={80} style={styles.svg2}>
                 <Circle
@@ -303,7 +306,10 @@ const Progress = () => {
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={modalInnerStyles.yesBtn}
-                      onPress={() => handleCompleteChange(data.id)}>
+                      onPress={() => {
+                        handleCompleteChange(data.id);
+                        console.log('complete change id : ', data.id);
+                      }}>
                       <Text style={modalInnerStyles.nextText}>취소할래요!</Text>
                     </TouchableOpacity>
                   </View>
