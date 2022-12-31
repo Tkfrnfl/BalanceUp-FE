@@ -16,7 +16,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
-import KeyumTypo from '../../resource/image/KeyumLOGOTYPO_1.png';
+import KeyumTypo from '../../resource/image/KeyumLOGOTYPO.png';
 import modalInnerStyles from '../../css/modalStyles';
 import {validateText} from '../../utils/regex';
 import commonStyles from '../../css/commonStyles';
@@ -214,7 +214,16 @@ const MyPage = ({navigation}) => {
           <Shadow distance={3}>
             <View style={commonStyles.bottomTabSheet}>
               <TouchableOpacity onPress={goHome}>
-                <Text style={commonStyles.commonText}>홈</Text>
+                <Text
+                  style={[
+                    commonStyles.commonText,
+                    {
+                      marginTop: 15,
+                      marginLeft: 15,
+                    },
+                  ]}>
+                  홈
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={goSet}>
                 <Text style={commonStyles.commonText}>작성</Text>

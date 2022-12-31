@@ -300,7 +300,7 @@ const MainScreen = ({navigation, route}) => {
         {/* 하단 탭바 */}
         <Shadow distance={3}>
           <View style={commonStyles.bottomTabSheet}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={goHome}>
               <Text
                 style={[
                   commonStyles.selectText,
