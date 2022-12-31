@@ -18,7 +18,7 @@ import modalInnerStyles from '../../css/modalStyles';
 import styles from '../../css/SetPlanScreenStyles';
 
 const SetPlanScreen = ({navigation, route}) => {
-  const {planText} = route.params;
+  // const {planText} = route.params;
 
   const [lengthTodo, setLengthTodo] = useState(0);
   const [todoText, setTodoText] = useState('');
@@ -216,7 +216,7 @@ const SetPlanScreen = ({navigation, route}) => {
   const goClear = () => {
     // state props 값 잘 넘어가는지 check
     navigation.navigate('Main', {
-      planText: planText,
+      // planText: planText,
       dayText: dayText,
       todoText: todoText,
       time: alertHour + alertMin,
@@ -424,7 +424,7 @@ const SetPlanScreen = ({navigation, route}) => {
                 </Text>
                 <View style={styles.checkView}>
                   <Text style={{color: '#000', fontWeight: 'bold'}}>
-                    [{planText}]
+                    {/* [{planText}] */}
                   </Text>
                   <Text style={modalInnerStyles.todoText}>{todoText}</Text>
                   <Text style={modalInnerStyles.dayText}>{dayText}</Text>

@@ -1,143 +1,155 @@
-import React from 'react';
+import React, {useState} from 'react';
+import {WithLocalSvg} from 'react-native-svg';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Swiper from 'react-native-swiper';
 
-import KeyumIcon from '../../resource/image/KeyumEmoticon.png';
-import KeyumTypo from '../../resource/image/KeyumLOGOTYPO_1.png';
-import testGif from '../../resource/image/testGif.gif';
+import KeyumTypo from '../../resource/image/KeyumLOGOTYPO.png';
+import OnBoarding_1 from '../../resource/image/Onboarding/onboarding-1.png';
+import OnBoarding_2 from '../../resource/image/Onboarding/onboarding-2.png';
+import OnBoarding_3 from '../../resource/image/Onboarding/onboarding-3.png';
+import NextBtn from '../../resource/image/Onboarding/NextBtn.svg';
+import PrevBtn from '../../resource/image/Onboarding/PrevBtn.svg';
 
 export default function OnBoarding({navigation}) {
   const TextData = [
     {
       id: 1,
+      img: OnBoarding_1,
       title: '성취감을 느끼며 루틴 형성',
       text: '소소한 성취감을 2주 간 느끼며 \n 자연스러운 루틴형성을 도와드려요',
     },
     {
       id: 2,
-      title: '캐릭터와 같이 성장',
-      text: '루틴 성공 시 설정 한 카테고리에 맞는 \n 캐릭터 능력치가 성장해요!',
+      img: OnBoarding_2,
+      title: '나만의 루틴으로 캐릭터 성장',
+      text: '루틴을 성공할 때마다 얻는 \n RP(Routine Point)로 내 캐릭터를 성장시켜요',
     },
     {
       id: 3,
+      img: OnBoarding_3,
       title: '원하는 시간에 알림',
-      text: '내가 원하는 시간에 알림을 보내 \n 루틴을 잊지 않을 수 있어요',
+      text: '내가 원하는 시간에 알림을 설정하여 \n 루틴을 잊지 않을 수 있어요',
     },
   ];
 
+  const [btnDisabled, setBtnDisabled] = useState(true);
+  const [pageIndex, setPageIndex] = useState(0);
+
+  const goLogin = () => {
+    navigation.navigate('Login');
+  };
+
+  const handleChange = index => {
+    if (index === 2) {
+      setBtnDisabled(false);
+    } else if (index === 0 || 1) {
+      setBtnDisabled(true);
+    }
+  };
+
   return (
     <View style={styles.container}>
+      <View style={styles.imgView}>
+        <Image source={KeyumTypo} style={styles.typoStyle} />
+      </View>
       <Swiper
-        style={styles.wrapper}
         dot={<View style={styles.dotStyle} />}
         activeDot={<View style={styles.activeDotStyle} />}
         loop={false}
+        onIndexChanged={index => handleChange(index)}
+        nextButton={<WithLocalSvg style={styles.svgStyle} asset={NextBtn} />}
+        prevButton={<WithLocalSvg style={styles.svgStyle} asset={PrevBtn} />}
         showsButtons={true}>
-        <View style={styles.slide}>
-          <View style={styles.imgView}>
-            <Image source={KeyumIcon} />
-            <Image source={KeyumTypo} />
+        {TextData.map(data => (
+          <View style={styles.slide} key={data.id}>
+            <FastImage style={styles.onBoardingIMG} source={data.img} />
+            <Text style={styles.title}>{data.title}</Text>
+            <Text style={styles.subTitle}>{data.text}</Text>
           </View>
-          <FastImage // 임시 GIF
-            style={{width: 250, height: 250}}
-            source={testGif}
-          />
-          <Text style={styles.title}>{TextData[0].title}</Text>
-          <Text style={styles.subTitle}>{TextData[0].text}</Text>
-        </View>
-
-        <View style={styles.slide}>
-          <View style={styles.imgView}>
-            <Image source={KeyumIcon} />
-            <Image source={KeyumTypo} />
-          </View>
-          <FastImage // 임시 GIF
-            style={{width: 250, height: 250}}
-            source={testGif}
-          />
-          <Text style={styles.title}>{TextData[1].title}</Text>
-          <Text style={styles.subTitle}>{TextData[1].text}</Text>
-        </View>
-
-        <View style={styles.slide}>
-          <View style={styles.imgView}>
-            <Image source={KeyumIcon} />
-            <Image source={KeyumTypo} />
-          </View>
-          <FastImage // 임시 GIF
-            style={{width: 250, height: 250}}
-            source={testGif}
-          />
-          <Text style={styles.title}>{TextData[2].title}</Text>
-          <Text style={styles.subTitle}>{TextData[2].text}</Text>
-          <TouchableOpacity
-            onPress={() => navigation.push('Login')}
-            style={styles.btnStart}>
-            <Text style={styles.btnText}>시작하기</Text>
-          </TouchableOpacity>
-        </View>
+        ))}
       </Swiper>
+      <TouchableOpacity
+        style={[
+          styles.btnStart,
+          {backgroundColor: btnDisabled ? '#CED6FF' : '#585FFF'},
+        ]}
+        onPress={goLogin}
+        disabled={btnDisabled}>
+        <Text style={styles.btnText}>시작하기</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 const styles = StyleSheet.create({
-  wrapper: {
-    backgroundColor: '#FFFFFF',
-  },
   slide: {
     alignItems: 'center',
   },
   container: {
     flex: 1,
+    backgroundColor: '#fff',
   },
   imgView: {
-    flexDirection: 'row',
-    marginTop: 60,
-    marginBottom: 40,
+    alignItems: 'center',
+    marginTop: 90,
+    marginBottom: 20,
+    backgroundColor: '#fff',
+  },
+  onBoardingIMG: {
+    width: 270,
+    height: 270,
+    marginLeft: 12,
   },
   title: {
     width: '100%',
-    color: '#0a0a0a',
+    color: '#232323',
     textAlign: 'center',
-    marginTop: 20,
-    fontSize: 30,
+    marginTop: 90,
+    fontSize: 22,
+    fontWeight: 'bold',
   },
   subTitle: {
     width: '100%',
-    color: '#0a0a0a',
+    color: '#888888',
     textAlign: 'center',
     marginTop: 10,
-    fontSize: 20,
+    fontSize: 14,
+  },
+  typoStyle: {
+    width: 210,
+    height: 34,
+    marginLeft: 4,
   },
   btnStart: {
-    backgroundColor: '#00D1FF',
     fontWeight: 'bold',
-    padding: 10,
-    width: '60%',
-    marginTop: 70,
+    padding: 15,
   },
   btnText: {
     color: '#ffffff',
-    fontSize: 20,
+    fontSize: 16,
     textAlign: 'center',
   },
   dotStyle: {
-    backgroundColor: '#c9eeff',
-    width: 15,
-    height: 15,
+    backgroundColor: '#888888',
+    width: 9,
+    height: 9,
     borderRadius: 10,
-    marginLeft: 5,
-    marginRight: 5,
-    marginBottom: 80,
+    marginLeft: 4,
+    marginRight: 4,
+    marginBottom: 190,
   },
   activeDotStyle: {
-    backgroundColor: '#5dccff',
-    width: 30,
-    height: 15,
+    backgroundColor: '#232323',
+    width: 25,
+    height: 9,
     borderRadius: 10,
-    marginLeft: 5,
-    marginRight: 5,
-    marginBottom: 80,
+    marginLeft: 4,
+    marginRight: 4,
+    marginBottom: 190,
+  },
+  svgStyle: {
+    width: 48,
+    height: 48,
+    marginBottom: 270,
   },
 });

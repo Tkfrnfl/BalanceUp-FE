@@ -202,11 +202,20 @@ const SetTodoScreen = ({navigation}) => {
       </Modal>
 
       {/* 하단 탭바 */}
-      <View style={{flex: 1, marginTop: 100}}>
+      <View style={{flex: 1, marginTop: 98}}>
         <Shadow distance={3}>
           <View style={commonStyles.bottomTabSheet}>
             <TouchableOpacity onPress={goHome}>
-              <Text style={commonStyles.commonText}>홈</Text>
+              <Text
+                style={[
+                  commonStyles.commonText,
+                  {
+                    marginTop: 15,
+                    marginLeft: 15,
+                  },
+                ]}>
+                홈
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={goSet}>
               <Text style={commonStyles.selectText}>작성</Text>

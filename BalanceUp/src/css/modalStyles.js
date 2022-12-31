@@ -52,7 +52,7 @@ const modalInnerStyles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
   }, // 모달이 띄워졌을 때 화면을 어둡게 하기 위한 오버레이
 
   // SetPlanScreen 완료 모달 style
@@ -142,6 +142,31 @@ const modalInnerStyles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     color: '#000',
+  },
+
+  // Progress 완료 모달
+  complteModalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+  },
+  centerSheetContainer: {
+    width: 300,
+    height: 250,
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 30,
+  },
+
+  // Progress 삭제 모달
+  deleteSheetContainer: {
+    height: 250,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    padding: 30,
   },
 });
 

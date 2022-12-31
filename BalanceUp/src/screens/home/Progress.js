@@ -1,31 +1,147 @@
-import React, {useState} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
-  SafeAreaView,
+  TouchableWithoutFeedback,
+  Animated,
+  PanResponder,
   Image,
+  Dimensions,
+  Modal,
+  Pressable,
   ScrollView,
-  ViewStyle,
-  Button,
 } from 'react-native';
 import commonStyles from '../../css/commonStyles';
+import modalInnerStyles from '../../css/modalStyles';
 import KeyumIcon from '../../resource/image/KeyumEmoticon.png';
-import Svg, {
-  Circle,
-  Ellipse,
-  G,
-  Line,
-  Text as SvgText,
-  Rect,
-} from 'react-native-svg';
+import Svg, {Circle, Text as SvgText, Rect} from 'react-native-svg';
 import * as ProgressLib from 'react-native-progress';
+import {useNavigation} from '@react-navigation/native';
 
-const todoTmp = ['item1', 'item2', 'item3'];
-const todoTmpSub = ['itemSub1', 'itemSub2', 'itemSub3'];
+const todoTmpSub = ['운동하기', '청소하기', '공부하기'];
 
-const Progress = ({navigation}) => {
+const Progress = () => {
+  const navigation = useNavigation();
+  const [todoTmp, setTodoTmp] = useState([
+    {
+      id: '1',
+      title: '운동하기',
+      completed: false,
+    },
+    {
+      id: '2',
+      title: '청소하기',
+      completed: false,
+    },
+    {
+      id: '3',
+      title: '공부하기',
+      completed: false,
+    },
+  ]);
+
+  const [completeModalVisible, setCompleteModalVisible] = useState(false);
+  const [completeChangeModalVisible, setCompleteChangeModalVisible] =
+    useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+
+  // 모달 기능 구현
+  const screenHeight = Dimensions.get('screen').height;
+
+  const panY = useRef(new Animated.Value(screenHeight)).current;
+
+  const translateY = panY.interpolate({
+    inputRange: [-1, 0, 1],
+    outputRange: [-1, 0, 1],
+  });
+
+  const resetBottomSheet = Animated.timing(panY, {
+    toValue: 0,
+    duration: 10,
+    useNativeDriver: true,
+  });
+
+  const closeBottomSheet = Animated.timing(panY, {
+    toValue: screenHeight,
+    duration: 300,
+    useNativeDriver: true,
+  });
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: gestureState => panY.setValue(gestureState.dy),
+      onPanResponderRelease: gestureState => {
+        if (gestureState.dy > 0 && gestureState.vy > 1.5) {
+          closeModal();
+        } else {
+          resetBottomSheet.start();
+        }
+      },
+    }),
+  ).current;
+
+  const closeModal = () => {
+    closeBottomSheet.start(() => setCompleteModalVisible(false));
+    closeBottomSheet.start(() => setCompleteChangeModalVisible(false));
+    closeBottomSheet.start(() => setDeleteModalVisible(false));
+  };
+
+  useEffect(() => {
+    if (completeModalVisible) {
+      resetBottomSheet.start();
+    }
+  }, [completeModalVisible]);
+
+  useEffect(() => {
+    if (completeChangeModalVisible) {
+      resetBottomSheet.start();
+    }
+  }, [completeChangeModalVisible]);
+
+  useEffect(() => {
+    if (deleteModalVisible) {
+      resetBottomSheet.start();
+    }
+  }, [deleteModalVisible]);
+
+  // 완료 체크 기능 구현
+  const handleComplete = id => {
+    let newTodoTmp = todoTmp.map(data => {
+      if (data.id === id && data.completed === false) {
+        data.completed = !data.completed;
+        setCompleteModalVisible(!completeModalVisible);
+      } else if (data.id === id && data.completed === true) {
+        console.log('data id :', data.id, 'id :', id);
+        setCompleteChangeModalVisible(!completeChangeModalVisible);
+      }
+      return data;
+    });
+    setTodoTmp(newTodoTmp);
+  };
+
+  // 완료 체크 취소 기능 구현(미완성)
+  const handleCompleteChange = id => {
+    let newTodoTmp = todoTmp.map(data => {
+      if (data.id === id) {
+        data.completed = !data.completed;
+        setCompleteChangeModalVisible(!completeChangeModalVisible);
+      }
+      return data;
+    });
+    setTodoTmp(newTodoTmp);
+  };
+
+  // 삭제 기능 구현
+  const handleRemove = id => {
+    let newTodoTmp = todoTmp.filter(data => data.id !== id);
+    setDeleteModalVisible(!deleteModalVisible);
+    setTodoTmp(newTodoTmp);
+  };
+
   return (
     <View>
       <View style={commonStyles.spacing2} />
@@ -69,51 +185,180 @@ const Progress = ({navigation}) => {
         </View>
       </Svg>
       <View style={commonStyles.spacing2} />
-      {todoTmp.map((value, index) => (
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+      {todoTmp.map((data, index) => (
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          key={data.id}>
           <View style={commonStyles.row}>
             <View style={styles.img1}>
               <Image source={KeyumIcon} style={styles.img2} />
             </View>
             <View style={styles.aimText1}>
-              <Text style={commonStyles.boldText}>item1</Text>
-              <Text>{todoTmpSub[index]}</Text>
+              <Text style={commonStyles.mainText}>{data.title}</Text>
+              <Text style={commonStyles.subText}>{todoTmpSub[index]}</Text>
             </View>
-
-            <Svg height={80} style={styles.svg2}>
-              <Circle cx="30" cy="30" r="25" fill="#626262" />
-              <SvgText
-                x="15"
-                y="35"
-                text-anchor="middle"
-                fill="black"
-                style={styles.mainText2}>
-                완료
-              </SvgText>
-            </Svg>
-            <Svg height={80} style={styles.svg3}>
-              <Rect width={50} height={60} fill="#626262" />
-              <SvgText
-                x="15"
-                y="35"
-                text-anchor="middle"
-                fill="black"
-                style={styles.mainText2}>
-                수정
-              </SvgText>
-            </Svg>
-            <Svg height={80} style={styles.svg3}>
-              <Rect width={50} height={60} fill="#626262" />
-              <SvgText
-                x="15"
-                y="35"
-                text-anchor="middle"
-                fill="black"
-                style={styles.mainText2}>
-                삭제
-              </SvgText>
-            </Svg>
+            <TouchableWithoutFeedback onPress={() => handleComplete(data.id)}>
+              <Svg height={80} style={styles.svg2}>
+                <Circle
+                  cx="30"
+                  cy="30"
+                  r="25"
+                  fill={data.completed ? '#D9D9D9' : null}
+                />
+                <SvgText
+                  x="15"
+                  y="35"
+                  text-anchor="middle"
+                  fill="black"
+                  style={styles.mainText2}>
+                  완료
+                </SvgText>
+              </Svg>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPress={() => navigation.navigate('Plan')}>
+              <Svg height={80} style={styles.svg3}>
+                <Rect width={50} height={60} fill="#F2F2F2" />
+                <SvgText
+                  x="15"
+                  y="35"
+                  text-anchor="middle"
+                  fill="black"
+                  style={styles.mainText2}>
+                  수정
+                </SvgText>
+              </Svg>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPress={() => setDeleteModalVisible(!deleteModalVisible)}>
+              <Svg height={80} style={styles.svg3}>
+                <Rect width={50} height={60} fill="#D9D9D9" />
+                <SvgText
+                  x="15"
+                  y="35"
+                  text-anchor="middle"
+                  fill="black"
+                  style={styles.mainText2}>
+                  삭제
+                </SvgText>
+              </Svg>
+            </TouchableWithoutFeedback>
           </View>
+
+          {/* 완료 모달 구현 코드 */}
+          <Modal
+            visible={completeModalVisible}
+            animationType={'fade'}
+            transparent={true}
+            statusBarTranslucent={true}>
+            <Pressable
+              style={modalInnerStyles.complteModalOverlay}
+              onPress={() => setCompleteModalVisible(!completeModalVisible)}>
+              <TouchableWithoutFeedback>
+                <Animated.View
+                  style={{
+                    ...modalInnerStyles.centerSheetContainer,
+                    transform: [{translateY: translateY}],
+                  }}
+                  {...panResponder.panHandlers}>
+                  {/* 모달에 들어갈 내용을 아래에 작성 */}
+                  <Text style={modalInnerStyles.logoutModalTitle}>
+                    오늘의 루틴을 완료했습니다! (그래픽 예정)
+                  </Text>
+                  <Text style={modalInnerStyles.logoutModalTitle}>+1 RP</Text>
+                </Animated.View>
+              </TouchableWithoutFeedback>
+            </Pressable>
+          </Modal>
+
+          {/* 완료 취소 모달 구현 코드 */}
+          <Modal
+            visible={completeChangeModalVisible}
+            animationType={'fade'}
+            transparent={true}
+            statusBarTranslucent={true}>
+            <Pressable
+              style={modalInnerStyles.modalOverlay}
+              onPress={() =>
+                setCompleteChangeModalVisible(!completeChangeModalVisible)
+              }>
+              <TouchableWithoutFeedback>
+                <Animated.View
+                  style={{
+                    ...modalInnerStyles.bottomSheetContainer,
+                    transform: [{translateY: translateY}],
+                  }}
+                  {...panResponder.panHandlers}>
+                  {/* 모달에 들어갈 내용을 아래에 작성 */}
+                  <Text style={modalInnerStyles.logoutModalTitle}>
+                    루틴을 이미 완료했습니다!
+                  </Text>
+                  <Text style={modalInnerStyles.logoutModalText}>
+                    루틴 완료를 취소하시겠습니까? {'\n'}
+                    루틴 완료 기록과 획득 RP가 사라집니다
+                  </Text>
+                  <View style={modalInnerStyles.modalFlex}>
+                    <TouchableOpacity
+                      style={modalInnerStyles.noBtn}
+                      onPress={() => setCompleteChangeModalVisible(false)}>
+                      <Text style={modalInnerStyles.noText}>아니요</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={modalInnerStyles.yesBtn}
+                      onPress={() => {
+                        handleCompleteChange(data.id);
+                        console.log('complete change id : ', data.id);
+                      }}>
+                      <Text style={modalInnerStyles.nextText}>취소할래요!</Text>
+                    </TouchableOpacity>
+                  </View>
+                </Animated.View>
+              </TouchableWithoutFeedback>
+            </Pressable>
+          </Modal>
+
+          {/* 삭제 모달 구현 코드 */}
+          <Modal
+            visible={deleteModalVisible}
+            animationType={'fade'}
+            transparent={true}
+            statusBarTranslucent={true}>
+            <Pressable
+              style={modalInnerStyles.modalOverlay}
+              onPress={() => setDeleteModalVisible(!deleteModalVisible)}>
+              <TouchableWithoutFeedback>
+                <Animated.View
+                  style={{
+                    ...modalInnerStyles.deleteSheetContainer,
+                    transform: [{translateY: translateY}],
+                  }}
+                  {...panResponder.panHandlers}>
+                  {/* 모달에 들어갈 내용을 아래에 작성 */}
+                  <Text style={modalInnerStyles.logoutModalTitle}>
+                    진행중인 루틴입니다!
+                  </Text>
+                  <Text style={modalInnerStyles.logoutModalText}>
+                    루틴을 삭제하시겠습니까? {'\n'}
+                    해당 루틴에 대한 모든 기록이 사라집니다{'\n'}
+                    *루틴 완료 기록, 획득 RP
+                  </Text>
+                  <View style={modalInnerStyles.modalFlex}>
+                    <TouchableOpacity
+                      style={modalInnerStyles.noBtn}
+                      onPress={() => setDeleteModalVisible(false)}>
+                      <Text style={modalInnerStyles.noText}>아니요</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={modalInnerStyles.yesBtn}
+                      onPress={() => handleRemove(data.id)}>
+                      <Text style={modalInnerStyles.nextText}>삭제할래요!</Text>
+                    </TouchableOpacity>
+                  </View>
+                </Animated.View>
+              </TouchableWithoutFeedback>
+            </Pressable>
+          </Modal>
         </ScrollView>
       ))}
     </View>
