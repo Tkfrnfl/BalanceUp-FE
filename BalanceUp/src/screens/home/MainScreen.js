@@ -50,6 +50,7 @@ import {
   CalendarProvider,
 } from 'react-native-calendars';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import PushNotification from 'react-native-push-notification';
 
 LocaleConfig.locales.fr = {
   monthNames: [
@@ -107,6 +108,23 @@ const MainScreen = ({navigation, route}) => {
   //   const dataToken = JSON.parse(value);
   //   console.log(dataToken);
   // }, []);
+
+  React.useEffect(() => {
+    PushNotification.setApplicationIconBadgeNumber(0);
+    // PushNotification.cancelAllLocalNotifications();
+    // PushNotification.localNotificationSchedule({
+    //   vibrate: true,
+    //   vibration: 300,
+    //   priority: 'hight',
+    //   visibility: 'public',
+    //   importance: 'hight',
+    //   message: messages,
+    //   playSound: false,
+    //   number: 1,
+    //   actions: '["OK"]',
+    //   date: sendTime,
+    // });
+  }, []);
 
   const todo = ['할일1', '할일2', '할일3', '할일4'];
   const todoTmp = ['item1', 'item2', 'item3'];
@@ -177,6 +195,30 @@ const MainScreen = ({navigation, route}) => {
     navigation.navigate('MyPage');
   };
 
+  const notify=()=>{
+
+
+    PushNotification.createChannel(
+      {
+      channelId: "channel-id",
+      channelName: "My channel",
+      channelDescription: "A channel to categorise your notifications",
+      playSound: false,
+      soundName: "default",
+      vibrate: true,
+      },
+      (created) => console.log(`createChannel returned '${created}'`)
+  );
+
+
+    PushNotification.localNotificationSchedule({
+      channelId: 'channel-id',
+      message: "notified",
+      date: new Date(Date.now() + 15 * 1000), // in 60 secs
+    });
+  }
+  
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollview}>
@@ -195,6 +237,15 @@ const MainScreen = ({navigation, route}) => {
         </View>
         <View style={commonStyles.spacing} />
         <View style={commonStyles.spacing} />
+        {/* 알람 테스트 코드 */}
+        {/* <TouchableOpacity
+            style = {{hegith:100+"%", width:100+"%", flex:1, justifyContent:"center", alignItems:"center"}}
+            onPress={() =>{notify()}}
+          >
+                        <Text>
+              알림(클릭)
+            </Text>
+          </TouchableOpacity> */}
         <View style={commonStyles.spacing} />
         <View>
           <Text style={[commonStyles.boldText, styles.centering]}>
