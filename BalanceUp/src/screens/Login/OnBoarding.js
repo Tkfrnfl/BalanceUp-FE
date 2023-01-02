@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {WithLocalSvg} from 'react-native-svg';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import FastImage from 'react-native-fast-image';
 import Swiper from 'react-native-swiper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -19,8 +18,6 @@ import {
   jwtRefreshState,
 } from '../../recoil/atom';
 
-import KeyumIcon from '../../resource/image/KeyumEmoticon.png';
-import testGif from '../../resource/image/testGif.gif';
 import jwt_decode from 'jwt-decode';
 import KeyumTypo from '../../resource/image/KeyumLOGOTYPO.png';
 import OnBoarding_1 from '../../resource/image/Onboarding/onboarding-1.png';
@@ -136,7 +133,7 @@ export default function OnBoarding({navigation}) {
         showsButtons={true}>
         {TextData.map(data => (
           <View style={styles.slide} key={data.id}>
-            <FastImage style={styles.onBoardingIMG} source={data.img} />
+            <Image style={styles.onBoardingIMG} source={data.img} />
             <Text style={styles.title}>{data.title}</Text>
             <Text style={styles.subTitle}>{data.text}</Text>
           </View>
@@ -148,7 +145,8 @@ export default function OnBoarding({navigation}) {
           {backgroundColor: btnDisabled ? '#CED6FF' : '#585FFF'},
         ]}
         onPress={goLogin}
-        disabled={btnDisabled}>
+        disabled={btnDisabled}
+        activeOpacity={1.0}>
         <Text style={styles.btnText}>시작하기</Text>
       </TouchableOpacity>
     </View>

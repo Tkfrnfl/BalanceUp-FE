@@ -8,9 +8,9 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   Keyboard,
+  Image,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
-import FastImage from 'react-native-fast-image';
 import {nickNameState} from '../../recoil/atom';
 import {
   useRecoilState,
@@ -138,7 +138,7 @@ const NameScreen = ({navigation}) => {
           <Text style={styles.passText}>{checkTextPass}</Text>
         </View>
         <View style={styles.gifView}>
-          <FastImage style={styles.onboardingImg} source={NameOnboarding} />
+          <Image style={styles.onboardingImg} source={NameOnboarding} />
         </View>
         <TouchableOpacity
           style={[
