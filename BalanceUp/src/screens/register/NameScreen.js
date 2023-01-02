@@ -20,7 +20,7 @@ import {
 } from 'recoil';
 
 import {validateText} from '../../utils/regex';
-import duplicationCheckAPI from '../../actions/duplicationCheckAPI';
+import {duplicationCheckAPI} from '../../actions/checkNameAPI';
 import testGif from '../../resource/image/testGif.gif';
 
 const NameScreen = ({navigation}) => {
@@ -61,7 +61,8 @@ const NameScreen = ({navigation}) => {
   // 중복 확인 구현
   const duplicationCheck = () => {
     duplicationCheckAPI(userName).then(response => {
-      if (response === true) {
+      console.log(response);
+      if (response === response) {
         setCheckTextPass('사용 가능한 닉네임입니다');
       } else {
         setCheckTextError('이미 존재하는 닉네임입니다');

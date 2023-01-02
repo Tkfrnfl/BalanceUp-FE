@@ -20,7 +20,7 @@ import KeyumTypo from '../../resource/image/KeyumLOGOTYPO.png';
 import modalInnerStyles from '../../css/modalStyles';
 import {validateText} from '../../utils/regex';
 import commonStyles from '../../css/commonStyles';
-import ChangeNameAPI from '../../actions/ChangeNameAPI';
+import {ChangeNameAPI} from '../../actions/checkNameAPI';
 
 const MyPage = ({navigation}) => {
   const [userName, setUserName] = useState('');
