@@ -110,7 +110,7 @@ const Progress = () => {
 
   // 완료 체크 기능 구현
   const handleComplete = id => {
-    let newTodoTmp = todoTmp.map(data => {
+    todoTmp.map(data => {
       if (data.id === id && data.completed === false) {
         let copy = [...todoTmp];
         copy[parseInt(data.id) - 1] = {
@@ -121,7 +121,6 @@ const Progress = () => {
         setTodoTmp(copy);
         setCompleteModalVisible(!completeModalVisible);
       } else if (data.id === id && data.completed === true) {
-        // console.log('data id :', data.id, 'id :', id);
         setNowdata(data);
         setCompleteChangeModalVisible(!completeChangeModalVisible);
       }
@@ -132,7 +131,7 @@ const Progress = () => {
   // 완료 체크 취소 기능 구현(미완성)
   const handleCompleteChange = id => {
     // console.log(nowdata);
-    let newTodoTmp = todoTmp.map(data => {
+    todoTmp.map(data => {
       if (data.id === id) {
         let copy = [...todoTmp];
         copy[parseInt(nowdata.id) - 1] = {
