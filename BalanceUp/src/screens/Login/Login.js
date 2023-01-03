@@ -25,7 +25,7 @@ import {
 } from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {userNameState, jwtState, jwtRefreshState} from '../../recoil/atom';
-
+import FastImage from 'react-native-fast-image';
 import {WithLocalSvg} from 'react-native-svg';
 import Login_Onboading from '../../resource/image/Login/login_onborading.png';
 import KakaoSvg from '../../resource/image/Login/Kakao.svg';
@@ -124,7 +124,7 @@ export default function Login({navigation}) {
   return (
     <View style={styles.container}>
       <View style={styles.imgView}>
-        <Image style={{width: 335, height: 335}} source={Login_Onboading} />
+        <FastImage style={{width: 335, height: 335}} source={Login_Onboading} />
       </View>
       <Text style={styles.title}>만나서 반가워요!</Text>
       <Text style={styles.subTitle}>로그인 할 계정을 선택해 주세요</Text>

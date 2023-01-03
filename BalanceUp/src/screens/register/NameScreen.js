@@ -19,7 +19,7 @@ import {
   useResetRecoilState,
 } from 'recoil';
 import {WithLocalSvg} from 'react-native-svg';
-
+import FastImage from 'react-native-fast-image';
 import {validateText} from '../../utils/regex';
 import {duplicationCheckAPI} from '../../actions/checkNameAPI';
 import NameOnboarding from '../../resource/image/Name/NameOnboarding.png';
@@ -138,7 +138,7 @@ const NameScreen = ({navigation}) => {
           <Text style={styles.passText}>{checkTextPass}</Text>
         </View>
         <View style={styles.gifView}>
-          <Image style={styles.onboardingImg} source={NameOnboarding} />
+          <FastImage style={styles.onboardingImg} source={NameOnboarding} />
         </View>
         <TouchableOpacity
           style={[

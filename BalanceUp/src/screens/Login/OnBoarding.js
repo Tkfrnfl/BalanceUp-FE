@@ -9,7 +9,7 @@ import {
   useSetRecoilState,
   useResetRecoilState,
 } from 'recoil';
-
+import FastImage from 'react-native-fast-image';
 import {getRefreshToken} from '../../actions/memberJoinApi';
 import {
   nickNameState,
@@ -104,7 +104,6 @@ export default function OnBoarding({navigation}) {
   ];
 
   const [btnDisabled, setBtnDisabled] = useState(true);
-  const [pageIndex, setPageIndex] = useState(0);
 
   const goLogin = () => {
     navigation.navigate('Login');
@@ -133,7 +132,7 @@ export default function OnBoarding({navigation}) {
         showsButtons={true}>
         {TextData.map(data => (
           <View style={styles.slide} key={data.id}>
-            <Image style={styles.onBoardingIMG} source={data.img} />
+            <FastImage style={styles.onBoardingIMG} source={data.img} />
             <Text style={styles.title}>{data.title}</Text>
             <Text style={styles.subTitle}>{data.text}</Text>
           </View>
