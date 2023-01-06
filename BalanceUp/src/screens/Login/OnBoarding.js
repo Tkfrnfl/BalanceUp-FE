@@ -82,6 +82,7 @@ export default function OnBoarding({navigation}) {
     }
   };
 
+  const [btnDisabled, setBtnDisabled] = useState(true);
   const TextData = [
     {
       id: 1,
@@ -103,8 +104,6 @@ export default function OnBoarding({navigation}) {
     },
   ];
 
-  const [btnDisabled, setBtnDisabled] = useState(true);
-
   const goLogin = () => {
     navigation.navigate('Login');
   };
@@ -112,7 +111,7 @@ export default function OnBoarding({navigation}) {
   const handleChange = index => {
     if (index === 2) {
       setBtnDisabled(false);
-    } else if (index === 0 || 1) {
+    } else {
       setBtnDisabled(true);
     }
   };
@@ -126,7 +125,8 @@ export default function OnBoarding({navigation}) {
         dot={<View style={styles.dotStyle} />}
         activeDot={<View style={styles.activeDotStyle} />}
         loop={false}
-        onIndexChanged={index => handleChange(index)}
+        removeClippedSubviews={false}
+        onIndexChanged={handleChange}
         nextButton={<WithLocalSvg style={styles.svgStyle} asset={NextBtn} />}
         prevButton={<WithLocalSvg style={styles.svgStyle} asset={PrevBtn} />}
         showsButtons={true}>
@@ -151,6 +151,7 @@ export default function OnBoarding({navigation}) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   slide: {
     alignItems: 'center',
