@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -12,28 +12,53 @@ import {
   TextInput,
   Keyboard,
   Switch,
+  FlatList,
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
+import {WithLocalSvg} from 'react-native-svg';
 import modalInnerStyles from '../../css/modalStyles';
 import styles from '../../css/SetPlanScreenStyles';
+import backArrow from '../../resource/image/Common/backArrow.svg';
 
 const SetPlanScreen = ({navigation, route}) => {
-  // const {planText} = route.params;
+  const {planText} = route.params;
 
+  const [selected, setSelected] = useState(new Map());
   const [lengthTodo, setLengthTodo] = useState(0);
   const [todoText, setTodoText] = useState('');
+  const dayData = [
+    {
+      id: 1,
+      title: '월',
+    },
+    {
+      id: 2,
+      title: '화',
+    },
+    {
+      id: 3,
+      title: '수',
+    },
+    {
+      id: 4,
+      title: '목',
+    },
+    {
+      id: 5,
+      title: '금',
+    },
+    {
+      id: 6,
+      title: '토',
+    },
+    {
+      id: 7,
+      title: '일',
+    },
+  ];
 
-  const [sunActive, setSunActive] = useState(0, false);
-  const [monActive, setMonActive] = useState(1, true);
-  const [tueActive, setTueActive] = useState(1, true);
-  const [wenActive, setWenActive] = useState(1, true);
-  const [thurActive, setThurActive] = useState(1, true);
-  const [friActive, setFriActive] = useState(1, true);
-  const [satActive, setSatActive] = useState(0, false);
-  const [dayText, setDayText] = useState(['월', '화', '수', '목', '금']);
-  const dayBy = ['일', '월', '화', '수', '목', '금', '토'];
-
-  console.log(dayText);
+  const [dayText, setDayText] = useState('');
+  const dayBy = ['월', '화', '수', '목', '금', '토', '일'];
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [clearModalVisible, setClearModalVisible] = useState(false);
@@ -44,9 +69,7 @@ const SetPlanScreen = ({navigation, route}) => {
   const [alertMin, setAlertMin] = useState('00');
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-
   const [shouldShow, setShouldShow] = useState(true);
-
   const [disabled, setDisabled] = useState(false);
 
   // 모달 기능 구현
@@ -103,67 +126,39 @@ const SetPlanScreen = ({navigation, route}) => {
     }
   }, [clearModalVisible]);
 
+  // 버튼 활성화/비활성화
+  useEffect(() => {
+    setDisabled(!(lengthTodo && dayText));
+  }, [lengthTodo, dayText]);
+
+  useEffect(() => {
+    if (dayText.length === 0) {
+      setDayText('');
+    }
+  }, [dayText]);
+
   // input 기능 구현
   const handleTextChange = toDo => {
     setLengthTodo(toDo.length);
     setTodoText(toDo);
-    console.log(todoText);
   };
 
   // 요일 선택 기능 구현
-  const handelSunActive = () => {
-    setSunActive(sunActive + 1);
-    sunActive % 2 === 0 ? setSunActive(true) : setSunActive(false);
-    sunActive
-      ? setDayText(dayText.filter(str => str !== '일'))
-      : setDayText([...dayText, '일']);
-  };
-  const handelMonActive = () => {
-    setMonActive(monActive + 1);
-    monActive % 2 === 0 ? setMonActive(true) : setMonActive(false);
-    monActive
-      ? setDayText(dayText.filter(str => str !== '월'))
-      : setDayText([...dayText, '월']);
-  };
-  const handelTueActive = () => {
-    setTueActive(tueActive + 1);
-    tueActive % 2 === 0 ? setTueActive(true) : setTueActive(false);
-    tueActive
-      ? setDayText(dayText.filter(str => str !== '화'))
-      : setDayText([...dayText, '화']);
-  };
-  const handelWenActive = () => {
-    setWenActive(wenActive + 1);
-    wenActive % 2 === 0 ? setWenActive(true) : setWenActive(false);
-    wenActive
-      ? setDayText(dayText.filter(str => str !== '수'))
-      : setDayText([...dayText, '수']);
-  };
-  const handelThurActive = () => {
-    setThurActive(thurActive + 1);
-    thurActive % 2 === 0 ? setThurActive(true) : setThurActive(false);
-    thurActive
-      ? setDayText(dayText.filter(str => str !== '목'))
-      : setDayText([...dayText, '목']);
-  };
-  const handelFriActive = () => {
-    setFriActive(friActive + 1);
-    friActive % 2 === 0 ? setFriActive(true) : setFriActive(false);
-    friActive
-      ? setDayText(dayText.filter(str => str !== '금'))
-      : setDayText([...dayText, '금']);
-  };
-  const handelSatActive = () => {
-    setSatActive(satActive + 1);
-    satActive % 2 === 0 ? setSatActive(true) : setSatActive(false);
-    satActive
-      ? setDayText(dayText.filter(str => str !== '토'))
-      : setDayText([...dayText, '토']);
-  };
+  const onSelect = useCallback(
+    (id, title) => {
+      const newSelected = new Map(selected);
+      newSelected.set(id, !selected.get(id));
+      setSelected(newSelected);
+      !selected.get(id)
+        ? setDayText([...dayText, title])
+        : setDayText(dayText.filter(str => str !== title));
+    },
+    [selected],
+  );
+  console.log(dayText);
 
   // 토글 스위치 구현
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-
   const handleSwitchOn = () => {
     setShouldShow(!shouldShow);
     isEnabled ? setAlertHour('') : setAlertHour('09');
@@ -178,41 +173,7 @@ const SetPlanScreen = ({navigation, route}) => {
     );
   };
 
-  // 버튼 활성화/비활성화
-  useEffect(() => {
-    setDisabled(
-      !(
-        lengthTodo &&
-        (sunActive ||
-          monActive ||
-          tueActive ||
-          wenActive ||
-          thurActive ||
-          friActive ||
-          satActive)
-      ),
-    );
-  }, [
-    lengthTodo,
-    sunActive,
-    monActive,
-    tueActive,
-    wenActive,
-    thurActive,
-    friActive,
-    satActive,
-  ]);
-
   // 네비게이션 구현
-  const goNext = () => {
-    navigation.navigate('Main');
-    setIsModalVisible(false);
-  };
-
-  const goBack = () => {
-    navigation.navigate('Set');
-  };
-
   const goClear = () => {
     // state props 값 잘 넘어가는지 check
     navigation.navigate('Main', {
@@ -224,137 +185,72 @@ const SetPlanScreen = ({navigation, route}) => {
     setClearModalVisible(false);
   };
 
+  const Item = ({id, title, selected, onSelect}) => {
+    return (
+      <TouchableOpacity
+        style={[
+          styles.daySelectBtn,
+          {backgroundColor: selected ? '#585FFF' : '#CED6FF'},
+        ]}
+        activeOpacity={1.0}
+        onPress={() => onSelect(id, title)}>
+        <Text style={styles.btnText}>{title}</Text>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <View style={styles.topSheet}>
-          <TouchableOpacity onPress={goBack}>
-            {/* 임시 디자인 버튼 */}
-            <Text style={styles.arrowBtn}>⬅</Text>
-          </TouchableOpacity>
-          <Text style={styles.topTitle}>루틴 설정</Text>
-          <TouchableOpacity onPress={() => setIsModalVisible(!isModalVisible)}>
-            {/* 임시 디자인 버튼 */}
-            <Text style={styles.xBtn}>X</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.subTitle}>
-          <Text style={styles.subText}>
-            나를 키울 루틴은 {'\n'}어떻게 진행되나요?
-          </Text>
-        </View>
-
-        {/* input 구현 코드*/}
+        <TouchableOpacity onPress={() => navigation.navigate('Set')}>
+          <WithLocalSvg style={styles.arrowBtn} asset={backArrow} />
+        </TouchableOpacity>
+        <Text style={styles.topTitle}>
+          나를 키울 루틴은 {'\n'}어떻게 진행되나요?
+        </Text>
         <View style={styles.inputSheet}>
           <Text style={styles.inputText}>루틴명</Text>
+          <Text style={styles.count}>{lengthTodo}/20</Text>
           <TextInput
             style={styles.inputStyle}
-            fontSize={18}
+            fontSize={16}
             maxLength={20}
             autoCapitalize="none"
-            placeholder="예) 물💧 마시기!"
+            placeholder="ex) 물💧 마시기!"
             onChangeText={handleTextChange}
           />
-          <Text style={styles.count}>{lengthTodo}/20</Text>
         </View>
-
-        {/* 요일 선택 구현 코드 */}
         <View style={styles.daySelect}>
           <Text style={styles.daySelectText}>진행 요일</Text>
-          <Text style={styles.recText}>*주2일 이상 루틴을 실천해보세요!</Text>
+          <Text style={styles.recText}>주 2일 이상 루틴을 실천해 보세요</Text>
         </View>
         <View style={styles.daySelectBtnView}>
-          <TouchableOpacity
-            style={[
-              styles.daySelectBtn,
-              {backgroundColor: sunActive ? '#6D81FA' : '#D9D9D9'},
-            ]}
-            onPress={handelSunActive}>
-            <Text
-              style={[styles.btnText, {color: sunActive ? '#fff' : '#000'}]}>
-              일
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.daySelectBtn,
-              {backgroundColor: monActive ? '#6D81FA' : '#D9D9D9'},
-            ]}
-            onPress={handelMonActive}>
-            <Text
-              style={[styles.btnText, {color: monActive ? '#fff' : '#000'}]}>
-              월
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.daySelectBtn,
-              {backgroundColor: tueActive ? '#6D81FA' : '#D9D9D9'},
-            ]}
-            onPress={handelTueActive}>
-            <Text
-              style={[styles.btnText, {color: tueActive ? '#fff' : '#000'}]}>
-              화
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.daySelectBtn,
-              {backgroundColor: wenActive ? '#6D81FA' : '#D9D9D9'},
-            ]}
-            onPress={handelWenActive}>
-            <Text
-              style={[styles.btnText, {color: wenActive ? '#fff' : '#000'}]}>
-              수
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.daySelectBtn,
-              {backgroundColor: thurActive ? '#6D81FA' : '#D9D9D9'},
-            ]}
-            onPress={handelThurActive}>
-            <Text
-              style={[styles.btnText, {color: thurActive ? '#fff' : '#000'}]}>
-              목
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.daySelectBtn,
-              {backgroundColor: friActive ? '#6D81FA' : '#D9D9D9'},
-            ]}
-            onPress={handelFriActive}>
-            <Text
-              style={[styles.btnText, {color: friActive ? '#fff' : '#000'}]}>
-              금
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.daySelectBtn,
-              {backgroundColor: satActive ? '#6D81FA' : '#D9D9D9'},
-            ]}
-            onPress={handelSatActive}>
-            <Text
-              style={[styles.btnText, {color: satActive ? '#fff' : '#000'}]}>
-              토
-            </Text>
-          </TouchableOpacity>
+          <FlatList
+            data={dayData}
+            horizontal={true}
+            renderItem={({item}) => (
+              <Item
+                id={item.id}
+                title={item.title}
+                selected={!!selected.get(item.id)}
+                onSelect={onSelect}
+              />
+            )}
+            keyExtractor={item => item.id}
+            extraData={selected}
+          />
         </View>
-
-        {/* 시간 알림 코드 */}
         <View style={styles.alertView}>
           <Text style={styles.alertText}>루틴 알림</Text>
           <Switch
-            trackColor={{false: '#767577', true: '#6D81FA'}}
-            thumbColor={isEnabled ? '#fff' : '#f4f3f4'}
+            trackColor={{false: '#CED6FF', true: '#585FFF'}}
+            thumbColor={isEnabled ? '#FFFFFF' : '#FFFFFF'}
             onValueChange={toggleSwitch}
             value={isEnabled}
             onChange={handleSwitchOn}
             style={[
               styles.switchStyle,
-              {transform: [{scaleX: 1.3}, {scaleY: 1.3}]},
+              {transform: [{scaleX: 1.1}, {scaleY: 1.1}]},
             ]}
           />
         </View>
@@ -390,15 +286,15 @@ const SetPlanScreen = ({navigation, route}) => {
             }}
           />
         </View>
-        <View style={{alignItems: 'center'}}>
+        <View style={styles.nextBtnSheet}>
           <TouchableOpacity
             style={[
-              styles.Nextbutton,
-              {backgroundColor: disabled ? '#ADADAD' : '#6D81FA'},
+              styles.nextBtn,
+              {backgroundColor: disabled ? '#CED6FF' : '#585FFF'},
             ]}
             disabled={disabled}
             onPress={handleCheck}>
-            <Text style={styles.NextbuttonText}>완료</Text>
+            <Text style={styles.nextBtnText}>완료</Text>
           </TouchableOpacity>
         </View>
 
@@ -418,13 +314,12 @@ const SetPlanScreen = ({navigation, route}) => {
                   transform: [{translateY: translateY}],
                 }}
                 {...panResponder.panHandlers}>
-                {/* 모달에 들어갈 내용을 아래에 작성 */}
                 <Text style={modalInnerStyles.clearModalTitle}>
-                  설정 루틴이 맞나요?
+                  설정한 루틴이 맞나요?
                 </Text>
                 <View style={styles.checkView}>
                   <Text style={{color: '#000', fontWeight: 'bold'}}>
-                    {/* [{planText}] */}
+                    [{planText}]
                   </Text>
                   <Text style={modalInnerStyles.todoText}>{todoText}</Text>
                   <Text style={modalInnerStyles.dayText}>{dayText}</Text>
@@ -444,45 +339,6 @@ const SetPlanScreen = ({navigation, route}) => {
                     style={modalInnerStyles.yesBtn}
                     onPress={goClear}>
                     <Text style={modalInnerStyles.nextText}>맞습니다!</Text>
-                  </TouchableOpacity>
-                </View>
-              </Animated.View>
-            </TouchableWithoutFeedback>
-          </Pressable>
-        </Modal>
-
-        {/* close 모달 구현 코드 */}
-        <Modal
-          visible={isModalVisible}
-          animationType={'fade'}
-          transparent={true}
-          statusBarTranslucent={true}>
-          <Pressable
-            style={modalInnerStyles.modalOverlay}
-            onPress={() => setIsModalVisible(!isModalVisible)}>
-            <TouchableWithoutFeedback>
-              <Animated.View
-                style={{
-                  ...modalInnerStyles.bottomSheetContainer,
-                  transform: [{translateY: translateY}],
-                }}
-                {...panResponder.panHandlers}>
-                {/* 모달에 들어갈 내용을 아래에 작성 */}
-                <Text style={modalInnerStyles.modalTitle}>
-                  루틴 설정을 종료하시겠어요?
-                </Text>
-                <View style={modalInnerStyles.modalFlex}>
-                  <TouchableOpacity
-                    style={modalInnerStyles.noBtn}
-                    onPress={() => setIsModalVisible(false)}>
-                    <Text style={modalInnerStyles.noText}>아니요</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={modalInnerStyles.nextBtn}
-                    onPress={goNext}>
-                    <Text style={modalInnerStyles.nextText}>
-                      다음에 정할래요!
-                    </Text>
                   </TouchableOpacity>
                 </View>
               </Animated.View>
