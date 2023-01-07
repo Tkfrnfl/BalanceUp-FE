@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 // import WeekCalendar from '../../components/WeekCalendar';
 // import WeekCalendar from 'react-native-calendars';
-import {Theme} from '../../utils/theme';
 import {MarkingProps} from '../../utils/MarkingProps';
 import moment from 'moment';
 import {format} from 'date-fns';

@@ -4,21 +4,36 @@ import {
   Text,
   View,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   SafeAreaView,
   Image,
   ScrollView,
+  Pressable,
+  Animated,
+  Modal,
+  Platform,
+  ImageBackground,
 } from 'react-native';
 import commonStyles from '../../css/commonStyles';
 import ProgressCircle from 'react-native-progress-circle';
 // import WeekCalendar from '../../components/WeekCalendar';
 // import WeekCalendar from 'react-native-calendars';
-import {Theme} from '../../utils/theme';
 import {MarkingProps} from '../../utils/MarkingProps';
 import moment from 'moment';
 import {Shadow} from 'react-native-shadow-2';
 import {format} from 'date-fns';
 import * as Progress from 'react-native-progress';
 import KeyumIcon from '../../resource/image/KeyumEmoticon.png';
+import arrow from '../../resource/image/Main/arrow.png';
+import arrow2 from '../../resource/image/Main/arrow2.png';
+import arrow3 from '../../resource/image/Main/arrow3.png';
+import life from '../../resource/image/life.png';
+import education from '../../resource/image/education.png';
+import mental from '../../resource/image/mental.png';
+import health from '../../resource/image/health.png';
+import lv1 from '../../resource/image/Main/1lv.gif';
+import edit from '../../resource/image/Main/edit.png';
+import delete2 from '../../resource/image/Main/delete.png';
 import Svg, {
   Circle,
   Ellipse,
@@ -49,6 +64,7 @@ import {
   ExpandableCalendar,
   CalendarProvider,
 } from 'react-native-calendars';
+import modalInnerStyles from '../../css/modalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PushNotification from 'react-native-push-notification';
 
@@ -126,9 +142,11 @@ const MainScreen = ({navigation, route}) => {
     // });
   }, []);
 
-  const todo = ['할일1', '할일2', '할일3', '할일4'];
+  const todo = ['일상', '학습', '마음관리', '운동'];
+  const todoImg = [life, education, mental, health];
   const todoTmp = ['item1', 'item2', 'item3'];
   const todoTmpSub = ['itemSub1', 'itemSub2', 'itemSub3'];
+  const todoComplete = [0.5, 1, 0.5, 1];
   // const buttonStyle: ViewStyle = {
   //   backgroundColor: '#626262',
   //   borderColr: '#626262',
@@ -154,6 +172,11 @@ const MainScreen = ({navigation, route}) => {
   const [selectedDate, setSelectedDate] = useState(
     format(new Date(), 'yyyy-MM-dd'),
   );
+  const [completeModalVisible, setCompleteModalVisible] = useState(false);
+  const [completeChangeModalVisible, setCompleteChangeModalVisible] =
+    useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+
   const posts = [
     {
       id: 1,
@@ -195,48 +218,119 @@ const MainScreen = ({navigation, route}) => {
     navigation.navigate('MyPage');
   };
 
-  const notify=()=>{
-
-
+  const notify = () => {
     PushNotification.createChannel(
       {
-      channelId: "channel-id",
-      channelName: "My channel",
-      channelDescription: "A channel to categorise your notifications",
-      playSound: false,
-      soundName: "default",
-      vibrate: true,
+        channelId: 'channel-id',
+        channelName: 'My channel',
+        channelDescription: 'A channel to categorise your notifications',
+        playSound: false,
+        soundName: 'default',
+        vibrate: true,
       },
-      (created) => console.log(`createChannel returned '${created}'`)
-  );
-
+      created => console.log(`createChannel returned '${created}'`),
+    );
 
     PushNotification.localNotificationSchedule({
       channelId: 'channel-id',
-      message: "notified",
+      message: 'notified',
       date: new Date(Date.now() + 15 * 1000), // in 60 secs
     });
-  }
-  
+  };
 
+  const checkComplete = index => {
+    if (todoComplete[index] === 1) {
+      setCompleteModalVisible(true);
+    } else {
+      setCompleteChangeModalVisible(true);
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollview}>
         <View style={styles.titleWrapper}>
-          <View style={commonStyles.spacing} />
-          <Text style={styles.title1}>KEYUM</Text>
-          <Text style={styles.mainText}>Lv.2</Text>
-          <Progress.Bar
-            progress={0.3}
-            width={200}
-            height={10}
-            color={'#626262'}
-          />
           <View style={commonStyles.spacing2} />
-          {/* <MainCarousel> 캐러셀 임시 구현</MainCarousel> */}
+          <Text style={styles.mainText}>??님은</Text>
+          <View style={commonStyles.row}>
+            <Text style={styles.mainText6}>?</Text>
+            <Text style={styles.mainText}>만큼 성장했어요</Text>
+          </View>
+          <Text style={styles.mainText7}>?RP 달성시, LV.? 레벨 업!</Text>
+
+          <Image source={lv1} style={styles.img3} />
+          <Text style={styles.mainText8}>키움 성장 가이드</Text>
+
+          <Shadow distance={10} startColor={'#F1F1F1'}>
+            <Svg height={100} width={350} styles={[]}>
+              <Rect
+                x={0}
+                y={0}
+                width={350}
+                height={100}
+                style={[]}
+                strokeWidth="0"
+                fill="#FFFFFF"
+              />
+              <Rect
+                x={25}
+                y={20}
+                width="36"
+                height="18"
+                rx="9"
+                fill="#585FFF"
+              />
+              <SvgText
+                x={33}
+                y={33}
+                style={styles.mainText9}
+                fill="white"
+                fontWeight={600}>
+                Lv.
+              </SvgText>
+              <SvgText
+                x={285}
+                y={33}
+                style={styles.mainText9}
+                fill="gray"
+                fontWeight={600}>
+                ?/? RP
+              </SvgText>
+              <SvgText
+                x={30}
+                y={83}
+                style={styles.mainText9}
+                fill="#BCBCBC"
+                fontWeight={600}>
+                0
+              </SvgText>
+              <SvgText
+                x={305}
+                y={83}
+                style={styles.mainText9}
+                fill="#BCBCBC"
+                fontWeight={600}>
+                20
+              </SvgText>
+
+              <Progress.Bar
+                progress={0.3}
+                width={300}
+                height={8}
+                color={'#585FFF'}
+                borderColor={'#FFFFFF'}
+                unfilledColor={'#CED6FF'}
+                style={styles.bar1}
+              />
+              <Image source={arrow} style={dstyle(0.3 * 300).bar} />
+              <View style={dstyleText(0.3 * 300).bar}>
+                <Text style={styles.mainText9}>10</Text>
+              </View>
+            </Svg>
+          </Shadow>
+
+          <View style={commonStyles.spacing2} />
         </View>
-        <View style={commonStyles.spacing} />
-        <View style={commonStyles.spacing} />
+
         {/* 알람 테스트 코드 */}
         {/* <TouchableOpacity
             style = {{hegith:100+"%", width:100+"%", flex:1, justifyContent:"center", alignItems:"center"}}
@@ -246,32 +340,22 @@ const MainScreen = ({navigation, route}) => {
               알림(클릭)
             </Text>
           </TouchableOpacity> */}
-        <View style={commonStyles.spacing} />
+        <View style={commonStyles.spacing2} />
         <View>
           <Text style={[commonStyles.boldText, styles.centering]}>
-            아직 완료하지 않은 루틴이 있어요!
+            완료하지 않은 루틴이 있어요!
           </Text>
-          <View style={commonStyles.row}>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             {todo.map((value, index) => (
-              <View style={styles.svg1}>
-                <View style={styles.img1}>
-                  <Image source={KeyumIcon} style={styles.img2} />
+              <View>
+                <View style={styles.view1}>
+                  <Image source={todoImg[index]} style={styles.img4} />
                 </View>
-                <Svg height={100}>
-                  <Circle cx="48" cy="50" r="43" fill="#626262" />
-                  <SvgText
-                    x="28"
-                    y="55"
-                    text-anchor="middle"
-                    fill="white"
-                    style={styles.mainText2}
-                    key={index}>
-                    {value}
-                  </SvgText>
-                </Svg>
+                <Text style={styles.mainText10}>{todo[index]}</Text>
+                <Text style={styles.mainText11}>0/1</Text>
               </View>
             ))}
-          </View>
+          </ScrollView>
         </View>
         <View style={commonStyles.spacing2} />
         <View style={[commonStyles.row]}>
@@ -282,24 +366,35 @@ const MainScreen = ({navigation, route}) => {
           <TouchableOpacity
             style={styles.button2}
             onPress={() => navigation.push('LookAll')}>
-            <Text>전체보기 </Text>
+            <Text> &nbsp; 전체보기 &nbsp;</Text>
           </TouchableOpacity>
         </View>
         <CalendarProvider
           // todayButtonStyle={buttonStyle}
           // style={styles.button2}
-          // theme={theme}
           date={fomatToday}>
           <ExpandableCalendar
-            monthFormat={'yyyy년 MM월'}
-            leftArrowImageSource=""
-            rightArrowImageSource=""
+            monthFormat={'MM월'}
+            leftArrowImageSource={arrow2}
+            rightArrowImageSource={arrow3}
             allowShadow={false}
             markedDates={markedSelectedDates}
             theme={{
-              selectedDayBackgroundColor: '#626262',
-              dotColor: '#626262',
+              arrowColor: 'black',
+              textMonthFontWeight: '800',
+              selectedDayBackgroundColor: '#585FFF',
+              dotColor: '#585FFF',
               todayTextColor: '#009688',
+              'stylesheet.calendar.header': {
+                header: {
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  paddingLeft: 50,
+                  paddingRight: 50,
+                  marginTop: 6,
+                  alignItems: 'center',
+                },
+              },
             }}
             onDayPress={day => {
               setSelectedDate(day.dateString);
@@ -307,40 +402,175 @@ const MainScreen = ({navigation, route}) => {
             // onDayPress={day => this.setState({selected_date: day.dateString})}
           />
         </CalendarProvider>
-        <View style={commonStyles.spacing2} />
+
         <View>
           {todoTmp.map((value, index) => (
-            <View style={commonStyles.row}>
-              <View style={styles.img1}>
-                <Image source={KeyumIcon} style={styles.img2} />
-              </View>
-              <View style={styles.aimText1}>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              style={styles.view2}>
+              <Image source={todoImg[index]} style={styles.img2_gray} />
+              <Image
+                source={todoImg[index]}
+                style={img2(todoComplete[index]).bar}
+              />
+
+              <View style={aimText1(todoComplete[index]).bar}>
                 <Text style={commonStyles.boldText}>item1</Text>
                 <Text>{todoTmpSub[index]}</Text>
               </View>
+              <TouchableWithoutFeedback onPress={() => checkComplete(index)}>
+                <Svg height={80} style={svg2(todoComplete[index]).bar}>
+                  <Rect
+                    x={20}
+                    y={20}
+                    width="60"
+                    height="34"
+                    rx="18"
+                    fill="#585FFF"
+                  />
+                  <SvgText
+                    x={37}
+                    y={40}
+                    style={styles.mainText12}
+                    fill="white"
+                    fontWeight={600}>
+                    완료
+                  </SvgText>
+                </Svg>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback onPress={() => console.log()}>
+                <Image source={edit} />
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback
+                onPress={() => setDeleteModalVisible(true)}>
+                <Image source={delete2} />
+              </TouchableWithoutFeedback>
+              {/* 완료 모달 구현 코드 */}
+              <Modal
+                visible={completeModalVisible}
+                animationType={'fade'}
+                transparent={true}
+                statusBarTranslucent={true}>
+                <Pressable
+                  style={modalInnerStyles.complteModalOverlay}
+                  onPress={() =>
+                    setCompleteModalVisible(!completeModalVisible)
+                  }>
+                  <TouchableWithoutFeedback>
+                    <Animated.View
+                      style={{
+                        ...modalInnerStyles.centerSheetContainer,
+                        // transform: [{translateY: translateY}],
+                      }}
+                      // {...panResponder.panHandlers}
+                    >
+                      {/* 모달에 들어갈 내용을 아래에 작성 */}
+                      <Text style={modalInnerStyles.logoutModalTitle}>
+                        오늘의 루틴을 완료했습니다! (그래픽 예정)
+                      </Text>
+                      <Text style={modalInnerStyles.logoutModalTitle}>
+                        +1 RP
+                      </Text>
+                    </Animated.View>
+                  </TouchableWithoutFeedback>
+                </Pressable>
+              </Modal>
 
-              <Svg height={80} style={styles.svg2}>
-                <Circle cx="30" cy="30" r="25" fill="#626262" />
-                <SvgText
-                  x="15"
-                  y="35"
-                  text-anchor="middle"
-                  fill="white"
-                  style={styles.mainText2}>
-                  test
-                </SvgText>
-              </Svg>
+              {/* 완료 취소 모달 구현 코드 */}
+              <Modal
+                visible={completeChangeModalVisible}
+                animationType={'fade'}
+                transparent={true}
+                statusBarTranslucent={true}>
+                <Pressable
+                  style={modalInnerStyles.modalOverlay}
+                  onPress={() =>
+                    setCompleteChangeModalVisible(!completeChangeModalVisible)
+                  }>
+                  <TouchableWithoutFeedback>
+                    <Animated.View
+                      style={{
+                        ...modalInnerStyles.bottomSheetContainer,
+                        // transform: [{translateY: translateY}],
+                      }}
+                      // {...panResponder.panHandlers}
+                    >
+                      {/* 모달에 들어갈 내용을 아래에 작성 */}
+                      <Text style={modalInnerStyles.logoutModalTitle}>
+                        이미 완료한 루틴입니다!
+                      </Text>
+                      <Text style={modalInnerStyles.logoutModalText}>
+                        루틴 완료를 취소하시겠습니까? {'\n'}
+                        루틴 완료 기록과 획득 RP가 사라집니다
+                      </Text>
+                      <View style={modalInnerStyles.modalFlex}>
+                        <TouchableOpacity
+                          style={modalInnerStyles.noBtn}
+                          onPress={() => setCompleteChangeModalVisible(false)}>
+                          <Text style={modalInnerStyles.noText}>아니요</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={modalInnerStyles.yesBtn}
+                          onPress={() => {
+                            // handleCompleteChange(data.id);
+                            // console.log('complete change id : ', data.id);
+                          }}>
+                          <Text style={modalInnerStyles.nextText}>
+                            취소할래요!
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </Animated.View>
+                  </TouchableWithoutFeedback>
+                </Pressable>
+              </Modal>
 
-              {/* <ProgressCircle
-            percent={30}
-            radius={50}
-            borderWidth={8}
-            color="#3399FF"
-            shadowColor="#999"
-            bgColor="#fff">
-            <Text style={{fontSize: 18}}>{'30%'}</Text>
-          </ProgressCircle> */}
-            </View>
+              {/* 삭제 모달 구현 코드 */}
+              <Modal
+                visible={deleteModalVisible}
+                animationType={'fade'}
+                transparent={true}
+                statusBarTranslucent={true}>
+                <Pressable
+                  style={modalInnerStyles.modalOverlay}
+                  onPress={() => setDeleteModalVisible(!deleteModalVisible)}>
+                  <TouchableWithoutFeedback>
+                    <Animated.View
+                      style={{
+                        ...modalInnerStyles.deleteSheetContainer,
+                        // transform: [{translateY: translateY}],
+                      }}
+                      // {...panResponder.panHandlers}
+                    >
+                      {/* 모달에 들어갈 내용을 아래에 작성 */}
+                      <Text style={modalInnerStyles.logoutModalTitle}>
+                        진행중인 루틴입니다!
+                      </Text>
+                      <Text style={modalInnerStyles.logoutModalText}>
+                        루틴을 삭제하시겠습니까? {'\n'}
+                        해당 루틴에 대한 모든 기록이 사라집니다{'\n'}
+                        *루틴 완료 기록, 획득 RP
+                      </Text>
+                      <View style={modalInnerStyles.modalFlex}>
+                        <TouchableOpacity
+                          style={modalInnerStyles.noBtn}
+                          onPress={() => setDeleteModalVisible(false)}>
+                          <Text style={modalInnerStyles.noText}>아니요</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={modalInnerStyles.yesBtn}
+                          onPress={() => console.log()}>
+                          <Text style={modalInnerStyles.nextText}>
+                            삭제할래요!
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </Animated.View>
+                  </TouchableWithoutFeedback>
+                </Pressable>
+              </Modal>
+            </ScrollView>
           ))}
         </View>
         <View style={commonStyles.spacing}>
@@ -379,6 +609,51 @@ const MainScreen = ({navigation, route}) => {
   );
 };
 
+const dstyle = x =>
+  StyleSheet.create({
+    bar: {
+      marginLeft: x + 12,
+      marginTop: -12,
+    },
+  });
+const dstyleText = x =>
+  StyleSheet.create({
+    bar: {
+      marginLeft: x + 17,
+      marginTop: 70,
+      position: 'absolute',
+    },
+  });
+
+const img2 = x =>
+  StyleSheet.create({
+    bar: {
+      resizeMode: 'stretch',
+      height: 70,
+      width: 70,
+      opacity: x,
+    },
+  });
+
+const aimText1 = x =>
+  StyleSheet.create({
+    bar: {
+      paddingLeft: 20,
+      paddingRight: 100,
+      paddingTop: 10,
+      opacity: x,
+    },
+  });
+
+const svg2 = x =>
+  StyleSheet.create({
+    bar: {
+      width: 150,
+      zIndex: 10,
+      opacity: x,
+    },
+  });
+
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
@@ -387,9 +662,9 @@ const styles = StyleSheet.create({
   },
   titleWrapper: {
     width: '100%',
-    height: 100,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#FAFBFF',
   },
   title1: {
     fontSize: 65,
@@ -407,6 +682,10 @@ const styles = StyleSheet.create({
   },
   button2: {
     paddingTop: 5,
+    borderColor: '#EBEBEB',
+    borderWidth: 1,
+    borderRadius: 5,
+    height: 30,
   },
   buttonText: {
     fontSize: 25,
@@ -415,11 +694,34 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   aimText1: {
-    paddingLeft: 50,
+    paddingLeft: 20,
     paddingRight: 100,
+    paddingTop: 10,
   },
   mainText: {
-    fontSize: 20,
+    fontSize: 25,
+    color: '#232323',
+    fontWeight: '600',
+  },
+  mainText6: {
+    fontSize: 25,
+    color: '#585FFF',
+    fontWeight: '600',
+  },
+  mainText7: {
+    fontSize: 12,
+    color: '#232323',
+    fontWeight: '600',
+    marginTop: 10,
+  },
+  mainText8: {
+    fontSize: 12,
+    color: '#888888',
+    fontWeight: '600',
+    alignSelf: 'flex-end',
+    textDecorationLine: 'underline',
+    marginRight: 30,
+    marginBottom: 20,
   },
   mainText2: {
     fontSize: 20,
@@ -433,19 +735,51 @@ const styles = StyleSheet.create({
   mainText4: {
     paddingRight: 60,
   },
+  mainText9: {
+    color: 'white',
+    fontWeight: '600',
+  },
+  mainText12: {
+    color: 'white',
+    fontWeight: '600',
+  },
+  mainText10: {
+    marginTop: 10,
+    marginLeft: 20,
+    color: '#232323',
+    fontWeight: '600',
+    alignSelf: 'center',
+    fontSize: 15,
+  },
+  mainText11: {
+    marginTop: 10,
+    marginLeft: 20,
+    color: '#585FFF',
+    fontWeight: '600',
+    alignSelf: 'center',
+    fontSize: 15,
+  },
   centering: {
     alignItems: 'center',
     paddingLeft: 20,
+    color: '#232323',
   },
   img1: {
     marginBottom: -30,
-    paddingLeft: 35,
+    paddingLeft: 15,
     zIndex: 10,
   },
-  img2: {
+  img2_gray: {
     resizeMode: 'stretch',
-    height: 30,
-    width: 30,
+    height: 70,
+    width: 70,
+    tintColor: 'gray',
+    position: 'absolute',
+  },
+  img3: {
+    resizeMode: 'stretch',
+    height: 350,
+    width: 350,
   },
   svg1: {
     width: 100,
@@ -454,9 +788,51 @@ const styles = StyleSheet.create({
     width: 150,
     zIndex: 10,
   },
-  // button2: {
-  //   color: '#626262',
-  // },
+  svg3: {
+    marginLeft: 50,
+  },
+  bar1: {
+    marginTop: 50,
+    marginLeft: 25,
+  },
+  bar2: {
+    marginLeft: 25,
+    marginTop: -10,
+  },
+  img4: {
+    width: 90,
+    height: 90,
+    borderRadius: 150 / 2,
+    overflow: 'hidden',
+  },
+  view1: {
+    width: 90,
+    height: 90,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    elevation: 5, // changed to a greater value
+    borderRadius: 150 / 2,
+    borderColor: 'black',
+    zIndex: 99, // added zIndex
+    backgroundColor: 'white', // added a background color
+    marginTop: 20,
+    marginLeft: 20,
+  },
+  view2: {
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 20},
+    shadowOpacity: 0.5,
+    shadowRadius: 30,
+    elevation: 7, // changed to a greater value
+    borderColor: 'black',
+    zIndex: 99, // added zIndex
+    backgroundColor: 'white', // added a background color
+    marginTop: 20,
+    paddingTop: 10,
+    marginLeft: 15,
+  },
 });
 
 export default MainScreen;

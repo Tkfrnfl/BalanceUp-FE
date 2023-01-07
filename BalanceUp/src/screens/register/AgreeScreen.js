@@ -22,7 +22,6 @@ import {
   useResetRecoilState,
 } from 'recoil';
 import {joinKakao} from '../../actions/memberJoinApi';
-import {response} from 'express';
 
 const AgreeScreen = ({navigation}) => {
   const [disabled, setDisabled] = useState(false);
