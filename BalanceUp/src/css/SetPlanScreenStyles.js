@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
   },
   topTitle: {
     fontSize: 22,
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-Bold',
     textAlign: 'center',
     marginTop: 30,
     color: '#000',
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   inputText: {
     top: 20,
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-Bold',
     color: '#000',
   },
   inputStyle: {
@@ -31,13 +31,14 @@ const styles = StyleSheet.create({
     marginTop: 8,
     borderWidth: 1,
     borderColor: '#AFAFAF',
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-Bold',
     paddingLeft: 20,
     borderRadius: 5,
   },
   count: {
     fontSize: 12,
     marginLeft: 325,
+    fontFamily: 'Pretendard-Medium',
     marginTop: 5,
     bottom: 3,
     color: '#888888',
@@ -50,14 +51,14 @@ const styles = StyleSheet.create({
   daySelectText: {
     color: '#000',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-Bold',
     marginLeft: 20,
   },
   recText: {
     top: 3,
     fontSize: 12,
     color: '#888888',
-    fontWeight: '500',
+    fontFamily: 'Pretendard-Medium',
     marginLeft: 15,
   },
   daySelectBtnView: {
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
   btnText: {
     fontSize: 14,
     color: '#fff',
-    fontWeight: '500',
+    fontFamily: 'Pretendard-Medium',
   },
   alertView: {
     marginTop: 40,
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
   },
   alertText: {
     color: '#000',
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 16,
     marginLeft: 20,
   },
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
   timeModalText: {
     color: '#585FFF',
     height: 20,
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-Bold',
     borderBottomWidth: 1,
     borderBottomColor: '#585FFF',
     marginTop: 21,
@@ -126,6 +127,7 @@ const styles = StyleSheet.create({
   },
   nextBtnText: {
     fontSize: 16,
+    fontFamily: 'Pretendard-Medium',
     color: '#fff',
   },
   nextBtnSheet: {

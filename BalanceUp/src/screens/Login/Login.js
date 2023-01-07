@@ -169,10 +169,11 @@ const styles = StyleSheet.create({
     color: '#232323',
     textAlign: 'center',
     fontSize: 22,
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-Bold',
   },
   subTitle: {
     width: '100%',
+    fontFamily: 'Pretendard-Medium',
     color: '#888888',
     textAlign: 'center',
     marginTop: 5,

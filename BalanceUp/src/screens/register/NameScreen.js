@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 22,
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-Bold',
     color: '#000',
   },
   form: {
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     borderColor: '#AFAFAF',
     borderRadius: 5,
     paddingLeft: 20,
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-Bold',
   },
   Nextbutton: {
     width: 400,
@@ -204,6 +204,7 @@ const styles = StyleSheet.create({
   },
   NextbuttonText: {
     fontSize: 16,
+    fontFamily: 'Pretendard-Medium',
     color: '#fff',
   },
   barWrap: {
@@ -222,7 +223,7 @@ const styles = StyleSheet.create({
   },
   duplicationText: {
     color: '#585FFF',
-    fontWeight: '500',
+    fontFamily: 'Pretendard-Medium',
     textAlign: 'center',
     fontSize: 16,
     marginTop: 11,
@@ -236,18 +237,18 @@ const styles = StyleSheet.create({
     color: '#AFAFAF',
     marginTop: -10,
     fontSize: 12,
-    fontWeight: '500',
+    fontFamily: 'Pretendard-Medium',
   },
   errorText: {
     color: '#F05D5D',
     marginTop: -10,
     fontSize: 12,
-    fontWeight: '500',
+    fontFamily: 'Pretendard-Medium',
   },
   passText: {
     color: '#00B528',
     fontSize: 12,
-    fontWeight: '500',
+    fontFamily: 'Pretendard-Medium',
     marginTop: -20,
   },
   onboardingImg: {

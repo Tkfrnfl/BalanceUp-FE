@@ -233,18 +233,19 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-Bold',
     color: '#232323',
     marginTop: 30,
     marginBottom: 20,
   },
   allAgreeText: {
     fontSize: 18,
-    fontWeight: '500',
+    fontFamily: 'Pretendard-Medium',
     color: '#232323',
   },
   agreeText: {
     fontSize: 14,
+    fontFamily: 'Pretendard-Regular',
     color: '#232323',
   },
   sheet: {
@@ -270,6 +271,7 @@ const styles = StyleSheet.create({
   },
   NextbuttonText: {
     fontSize: 16,
+    fontFamily: 'Pretendard-Medium',
     color: '#fff',
   },
   barWrap: {

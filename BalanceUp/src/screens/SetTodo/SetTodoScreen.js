@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: '600',
+    fontFamily: 'Pretendard-Bold',
     color: '#232323',
     textAlign: 'center',
     marginTop: 70,
@@ -170,13 +170,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   todoText: {
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 20,
     color: '#000',
     marginTop: 5,
   },
   todoSubText: {
-    fontWeight: '500',
+    fontFamily: 'Pretendard-Medium',
     color: '#888888',
     fontSize: 12,
     marginTop: 3,
@@ -196,6 +196,7 @@ const styles = StyleSheet.create({
   },
   nextBtnText: {
     fontSize: 16,
+    fontFamily: 'Pretendard-Medium',
     color: '#fff',
   },
 });

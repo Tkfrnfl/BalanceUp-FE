@@ -228,6 +228,7 @@ const SetPlanScreen = ({navigation, route}) => {
           <FlatList
             data={dayData}
             horizontal={true}
+            showsHorizontalScrollIndicator={false}
             renderItem={({item}) => (
               <Item
                 id={item.id}
