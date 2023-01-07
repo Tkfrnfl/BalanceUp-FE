@@ -3,11 +3,11 @@ import {
   StyleSheet,
   Text,
   View,
+  Linking,
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
-import CheckBox from '@react-native-community/checkbox';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   nickNameState,
@@ -55,27 +55,15 @@ const AgreeScreen = ({navigation}) => {
   };
 
   const useBtnEvent = () => {
-    if (useCheck === false) {
-      setUseCheck(true);
-    } else {
-      setUseCheck(false);
-    }
+    useCheck ? setUseCheck(false) : setUseCheck(true);
   };
 
   const serviceBtnEvent = () => {
-    if (serviceCheck === false) {
-      setServiceCheck(true);
-    } else {
-      setServiceCheck(false);
-    }
+    serviceCheck ? setServiceCheck(false) : setServiceCheck(true);
   };
 
   const ageBtnEvent = () => {
-    if (ageCheck === false) {
-      setAgeCheck(true);
-    } else {
-      setAgeCheck(false);
-    }
+    ageCheck ? setAgeCheck(false) : setAgeCheck(true);
   };
 
   useEffect(() => {
@@ -89,14 +77,6 @@ const AgreeScreen = ({navigation}) => {
   useEffect(() => {
     setDisabled(!allCheck);
   }, [allCheck]);
-
-  const useInfo = () => {
-    navigation.navigate('UseInfo');
-  };
-
-  const serviceInfo = () => {
-    navigation.navigate('ServiceInfo');
-  };
 
   const goJoin = async (): Promise<void> => {
     let res;
@@ -163,7 +143,13 @@ const AgreeScreen = ({navigation}) => {
             />
           )}
           <Text style={styles.agreeText}>개인정보 처리 방침 (필수)</Text>
-          <TouchableOpacity onPress={useInfo} activeOpacity={1.0}>
+          <TouchableOpacity
+            onPress={() =>
+              Linking.openURL(
+                'https://keyum.notion.site/KEYUM-dc7a7a7e475f402ea75025985a34061e',
+              )
+            }
+            activeOpacity={1.0}>
             <WithLocalSvg asset={moreInfoArrow} style={styles.arrow} />
           </TouchableOpacity>
         </View>
@@ -186,7 +172,13 @@ const AgreeScreen = ({navigation}) => {
             />
           )}
           <Text style={styles.agreeText}>서비스 이용약관 (필수)</Text>
-          <TouchableOpacity onPress={serviceInfo} activeOpacity={1.0}>
+          <TouchableOpacity
+            onPress={() =>
+              Linking.openURL(
+                'https://keyum.notion.site/KEYUM-dd9853b3ffa74f34951a57cfb7d195ce',
+              )
+            }
+            activeOpacity={1.0}>
             <WithLocalSvg asset={moreInfoArrow} style={styles.arrow1} />
           </TouchableOpacity>
         </View>
