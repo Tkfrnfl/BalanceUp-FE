@@ -1,9 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {Shadow} from 'react-native-shadow-2';
-import CheckBox from '@react-native-community/checkbox';
+import {WithLocalSvg} from 'react-native-svg';
 
-const Withdrawal = ({navigation}) => {
+import checkOn from '../../resource/image/Agree/check_on.svg';
+import checkOff from '../../resource/image/Agree/check_off.svg';
+import backArrow from '../../resource/image/Common/backArrow.svg';
+
+const Withdrawal = ({navigation: {navigate}}) => {
   const [useCheck, setUseCheck] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
@@ -19,55 +22,61 @@ const Withdrawal = ({navigation}) => {
     setDisabled(!useCheck);
   }, [useCheck]);
 
-  const goBack = () => {
-    navigation.navigate('MyPage');
-  };
-
-  const goLogout = () => {
-    navigation.navigate('Login');
-  };
-
   return (
     <View style={styles.container}>
-      <View style={styles.topSheet}>
-        <TouchableOpacity onPress={goBack}>
-          {/* 임시 디자인 버튼 */}
-          <Text style={styles.arrowBtn}>⬅</Text>
+      <View style={styles.innerContainer}>
+        <TouchableOpacity
+          onPress={() => navigate('MyPage')}
+          activeOpacity={1.0}>
+          <WithLocalSvg style={styles.arrowBtn} asset={backArrow} />
         </TouchableOpacity>
-        <Text style={styles.topTitle}>회원탈퇴</Text>
-      </View>
-      <Shadow distance={7}>
-        <View style={styles.nameSheet}>
-          <Text style={styles.nameText}>
-            회원탈퇴 유의사항을 확인해 주세요.
+        <View style={styles.topSheet}>
+          <Text style={styles.topTitle}>회원 탈퇴</Text>
+          <Text style={styles.subText}>아래 유의사항을 확인해 주세요</Text>
+        </View>
+        <View style={styles.infoSheet}>
+          <View style={{flexDirection: 'row', top: 8}}>
+            <Text style={styles.info_Text}>1.</Text>
+            <Text style={styles.infoText}>
+              루틴 기록, 캐릭터 성장을 포함하여 회원님이
+            </Text>
+          </View>
+          <Text style={[styles.infoText, {left: 19.5}]}>
+            설정한 정보가 모두 삭제됩니다.
           </Text>
-          <View style={styles.infoSheet}>
-            <Text style={styles.infoText}>
-              ☑️ 루틴기록, 캐릭터 성장을 포함하여
-            </Text>
-            <Text style={styles.info_Text}>
-              회원님이 설정한 정보가 모두 삭제됩니다.
-            </Text>
-            <Text style={styles.infoText}>
-              ☑️ 삭제된 데이터는 복구되지 않습니다.
+          <View style={{flexDirection: 'row', marginTop: 8}}>
+            <Text style={styles.info_Text}>2.</Text>
+            <Text style={[styles.infoText, {right: 12}]}>
+              삭제된 데이터는 복구되지 않습니다.
             </Text>
           </View>
         </View>
-      </Shadow>
-      <View style={styles.agreeSheet}>
-        <CheckBox
-          value={useCheck}
-          onValueChange={useBtnEvent}
-          tintColors={{true: '#525151'}}
-        />
-        <Text style={styles.agreeText}>위 내용에 동의하고 탈퇴하겠습니다.</Text>
+        <View style={styles.agreeSheet}>
+          {useCheck ? (
+            <WithLocalSvg
+              style={styles.allCheckBox}
+              asset={checkOn}
+              onPress={useBtnEvent}
+            />
+          ) : (
+            <WithLocalSvg
+              style={styles.allCheckBox}
+              asset={checkOff}
+              onPress={useBtnEvent}
+            />
+          )}
+          <Text style={styles.agreeText}>
+            위 내용에 동의하고 탈퇴하겠습니다
+          </Text>
+        </View>
       </View>
       <TouchableOpacity
         style={[
           styles.Nextbutton,
-          {backgroundColor: disabled ? '#979797' : '#CB0707'},
+          {backgroundColor: disabled ? '#CED6FF' : '#585FFF'},
         ]}
-        onPress={goLogout}
+        onPress={() => navigate('Login')}
+        activeOpacity={1.0}
         disabled={disabled}>
         <Text style={styles.NextbuttonText}>탈퇴하기</Text>
       </TouchableOpacity>
@@ -77,69 +86,71 @@ const Withdrawal = ({navigation}) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
     flex: 1,
+  },
+  innerContainer: {
+    flex: 1,
+  },
+  arrowBtn: {
+    marginTop: 20,
+    marginLeft: 20,
   },
   topSheet: {
     alignItems: 'center',
     marginTop: 10,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
   },
   topTitle: {
-    fontSize: 15,
-    fontWeight: '600',
     color: '#000',
+    fontSize: 22,
+    marginTop: 8,
+    fontFamily: 'Pretendard-Bold',
   },
-  arrowBtn: {
-    marginRight: 100,
-    marginBottom: 25,
-    fontSize: 60,
-    fontWeight: 'bold',
-    color: '#000',
+  subText: {
+    color: '#232323',
+    marginTop: 10,
+    fontFamily: 'Pretendard-Medium',
   },
-  nameSheet: {
-    backgroundColor: '#FAFAFA',
-    width: 400,
-    height: 250,
-  },
-  nameText: {
-    color: '#000',
-    fontWeight: 'bold',
-    marginLeft: 50,
-    marginTop: 45,
+  infoSheet: {
+    backgroundColor: '#F8F8F9',
+    marginTop: 25,
+    marginLeft: 20,
+    width: 350,
+    height: 111,
   },
   infoText: {
-    color: '#000',
-    fontWeight: '300',
-    marginLeft: 50,
-    marginTop: 25,
+    color: '#232323',
+    fontFamily: 'Pretendard-Regular',
+    marginLeft: 20,
+    marginTop: 8,
+    right: 10,
   },
   info_Text: {
-    color: '#000',
-    fontWeight: '300',
-    marginLeft: 70,
+    color: '#232323',
+    fontFamily: 'Pretendard-Regular',
+    marginLeft: 20,
+    marginTop: 8,
   },
   agreeSheet: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 50,
+    justifyContent: 'flex-start',
+    marginTop: 20,
+    marginLeft: 20,
   },
   agreeText: {
-    marginTop: 5,
-    color: '#000',
-    fontWeight: '500',
+    marginTop: 3,
+    marginLeft: 10,
+    color: '#232323',
+    fontFamily: 'Pretendard-Regular',
   },
   Nextbutton: {
-    width: '50%',
+    width: 400,
     alignItems: 'center',
-    borderRadius: 15,
-    padding: 10,
-    marginTop: 30,
-    marginLeft: 100,
+    padding: 15,
   },
   NextbuttonText: {
-    fontSize: 20,
+    fontSize: 16,
+    fontFamily: 'Pretendard-Medium',
     color: '#fff',
   },
 });

@@ -2,7 +2,6 @@ import React, {useState, useRef, useEffect} from 'react';
 import {
   View,
   Text,
-  Image,
   Modal,
   TextInput,
   Pressable,
@@ -15,14 +14,14 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
 } from 'react-native';
-import {Shadow} from 'react-native-shadow-2';
-import KeyumTypo from '../../resource/image/KeyumLOGOTYPO.png';
+import {WithLocalSvg} from 'react-native-svg';
+import moreInfoArrow from '../../resource/image/Agree/moreInfoArrow.svg';
 import modalInnerStyles from '../../css/modalStyles';
 import {validateText} from '../../utils/regex';
 import commonStyles from '../../css/commonStyles';
 import {ChangeNameAPI} from '../../actions/checkNameAPI';
 
-const MyPage = ({navigation}) => {
+const MyPage = ({navigation: {navigate}}) => {
   const [userName, setUserName] = useState('');
   const [checkTextError, setCheckTextError] = useState('');
   const [checkTextPass, setCheckTextPass] = useState('');
@@ -125,117 +124,80 @@ const MyPage = ({navigation}) => {
     });
   };
 
-  const handleRemove = () => {
-    setUserName('');
-    setCheckTextError('');
-    setCheckTextPass('');
-  };
-
   // 네이게이션 구현
-  const goBack = () => {
-    navigation.navigate('Main');
-  };
-  const goWithdrawal = () => {
-    navigation.navigate('Withdrawal');
-  };
   const goLogout = () => {
     setLogoutModalVisible(false);
-    navigation.navigate('Login');
-  };
-  const goNotice = () => {
-    navigation.navigate('Notice');
-  };
-
-  // 하단 탭바 네이게이션
-  const goHome = () => {
-    navigation.navigate('Main');
-  };
-  const goSet = () => {
-    navigation.navigate('Set');
-  };
-  const goLookAll = () => {
-    navigation.navigate('LookAll');
-  };
-  const goMyPage = () => {
-    navigation.navigate('MyPage');
+    navigate('Login');
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <View style={styles.topSheet}>
-          <TouchableOpacity onPress={goBack}>
-            {/* 임시 디자인 버튼 */}
-            <Text style={styles.arrowBtn}>⬅</Text>
-          </TouchableOpacity>
-          <Text style={styles.topTitle}>마이페이지</Text>
-        </View>
-        <Shadow distance={5}>
-          <View style={styles.nameSheet}>
-            <Text style={styles.nameText}>닉네임</Text>
-            <Text style={styles.userNameText}>김루틴</Text>
+        <View style={styles.innerContainer}>
+          <View style={styles.topSheet}>
+            <Text style={styles.topTitle}>김루틴님</Text>
             <TouchableOpacity
-              onPress={() => setIsModalVisible(!isModalVisible)}>
-              <Text style={styles.btnStyle}>➡️</Text>
+              onPress={() => navigate('Withdrawal')}
+              activeOpacity={1.0}>
+              <Text style={styles.withdrawalText}>회원 탈퇴</Text>
             </TouchableOpacity>
           </View>
-        </Shadow>
-        <View style={{marginTop: 10}}>
-          <Shadow distance={5}>
-            <View style={styles.nameSheet}>
-              <Text style={styles.nameText}>공지사항</Text>
-              <TouchableOpacity onPress={goNotice}>
-                <Text style={styles.logoutBtnStyle}>➡️</Text>
-              </TouchableOpacity>
-            </View>
-          </Shadow>
+          <View style={styles.menuSheet}>
+            <Text style={styles.menuText}>닉네임 설정</Text>
+            <TouchableOpacity
+              onPress={() => setIsModalVisible(!isModalVisible)}
+              activeOpacity={1.0}>
+              <WithLocalSvg
+                asset={moreInfoArrow}
+                style={[styles.arrowBtnStyle, {right: 18}]}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.menuSheet}>
+            <Text style={styles.menuText}>공지사항</Text>
+            <TouchableOpacity
+              onPress={() => navigate('Notice')}
+              activeOpacity={1.0}>
+              <WithLocalSvg
+                asset={moreInfoArrow}
+                style={styles.arrowBtnStyle}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.menuSheet}>
+            <Text style={styles.menuText}>로그아웃</Text>
+            <TouchableOpacity
+              onPress={() => setLogoutModalVisible(!logoutModalVisible)}
+              activeOpacity={1.0}>
+              <WithLocalSvg
+                asset={moreInfoArrow}
+                style={styles.arrowBtnStyle}
+              />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.verText}>Ver 1.0.0</Text>
         </View>
-        <View style={{marginTop: 10}}>
-          <Shadow distance={5}>
-            <View style={styles.nameSheet}>
-              <Text style={styles.nameText}>로그아웃</Text>
-              <TouchableOpacity
-                onPress={() => setLogoutModalVisible(!logoutModalVisible)}>
-                <Text style={styles.logoutBtnStyle}>➡️</Text>
-              </TouchableOpacity>
-            </View>
-          </Shadow>
-        </View>
-        <Text style={styles.verText}>Ver 1.0.0</Text>
-        <View style={styles.typoSheet}>
-          <Image source={KeyumTypo} />
-          <TouchableOpacity onPress={goWithdrawal}>
-            <Text style={styles.withdrawalText}>회원탈퇴</Text>
-          </TouchableOpacity>
-        </View>
-
         {/* 하단 탭바 */}
-        <View style={{flex: 1, marginTop: 40}}>
-          <Shadow distance={3}>
-            <View style={commonStyles.bottomTabSheet}>
-              <TouchableOpacity onPress={goHome}>
-                <Text
-                  style={[
-                    commonStyles.commonText,
-                    {
-                      marginTop: 15,
-                      marginLeft: 15,
-                    },
-                  ]}>
-                  홈
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={goSet}>
-                <Text style={commonStyles.commonText}>작성</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={goLookAll}>
-                <Text style={commonStyles.commonText}>루틴</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={goMyPage}>
-                <Text style={commonStyles.selectText}>마이페이지</Text>
-              </TouchableOpacity>
-            </View>
-          </Shadow>
+        <View style={commonStyles.bottomTabSheet}>
+          <TouchableOpacity onPress={() => navigate('Home')}>
+            <Text
+              style={[
+                commonStyles.commonText,
+                {
+                  marginTop: 15,
+                  marginLeft: 15,
+                },
+              ]}>
+              홈
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigate('Set')}>
+            <Text style={commonStyles.commonText}>작성</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigate('LookAll')}>
+            <Text style={commonStyles.commonText}>루틴</Text>
+          </TouchableOpacity>
+          <Text style={commonStyles.selectText}>마이페이지</Text>
         </View>
 
         {/* 닉네임 구현 코드 */}
@@ -273,12 +235,6 @@ const MyPage = ({navigation}) => {
                         placeholder={'11자 내 작성 (공백, 특수문자 불가)'}
                         placeholderTextColor={'D0D0D0'}
                       />
-                      <TouchableOpacity
-                        style={styles.inputBtn}
-                        activeOpacity={0.8}
-                        onPress={handleRemove}>
-                        <Text style={styles.inputBtnText}>X</Text>
-                      </TouchableOpacity>
                       <TouchableOpacity
                         style={styles.inputBtn}
                         onPress={handleChangeName}
@@ -350,67 +306,63 @@ const MyPage = ({navigation}) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: '#F8F8F9',
+    flex: 1,
+  },
+  innerContainer: {
     flex: 1,
   },
   topSheet: {
-    alignItems: 'center',
-    marginTop: 10,
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
   },
   topTitle: {
-    fontSize: 15,
-    fontWeight: '600',
+    fontSize: 22,
+    fontFamily: 'Pretendard-Bold',
+    marginTop: 40,
+    marginLeft: 20,
+    marginBottom: 30,
     color: '#000',
   },
-  arrowBtn: {
-    marginRight: 100,
-    marginBottom: 25,
-    fontSize: 60,
-    fontWeight: 'bold',
-    color: '#000',
+  withdrawalText: {
+    top: 43,
+    right: 20,
+    fontSize: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#888888',
+    fontFamily: 'Pretendard-Medium',
+    color: '#888888',
   },
-  nameSheet: {
+  menuSheet: {
     flexDirection: 'row',
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#FFFFFF',
+    marginTop: 2,
     width: 400,
-    height: 50,
+    height: 55,
   },
-  nameText: {
+  menuText: {
     color: '#000',
-    fontWeight: 'bold',
-    marginLeft: 50,
-    marginTop: 15,
+    fontSize: 16,
+    fontFamily: 'Pretendard-Medium',
+    marginLeft: 20,
+    marginTop: 16,
   },
-  userNameText: {
+  arrowBtnStyle: {
+    marginLeft: 290,
+    marginTop: 20,
+  },
+  blank: {
     color: '#000',
     fontWeight: 'bold',
     marginLeft: 200,
     marginTop: 15,
   },
-  btnStyle: {
-    marginLeft: 5,
-    marginTop: 15,
-  },
-  logoutBtnStyle: {
-    marginLeft: 230,
-    marginTop: 15,
-  },
-  withdrawalText: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#606060',
-    marginTop: 50,
-    color: '#606060',
-  },
   verText: {
-    color: '#000',
-    marginLeft: 300,
+    color: '#888888',
+    fontSize: 12,
+    fontFamily: 'Pretendard-Regular',
+    marginLeft: 330,
     marginTop: 20,
-  },
-  typoSheet: {
-    marginTop: 150,
-    alignItems: 'center',
   },
   inputWrapper: {
     width: '130%',
