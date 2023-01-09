@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import {View, Text, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
-import commonStyles from '../../css/commonStyles';
 import FastImage from 'react-native-fast-image';
 
 import education from '../../resource/image/SetTodo/education.png';
 import health from '../../resource/image/SetTodo/health.png';
 import life from '../../resource/image/SetTodo/life.png';
 import mental from '../../resource/image/SetTodo/mental.png';
+import {SetBottomTab} from '../BottomTab';
 
 const SetTodoScreen = ({navigation: {navigate}}) => {
   const [disabled, setDisabled] = useState(true);
@@ -98,7 +98,7 @@ const SetTodoScreen = ({navigation: {navigate}}) => {
           />
         )}
       />
-      <View style={{alignItems: 'center', top: 20}}>
+      <View style={{alignItems: 'center'}}>
         <TouchableOpacity
           style={[
             styles.nextBtn,
@@ -110,35 +110,7 @@ const SetTodoScreen = ({navigation: {navigate}}) => {
           <Text style={styles.nextBtnText}>다음</Text>
         </TouchableOpacity>
       </View>
-
-      {/* 하단 탭바 */}
-      <View style={{flex: 1, marginTop: 58}}>
-        <Shadow distance={3}>
-          <View style={commonStyles.bottomTabSheet}>
-            <TouchableOpacity onPress={() => navigate('Main')}>
-              <Text
-                style={[
-                  commonStyles.commonText,
-                  {
-                    marginTop: 15,
-                    marginLeft: 15,
-                  },
-                ]}>
-                홈
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigate('Set')}>
-              <Text style={commonStyles.selectText}>작성</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigate('LookAll')}>
-              <Text style={commonStyles.commonText}>루틴</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigate('MyPage')}>
-              <Text style={commonStyles.commonText}>마이페이지</Text>
-            </TouchableOpacity>
-          </View>
-        </Shadow>
-      </View>
+      <SetBottomTab navigate={navigate} />
     </View>
   );
 };
@@ -188,8 +160,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   nextBtn: {
-    width: 336,
+    width: 348,
     height: 48,
+    bottom: 30,
     alignItems: 'center',
     padding: 15,
     borderRadius: 5,

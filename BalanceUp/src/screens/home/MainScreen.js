@@ -50,6 +50,7 @@ import {
   CalendarProvider,
 } from 'react-native-calendars';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {HomeBottomTab} from '../BottomTab';
 
 LocaleConfig.locales.fr = {
   monthNames: [
@@ -90,17 +91,7 @@ let year = today.getFullYear(); // 년도
 let month = today.getMonth() + 1; // 월
 let date = today.getDate(); // 날짜
 
-const MainScreen = ({navigation, route}) => {
-  // 루틴 넘기는거 확인
-  // const {planText} = route.params;
-  // const {dayText} = route.params;
-  // const {todoText} = route.params;
-  // const {time} = route.params;
-  // console.log('카테고리:' + planText);
-  // console.log('루틴명:' + todoText);
-  // console.log('선택 요일:' + dayText);
-  // console.log('선택 시간:' + time);
-
+const MainScreen = ({navigation: {navigate}}) => {
   // React.useEffect(() => {
   //   const value = AsyncStorage.getItem('jwt');
   //   const valueRefresh = AsyncStorage.getItem('jwtRefresh');
@@ -163,20 +154,6 @@ const MainScreen = ({navigation, route}) => {
     },
   };
 
-  // 하단 탭바 네이게이션
-  const goHome = () => {
-    navigation.navigate('Main');
-  };
-  const goSet = () => {
-    navigation.navigate('Set');
-  };
-  const goLookAll = () => {
-    navigation.navigate('LookAll');
-  };
-  const goMyPage = () => {
-    navigation.navigate('MyPage');
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollview}>
@@ -230,7 +207,7 @@ const MainScreen = ({navigation, route}) => {
           </Text>
           <TouchableOpacity
             style={styles.button2}
-            onPress={() => navigation.push('LookAll')}>
+            onPress={() => navigate('LookAll')}>
             <Text>전체보기 </Text>
           </TouchableOpacity>
         </View>
@@ -292,45 +269,14 @@ const MainScreen = ({navigation, route}) => {
             </View>
           ))}
         </View>
-        <View style={commonStyles.spacing}>
-          <Text> </Text>
-        </View>
       </ScrollView>
-      <View>
-        {/* 하단 탭바 */}
-        <Shadow distance={3}>
-          <View style={commonStyles.bottomTabSheet}>
-            <TouchableOpacity onPress={goHome}>
-              <Text
-                style={[
-                  commonStyles.selectText,
-                  {
-                    marginTop: 15,
-                    marginLeft: 15,
-                  },
-                ]}>
-                홈
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={goSet}>
-              <Text style={commonStyles.commonText}>작성</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={goLookAll}>
-              <Text style={commonStyles.commonText}>루틴</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={goMyPage}>
-              <Text style={commonStyles.commonText}>마이페이지</Text>
-            </TouchableOpacity>
-          </View>
-        </Shadow>
-      </View>
+      <HomeBottomTab navigate={navigate} />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
   },

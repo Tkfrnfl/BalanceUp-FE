@@ -15,11 +15,13 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {WithLocalSvg} from 'react-native-svg';
+import {validateText} from '../../utils/regex';
+import {ChangeNameAPI} from '../../actions/checkNameAPI';
+import {MyBottomTab} from '../../screens/BottomTab/index';
+
 import moreInfoArrow from '../../resource/image/Agree/moreInfoArrow.svg';
 import modalInnerStyles from '../../css/modalStyles';
-import {validateText} from '../../utils/regex';
-import commonStyles from '../../css/commonStyles';
-import {ChangeNameAPI} from '../../actions/checkNameAPI';
+import errorSvg from '../../resource/image/Name/name_error.svg';
 
 const MyPage = ({navigation: {navigate}}) => {
   const [userName, setUserName] = useState('');
@@ -30,6 +32,22 @@ const MyPage = ({navigation: {navigate}}) => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
+
+  const sheetData = [
+    {
+      id: 1,
+      title: '닉네임 설정',
+    },
+    {
+      id: 2,
+      title: '공지사항',
+      func: 'Notice',
+    },
+    {
+      id: 3,
+      title: '로그아웃',
+    },
+  ];
 
   // 모달 기능 구현
   const screenHeight = Dimensions.get('screen').height;
@@ -130,6 +148,16 @@ const MyPage = ({navigation: {navigate}}) => {
     navigate('Login');
   };
 
+  const onClick = (id, func) => {
+    if (id === 1) {
+      setIsModalVisible(!isModalVisible);
+    } else if (id === 2) {
+      navigate(func);
+    } else if (id === 3) {
+      setLogoutModalVisible(!logoutModalVisible);
+    }
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
@@ -142,65 +170,28 @@ const MyPage = ({navigation: {navigate}}) => {
               <Text style={styles.withdrawalText}>회원 탈퇴</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.menuSheet}>
-            <Text style={styles.menuText}>닉네임 설정</Text>
-            <TouchableOpacity
-              onPress={() => setIsModalVisible(!isModalVisible)}
-              activeOpacity={1.0}>
-              <WithLocalSvg
-                asset={moreInfoArrow}
-                style={[styles.arrowBtnStyle, {right: 18}]}
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.menuSheet}>
-            <Text style={styles.menuText}>공지사항</Text>
-            <TouchableOpacity
-              onPress={() => navigate('Notice')}
-              activeOpacity={1.0}>
-              <WithLocalSvg
-                asset={moreInfoArrow}
-                style={styles.arrowBtnStyle}
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.menuSheet}>
-            <Text style={styles.menuText}>로그아웃</Text>
-            <TouchableOpacity
-              onPress={() => setLogoutModalVisible(!logoutModalVisible)}
-              activeOpacity={1.0}>
-              <WithLocalSvg
-                asset={moreInfoArrow}
-                style={styles.arrowBtnStyle}
-              />
-            </TouchableOpacity>
-          </View>
+          {sheetData.map(data => (
+            <View key={data.id} style={styles.menuSheet}>
+              <Text style={styles.menuText}>{data.title}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  onClick(data.id, data.func);
+                }}
+                activeOpacity={1.0}>
+                <WithLocalSvg
+                  asset={moreInfoArrow}
+                  style={[
+                    styles.arrowBtnStyle,
+                    {right: data.id === 1 ? 18 : null},
+                  ]}
+                />
+              </TouchableOpacity>
+            </View>
+          ))}
           <Text style={styles.verText}>Ver 1.0.0</Text>
         </View>
-        {/* 하단 탭바 */}
-        <View style={commonStyles.bottomTabSheet}>
-          <TouchableOpacity onPress={() => navigate('Home')}>
-            <Text
-              style={[
-                commonStyles.commonText,
-                {
-                  marginTop: 15,
-                  marginLeft: 15,
-                },
-              ]}>
-              홈
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigate('Set')}>
-            <Text style={commonStyles.commonText}>작성</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigate('LookAll')}>
-            <Text style={commonStyles.commonText}>루틴</Text>
-          </TouchableOpacity>
-          <Text style={commonStyles.selectText}>마이페이지</Text>
-        </View>
-
-        {/* 닉네임 구현 코드 */}
+        <MyBottomTab navigate={navigate} />
+        {/* 닉네임 변경 모달 코드 */}
         <Modal
           visible={isModalVisible}
           animationType={'fade'}
@@ -215,43 +206,59 @@ const MyPage = ({navigation: {navigate}}) => {
               <TouchableWithoutFeedback>
                 <Animated.View
                   style={{
-                    ...modalInnerStyles.bottomSheetContainer,
+                    ...modalInnerStyles.nameSheetContainer,
                     transform: [{translateY: translateY}],
                   }}
                   {...panResponder.panHandlers}>
-                  {/* 모달에 들어갈 내용을 아래에 작성 */}
-                  <Text style={modalInnerStyles.nameText}>
-                    닉네임을 입력해주세요
+                  <Text style={modalInnerStyles.modalTitle}>
+                    닉네임을 설정해 주세요
                   </Text>
-                  <View style={styles.form}>
-                    <View style={styles.inputWrapper}>
-                      <TextInput
-                        value={userName}
-                        onChangeText={handleTextChange}
-                        style={styles.textInput}
-                        // maxLength={11} : 코드로 제한해도 input으로 글자가 계속 입력되는 버그 확인
-                        autoCapitalize="none"
-                        fontSize={15}
-                        placeholder={'11자 내 작성 (공백, 특수문자 불가)'}
-                        placeholderTextColor={'D0D0D0'}
-                      />
-                      <TouchableOpacity
-                        style={styles.inputBtn}
-                        onPress={handleChangeName}
-                        activeOpacity={0.8}
-                        disabled={checkDisabled}>
-                        <Text style={styles.inputBtnText}>중복확인</Text>
-                      </TouchableOpacity>
-                    </View>
-                    <Text style={styles.errorText}>{checkTextError}</Text>
-                    <Text style={styles.passText}>{checkTextPass}</Text>
+                  <View style={styles.inputWrapper}>
+                    <TextInput
+                      value={userName}
+                      onChangeText={handleTextChange}
+                      style={[
+                        styles.textInput,
+                        {borderColor: checkTextError ? '#F05D5D' : '#AFAFAF'},
+                      ]}
+                      autoCapitalize="none"
+                      fontSize={15}
+                      placeholder="닉네임 입력"
+                      placeholderTextColor="#AFAFAF"
+                    />
+                    {checkTextError ? (
+                      <WithLocalSvg style={styles.errorImg} asset={errorSvg} />
+                    ) : null}
+                    <TouchableOpacity
+                      style={[
+                        styles.duplicationBtn,
+                        {borderColor: checkTextPass ? '#CED6FF' : '#585FFF'},
+                      ]}
+                      activeOpacity={1.0}
+                      onPress={handleChangeName}
+                      disabled={checkDisabled}>
+                      <Text
+                        style={[
+                          styles.duplicationText,
+                          {color: checkTextPass ? '#CED6FF' : '#585FFF'},
+                        ]}>
+                        중복확인
+                      </Text>
+                    </TouchableOpacity>
                   </View>
+                  {!checkTextError && !checkTextPass ? (
+                    <Text style={styles.inputText}>
+                      11자 내로 작성해 주세요 (공백, 특수문자 불가)
+                    </Text>
+                  ) : null}
+                  <Text style={styles.errorText}>{checkTextError}</Text>
+                  <Text style={styles.passText}>{checkTextPass}</Text>
                   <View style={modalInnerStyles.modalFlex}>
                     <TouchableOpacity
                       disabled={disabled}
                       style={[
                         modalInnerStyles.saveBtn,
-                        {backgroundColor: disabled ? '#979797' : '#6D81FA'},
+                        {backgroundColor: disabled ? '#CED6FF' : '#585FFF'},
                       ]}>
                       <Text style={modalInnerStyles.saveText}>저장</Text>
                     </TouchableOpacity>
@@ -278,19 +285,20 @@ const MyPage = ({navigation: {navigate}}) => {
                   transform: [{translateY: translateY}],
                 }}
                 {...panResponder.panHandlers}>
-                {/* 모달에 들어갈 내용을 아래에 작성 */}
-                <Text style={modalInnerStyles.logoutModalTitle}>로그아웃</Text>
+                <Text style={modalInnerStyles.modalTitle}>로그아웃</Text>
                 <Text style={modalInnerStyles.logoutModalText}>
                   로그아웃 하시겠습니까?
                 </Text>
                 <View style={modalInnerStyles.modalFlex}>
                   <TouchableOpacity
                     style={modalInnerStyles.noBtn}
+                    activeOpacity={1.0}
                     onPress={() => setLogoutModalVisible(false)}>
                     <Text style={modalInnerStyles.noText}>아니요</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={goLogout}
+                    activeOpacity={1.0}
                     style={modalInnerStyles.yesBtn}>
                     <Text style={modalInnerStyles.nextText}>네</Text>
                   </TouchableOpacity>
@@ -307,6 +315,9 @@ const MyPage = ({navigation: {navigate}}) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#F8F8F9',
+    flex: 1,
+  },
+  rootContainer: {
     flex: 1,
   },
   innerContainer: {
@@ -365,36 +376,62 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   inputWrapper: {
-    width: '130%',
+    marginTop: 20,
+    position: 'relative',
     paddingBottom: 20,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
   textInput: {
-    width: '60%',
-    height: 40,
-    borderBottomWidth: 1.5,
+    width: 235,
+    height: 48,
+    marginLeft: -8,
+    borderWidth: 1,
+    borderColor: '#AFAFAF',
+    borderRadius: 5,
+    paddingLeft: 20,
+    fontFamily: 'Pretendard-Bold',
+  },
+  duplicationBtn: {
+    width: 93,
+    height: 48,
+    borderWidth: 1,
+    borderColor: '#585FFF',
+    borderRadius: 5,
+    marginLeft: 20,
+  },
+  duplicationText: {
+    color: '#585FFF',
+    fontFamily: 'Pretendard-Medium',
+    textAlign: 'center',
+    fontSize: 16,
+    marginTop: 11,
+  },
+  inputText: {
+    color: '#AFAFAF',
+    marginTop: -10,
+    fontSize: 12,
+    fontFamily: 'Pretendard-Medium',
   },
   errorText: {
-    color: '#FF0000',
+    color: '#F05D5D',
     marginTop: -10,
+    fontSize: 12,
+    fontFamily: 'Pretendard-Medium',
   },
   passText: {
-    color: 'green',
+    color: '#00B528',
+    fontSize: 12,
+    fontFamily: 'Pretendard-Medium',
     marginTop: -20,
   },
-  inputBtnText: {
-    color: '#000',
-    width: 60,
-    marginLeft: -5,
-    marginRight: -40,
-    height: 30,
-    marginTop: 9.5,
-    borderBottomWidth: 1.5,
-  },
-  rootContainer: {
-    flex: 1,
+  errorImg: {
+    width: 18,
+    height: 18,
+    position: 'absolute',
+    left: 180,
+    top: 15,
   },
 });
 
