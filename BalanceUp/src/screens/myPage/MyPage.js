@@ -135,7 +135,7 @@ const MyPage = ({navigation: {navigate}}) => {
   const handleChangeName = () => {
     ChangeNameAPI(userName).then(response => {
       if (response === true) {
-        setCheckTextPass('사용 가능한 닉네임입니다');
+        setCheckTextPass('사용 가능한 닉네임이에요!');
       } else {
         setCheckTextError('이미 존재하는 닉네임입니다');
       }
@@ -182,7 +182,7 @@ const MyPage = ({navigation: {navigate}}) => {
                   asset={moreInfoArrow}
                   style={[
                     styles.arrowBtnStyle,
-                    {right: data.id === 1 ? 18 : null},
+                    {left: data.id === 1 ? 272 : 290},
                   ]}
                 />
               </TouchableOpacity>
@@ -250,8 +250,10 @@ const MyPage = ({navigation: {navigate}}) => {
                     <Text style={styles.inputText}>
                       11자 내로 작성해 주세요 (공백, 특수문자 불가)
                     </Text>
-                  ) : null}
-                  <Text style={styles.errorText}>{checkTextError}</Text>
+                  ) : (
+                    <Text style={styles.errorText}>{checkTextError}</Text>
+                  )}
+                  {/* <Text style={styles.errorText}>{checkTextError}</Text> */}
                   <Text style={styles.passText}>{checkTextPass}</Text>
                   <View style={modalInnerStyles.modalFlex}>
                     <TouchableOpacity
@@ -359,8 +361,8 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   arrowBtnStyle: {
-    marginLeft: 290,
-    marginTop: 20,
+    left: 290,
+    top: 20,
   },
   blank: {
     color: '#000',
@@ -410,21 +412,24 @@ const styles = StyleSheet.create({
   },
   inputText: {
     color: '#AFAFAF',
-    marginTop: -10,
+    right: 8,
+    marginTop: -12,
     fontSize: 12,
     fontFamily: 'Pretendard-Medium',
   },
   errorText: {
     color: '#F05D5D',
-    marginTop: -10,
+    right: 8,
+    marginTop: -12,
     fontSize: 12,
     fontFamily: 'Pretendard-Medium',
   },
   passText: {
     color: '#00B528',
+    right: 8,
     fontSize: 12,
     fontFamily: 'Pretendard-Medium',
-    marginTop: -20,
+    marginTop: -17,
   },
   errorImg: {
     width: 18,

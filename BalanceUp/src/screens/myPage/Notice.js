@@ -3,9 +3,20 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {WithLocalSvg} from 'react-native-svg';
 
 import backArrow from '../../resource/image/Common/backArrow.svg';
-import moreInfoArrow from '../../resource/image/Agree/moreInfoArrow.svg';
 
 const Notice = ({navigation: {navigate}}) => {
+  const noticeData = [
+    {
+      id: 1,
+      title: '새해가 밝았습니다!',
+      date: '2023. 01. 01',
+    },
+    {
+      id: 2,
+      title: '안녕하세요, KEYUM 입니다.',
+      date: '2022. 12. 31',
+    },
+  ];
   return (
     <View style={styles.container}>
       <View style={styles.topSheet}>
@@ -16,22 +27,18 @@ const Notice = ({navigation: {navigate}}) => {
         </TouchableOpacity>
         <Text style={styles.topTitle}>공지사항</Text>
       </View>
-      <View style={styles.noticeSheet}>
-        <Text style={styles.noticeText}>새해가 밝았습니다!</Text>
-        <WithLocalSvg
-          asset={moreInfoArrow}
-          style={[styles.arrowBtnStyle, {right: 18}]}
-        />
-        <Text style={styles.infoText}>2023. 01. 01</Text>
-      </View>
-      <View style={[styles.noticeSheet, {borderBottomWidth: 0}]}>
-        <Text style={styles.noticeText}>안녕하세요, KEYUM 입니다.</Text>
-        <WithLocalSvg
-          asset={moreInfoArrow}
-          style={[styles.arrowBtnStyle, {right: 18}]}
-        />
-        <Text style={styles.infoText}>2022. 12. 31</Text>
-      </View>
+      {noticeData.map(data => (
+        <TouchableOpacity key={data.id} activeOpacity={0.5}>
+          <View
+            style={[
+              styles.noticeSheet,
+              {borderBottomWidth: data.id === 1 ? 1 : null},
+            ]}>
+            <Text style={styles.noticeText}>{data.title}</Text>
+            <Text style={styles.infoText}>{data.date}</Text>
+          </View>
+        </TouchableOpacity>
+      ))}
     </View>
   );
 };
@@ -78,7 +85,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: 'Pretendard-Regular',
     marginLeft: 30,
-    marginTop: -5,
+    marginTop: 10,
   },
 });
 export default Notice;

@@ -205,13 +205,13 @@ const AgreeScreen = ({navigation}) => {
       </View>
       <TouchableOpacity
         style={[
-          styles.Nextbutton,
+          styles.nextButton,
           {backgroundColor: disabled ? '#CED6FF' : '#585FFF'},
         ]}
         onPress={goJoin}
         activeOpacity={1.0}
         disabled={disabled}>
-        <Text style={styles.NextbuttonText}>다음</Text>
+        <Text style={styles.nextButtonText}>다음</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -255,13 +255,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  Nextbutton: {
+  nextButton: {
     width: 400,
+    height: 58,
     alignItems: 'center',
     padding: 15,
     marginLeft: -25,
   },
-  NextbuttonText: {
+  nextButtonText: {
+    top: 2,
     fontSize: 16,
     fontFamily: 'Pretendard-Medium',
     color: '#fff',

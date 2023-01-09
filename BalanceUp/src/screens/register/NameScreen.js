@@ -142,13 +142,13 @@ const NameScreen = ({navigation}) => {
         </View>
         <TouchableOpacity
           style={[
-            styles.Nextbutton,
+            styles.nextButton,
             {backgroundColor: disabled ? '#CED6FF' : '#585FFF'},
           ]}
           onPress={goAgree}
           activeOpacity={1.0}
           disabled={disabled}>
-          <Text style={styles.NextbuttonText}>다음</Text>
+          <Text style={styles.nextButtonText}>다음</Text>
         </TouchableOpacity>
       </SafeAreaView>
     </TouchableWithoutFeedback>
@@ -182,11 +182,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
-  label: {
-    fontSize: 20,
-    paddingBottom: 6,
-    marginTop: 15,
-  },
   textInput: {
     width: 238,
     height: 48,
@@ -196,13 +191,15 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     fontFamily: 'Pretendard-Bold',
   },
-  Nextbutton: {
+  nextButton: {
     width: 400,
+    height: 58,
     alignItems: 'center',
     padding: 15,
     marginLeft: -25,
   },
-  NextbuttonText: {
+  nextButtonText: {
+    top: 2,
     fontSize: 16,
     fontFamily: 'Pretendard-Medium',
     color: '#fff',
@@ -235,13 +232,13 @@ const styles = StyleSheet.create({
   },
   inputText: {
     color: '#AFAFAF',
-    marginTop: -10,
+    marginTop: -13,
     fontSize: 12,
     fontFamily: 'Pretendard-Medium',
   },
   errorText: {
     color: '#F05D5D',
-    marginTop: -10,
+    marginTop: -13,
     fontSize: 12,
     fontFamily: 'Pretendard-Medium',
   },
@@ -249,7 +246,7 @@ const styles = StyleSheet.create({
     color: '#00B528',
     fontSize: 12,
     fontFamily: 'Pretendard-Medium',
-    marginTop: -20,
+    marginTop: -17,
   },
   onboardingImg: {
     width: 400,
