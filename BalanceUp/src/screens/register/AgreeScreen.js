@@ -3,11 +3,11 @@ import {
   StyleSheet,
   Text,
   View,
+  Linking,
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
-import CheckBox from '@react-native-community/checkbox';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   nickNameState,
@@ -22,6 +22,11 @@ import {
   useResetRecoilState,
 } from 'recoil';
 import {joinKakao} from '../../actions/memberJoinApi';
+import {WithLocalSvg} from 'react-native-svg';
+
+import checkOn from '../../resource/image/Agree/check_on.svg';
+import checkOff from '../../resource/image/Agree/check_off.svg';
+import moreInfoArrow from '../../resource/image/Agree/moreInfoArrow.svg';
 
 const AgreeScreen = ({navigation}) => {
   const [disabled, setDisabled] = useState(false);
@@ -49,27 +54,15 @@ const AgreeScreen = ({navigation}) => {
   };
 
   const useBtnEvent = () => {
-    if (useCheck === false) {
-      setUseCheck(true);
-    } else {
-      setUseCheck(false);
-    }
+    useCheck ? setUseCheck(false) : setUseCheck(true);
   };
 
   const serviceBtnEvent = () => {
-    if (serviceCheck === false) {
-      setServiceCheck(true);
-    } else {
-      setServiceCheck(false);
-    }
+    serviceCheck ? setServiceCheck(false) : setServiceCheck(true);
   };
 
   const ageBtnEvent = () => {
-    if (ageCheck === false) {
-      setAgeCheck(true);
-    } else {
-      setAgeCheck(false);
-    }
+    ageCheck ? setAgeCheck(false) : setAgeCheck(true);
   };
 
   useEffect(() => {
@@ -83,14 +76,6 @@ const AgreeScreen = ({navigation}) => {
   useEffect(() => {
     setDisabled(!allCheck);
   }, [allCheck]);
-
-  const useInfo = () => {
-    navigation.navigate('UseInfo');
-  };
-
-  const serviceInfo = () => {
-    navigation.navigate('ServiceInfo');
-  };
 
   const goJoin = async (): Promise<void> => {
     let res;
@@ -110,73 +95,122 @@ const AgreeScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.form}>
-        <Text style={styles.title}>약관 동의</Text>
-        <View style={styles.btnWrap}>
-          <CheckBox
-            disabled={false}
-            value={allCheck}
-            onValueChange={allBtnEvent}
-            tintColors={{true: '#525151'}}
-          />
-          <Text style={styles.agreeText}>모두 동의합니다</Text>
-        </View>
-        <View style={styles.btnWrap}>
-          <CheckBox
-            disabled={false}
-            value={useCheck}
-            onValueChange={useBtnEvent}
-            tintColors={{true: '#525151'}}
-          />
-          <Text style={styles.agreeText}>[필수] 개인정보 처리 방침</Text>
-          <TouchableOpacity onPress={useInfo}>
-            <Text style={(styles.agreeText, {fontWeight: 'bold'})}> ➡️ </Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.btnWrap}>
-          <CheckBox
-            disabled={false}
-            value={serviceCheck}
-            onValueChange={serviceBtnEvent}
-            tintColors={{true: '#525151'}}
-          />
-          <Text style={styles.agreeText}>[필수] 서비스 이용 약관</Text>
-          <TouchableOpacity onPress={serviceInfo}>
-            <Text style={(styles.agreeText, {fontWeight: 'bold'})}> ➡️ </Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.btnWrap}>
-          <CheckBox
-            disabled={false}
-            value={ageCheck}
-            onValueChange={ageBtnEvent}
-            tintColors={{true: '#525151'}}
-          />
-          <Text style={styles.agreeText}>[필수] 만 14세 이상입니다</Text>
-        </View>
-      </View>
       <Progress.Bar
-        progress={1.0}
-        borderWidth={0}
-        color={'#444441'}
+        progress={0.5}
         width={350}
         height={10}
+        unfilledColor={'#CED6FF'}
+        borderWidth={0}
+        color={'#585FFF'}
         style={styles.barWrap}
       />
+      <View style={styles.sheet}>
+        <Text style={styles.title}>약관 동의</Text>
+        <View style={styles.allBtnWrap}>
+          {allCheck ? (
+            <WithLocalSvg
+              style={styles.allCheckBox}
+              asset={checkOn}
+              onPress={allBtnEvent}
+            />
+          ) : (
+            <WithLocalSvg
+              style={styles.allCheckBox}
+              asset={checkOff}
+              onPress={allBtnEvent}
+            />
+          )}
+          <Text style={styles.allAgreeText}>모두 동의합니다</Text>
+        </View>
+        <View style={styles.boderLine} />
+        <View style={styles.btnWrap}>
+          {useCheck ? (
+            <WithLocalSvg
+              width={22}
+              height={22}
+              style={styles.checkBox}
+              asset={checkOn}
+              onPress={useBtnEvent}
+            />
+          ) : (
+            <WithLocalSvg
+              width={22}
+              height={22}
+              style={styles.checkBox}
+              asset={checkOff}
+              onPress={useBtnEvent}
+            />
+          )}
+          <Text style={styles.agreeText}>개인정보 처리 방침 (필수)</Text>
+          <TouchableOpacity
+            onPress={() =>
+              Linking.openURL(
+                'https://keyum.notion.site/KEYUM-dc7a7a7e475f402ea75025985a34061e',
+              )
+            }
+            activeOpacity={1.0}>
+            <WithLocalSvg asset={moreInfoArrow} style={styles.arrow} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.btnWrap}>
+          {serviceCheck ? (
+            <WithLocalSvg
+              width={22}
+              height={22}
+              style={styles.checkBox}
+              asset={checkOn}
+              onPress={serviceBtnEvent}
+            />
+          ) : (
+            <WithLocalSvg
+              width={22}
+              height={22}
+              style={styles.checkBox}
+              asset={checkOff}
+              onPress={serviceBtnEvent}
+            />
+          )}
+          <Text style={styles.agreeText}>서비스 이용약관 (필수)</Text>
+          <TouchableOpacity
+            onPress={() =>
+              Linking.openURL(
+                'https://keyum.notion.site/KEYUM-dd9853b3ffa74f34951a57cfb7d195ce',
+              )
+            }
+            activeOpacity={1.0}>
+            <WithLocalSvg asset={moreInfoArrow} style={styles.arrow1} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.btnWrap}>
+          {ageCheck ? (
+            <WithLocalSvg
+              width={22}
+              height={22}
+              style={styles.checkBox}
+              asset={checkOn}
+              onPress={ageBtnEvent}
+            />
+          ) : (
+            <WithLocalSvg
+              width={22}
+              height={22}
+              style={styles.checkBox}
+              asset={checkOff}
+              onPress={ageBtnEvent}
+            />
+          )}
+          <Text style={styles.agreeText}>14세 이상입니다 (필수)</Text>
+        </View>
+      </View>
       <TouchableOpacity
         style={[
-          styles.Nextbutton,
-          {backgroundColor: disabled ? '#D9D9D9' : '#272727'},
+          styles.nextButton,
+          {backgroundColor: disabled ? '#CED6FF' : '#585FFF'},
         ]}
-        disabled={disabled}
-        onPress={goJoin}>
-        <Text
-          style={[
-            styles.NextbuttonText,
-            {color: disabled ? '#000000' : '#FFFFFF'},
-          ]}>
-          다음
-        </Text>
+        onPress={goJoin}
+        activeOpacity={1.0}
+        disabled={disabled}>
+        <Text style={styles.nextButtonText}>다음</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -189,40 +223,76 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   title: {
-    width: '100%',
-    height: '15%',
-    fontSize: 30,
-    justifyContent: 'center',
-    color: '#000000',
+    fontSize: 22,
+    fontFamily: 'Pretendard-Bold',
+    color: '#232323',
     marginTop: 30,
+    marginBottom: 20,
+  },
+  allAgreeText: {
+    fontSize: 18,
+    fontFamily: 'Pretendard-Medium',
+    color: '#232323',
   },
   agreeText: {
-    fontSize: 15,
-    color: '#000000',
+    fontSize: 14,
+    fontFamily: 'Pretendard-Regular',
+    color: '#232323',
   },
-  form: {
+  sheet: {
     flex: 4,
     width: '100%',
     alignItems: 'flex-start',
   },
   btnWrap: {
     flexDirection: 'row',
+    marginTop: 18,
+  },
+  allBtnWrap: {
+    flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    marginBottom: 20,
   },
-  Nextbutton: {
-    width: '100%',
+  nextButton: {
+    width: 400,
+    height: 58,
     alignItems: 'center',
-    borderRadius: 15,
-    padding: 10,
-    marginBottom: 10,
+    padding: 15,
+    marginLeft: -25,
   },
-  NextbuttonText: {
-    fontSize: 25,
+  nextButtonText: {
+    top: 2,
+    fontSize: 16,
+    fontFamily: 'Pretendard-Medium',
+    color: '#fff',
   },
   barWrap: {
     width: '100%',
-    marginBottom: 20,
+    height: 6,
+    marginTop: 50,
+    marginBottom: 10,
+    transform: [{rotateY: '180deg'}],
+  },
+  boderLine: {
+    borderTopWidth: 1,
+    borderTopColor: '#dbdbdb',
+    width: 450,
+    right: 20,
+  },
+  allCheckBox: {
+    marginRight: 10,
+  },
+  checkBox: {
+    marginRight: 10,
+  },
+  arrow: {
+    left: 160,
+    top: 1,
+  },
+  arrow1: {
+    left: 177,
+    top: 1,
   },
 });
 

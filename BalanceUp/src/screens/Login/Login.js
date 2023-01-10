@@ -15,7 +15,6 @@ import {
   loginWithKakaoAccount,
 } from '@react-native-seoul/kakao-login';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import FastImage from 'react-native-fast-image';
 import auth from '@react-native-firebase/auth';
 import {loginKakao, SignInKakao} from '../../actions/memberJoinApi';
 import {
@@ -26,8 +25,7 @@ import {
 } from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {userNameState, jwtState, jwtRefreshState} from '../../recoil/atom';
-
-import testGif from '../../resource/image/testGif.gif';
+import FastImage from 'react-native-fast-image';
 import {WithLocalSvg} from 'react-native-svg';
 import Login_Onboading from '../../resource/image/Login/login_onborading.png';
 import KakaoSvg from '../../resource/image/Login/Kakao.svg';
@@ -131,10 +129,14 @@ export default function Login({navigation}) {
       <Text style={styles.title}>만나서 반가워요!</Text>
       <Text style={styles.subTitle}>로그인 할 계정을 선택해 주세요</Text>
 
-      <TouchableOpacity onPress={signInWithKakao} style={styles.btnKakao}>
+      <TouchableOpacity
+        activeOpacity={1.0}
+        onPress={signInWithKakao}
+        style={styles.btnKakao}>
         <WithLocalSvg width={335} height={48} asset={KakaoSvg} />
       </TouchableOpacity>
       <TouchableOpacity
+        activeOpacity={1.0}
         style={styles.btnGoogle}
         onPress={() => onGoogleButtonPress()}>
         <WithLocalSvg width={335} height={48} asset={GoogleSvg} />
@@ -167,10 +169,11 @@ const styles = StyleSheet.create({
     color: '#232323',
     textAlign: 'center',
     fontSize: 22,
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-Bold',
   },
   subTitle: {
     width: '100%',
+    fontFamily: 'Pretendard-Medium',
     color: '#888888',
     textAlign: 'center',
     marginTop: 5,

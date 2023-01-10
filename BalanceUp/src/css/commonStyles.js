@@ -27,19 +27,20 @@ const commonStyles = StyleSheet.create({
     width: 100,
   },
   bottomTabSheet: {
+    height: 70,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    backgroundColor: '#F3F3F3',
-    height: 55,
-    width: '100%',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 1,
+    borderColor: '#EEEEEE',
   },
   commonText: {
-    marginTop: 15,
-  },
-  selectText: {
-    marginTop: 15,
-    color: '#000',
-    fontWeight: 'bold',
+    right: 2,
+    bottom: 3,
+    fontSize: 10,
+    marginBottom: 10,
+    fontFamily: 'Pretendard-Bold',
   },
 });
 

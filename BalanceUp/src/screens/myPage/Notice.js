@@ -1,29 +1,44 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {Shadow} from 'react-native-shadow-2';
+import {WithLocalSvg} from 'react-native-svg';
 
-const Notice = ({navigation}) => {
-  const goBack = () => {
-    navigation.navigate('MyPage');
-  };
+import backArrow from '../../resource/image/Common/backArrow.svg';
 
+const Notice = ({navigation: {navigate}}) => {
+  const noticeData = [
+    {
+      id: 1,
+      title: '새해가 밝았습니다!',
+      date: '2023. 01. 01',
+    },
+    {
+      id: 2,
+      title: '안녕하세요, KEYUM 입니다.',
+      date: '2022. 12. 31',
+    },
+  ];
   return (
     <View style={styles.container}>
       <View style={styles.topSheet}>
-        <TouchableOpacity onPress={goBack}>
-          {/* 임시 디자인 버튼 */}
-          <Text style={styles.arrowBtn}>⬅</Text>
+        <TouchableOpacity
+          onPress={() => navigate('MyPage')}
+          activeOpacity={1.0}>
+          <WithLocalSvg style={styles.arrowBtn} asset={backArrow} />
         </TouchableOpacity>
         <Text style={styles.topTitle}>공지사항</Text>
       </View>
-      <Shadow distance={3}>
-        <View style={styles.nameSheet}>
-          <Text style={styles.nameText}>안녕하세요! 키움 공지사항입니다!</Text>
-          <View style={styles.infoSheet}>
-            <Text style={styles.infoText}>Test1</Text>
+      {noticeData.map(data => (
+        <TouchableOpacity key={data.id} activeOpacity={0.5}>
+          <View
+            style={[
+              styles.noticeSheet,
+              {borderBottomWidth: data.id === 1 ? 1 : null},
+            ]}>
+            <Text style={styles.noticeText}>{data.title}</Text>
+            <Text style={styles.infoText}>{data.date}</Text>
           </View>
-        </View>
-      </Shadow>
+        </TouchableOpacity>
+      ))}
     </View>
   );
 };
@@ -35,65 +50,42 @@ const styles = StyleSheet.create({
   },
   topSheet: {
     alignItems: 'center',
-    marginTop: 10,
     flexDirection: 'row',
-    justifyContent: 'flex-start',
   },
   topTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#000',
+    color: '#232323',
+    fontSize: 18,
+    fontFamily: 'Pretendard-Bold',
+    marginTop: 20,
+    marginLeft: 100,
   },
   arrowBtn: {
-    marginRight: 100,
-    marginBottom: 25,
-    fontSize: 60,
-    fontWeight: 'bold',
-    color: '#000',
+    marginTop: 20,
+    marginLeft: 20,
   },
-  nameSheet: {
-    backgroundColor: '#FAFAFA',
+  arrowBtnStyle: {
+    marginLeft: 380,
+    bottom: 20,
+  },
+  noticeSheet: {
     width: 400,
-    height: 150,
+    height: 110,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EBEBEB',
   },
-  nameText: {
+  noticeText: {
     color: '#000',
-    fontWeight: 'bold',
-    marginLeft: 50,
+    fontSize: 16,
+    fontFamily: 'Pretendard-Medium',
+    marginLeft: 30,
     marginTop: 35,
   },
   infoText: {
-    color: '#000',
-    fontWeight: '300',
-    marginLeft: 50,
+    color: '#888888',
+    fontSize: 12,
+    fontFamily: 'Pretendard-Regular',
+    marginLeft: 30,
     marginTop: 10,
-  },
-  info_Text: {
-    color: '#000',
-    fontWeight: '300',
-    marginLeft: 70,
-  },
-  agreeSheet: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 50,
-  },
-  agreeText: {
-    marginTop: 5,
-    color: '#000',
-    fontWeight: '500',
-  },
-  Nextbutton: {
-    width: '50%',
-    alignItems: 'center',
-    borderRadius: 15,
-    padding: 10,
-    marginTop: 30,
-    marginLeft: 100,
-  },
-  NextbuttonText: {
-    fontSize: 20,
-    color: '#fff',
   },
 });
 export default Notice;

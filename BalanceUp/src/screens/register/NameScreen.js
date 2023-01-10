@@ -8,9 +8,9 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   Keyboard,
+  Image,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
-import FastImage from 'react-native-fast-image';
 import {nickNameState} from '../../recoil/atom';
 import {
   useRecoilState,
@@ -18,10 +18,12 @@ import {
   useSetRecoilState,
   useResetRecoilState,
 } from 'recoil';
-
+import {WithLocalSvg} from 'react-native-svg';
+import FastImage from 'react-native-fast-image';
 import {validateText} from '../../utils/regex';
-import duplicationCheckAPI from '../../actions/duplicationCheckAPI';
-import testGif from '../../resource/image/testGif.gif';
+import {duplicationCheckAPI} from '../../actions/checkNameAPI';
+import NameOnboarding from '../../resource/image/Name/NameOnboarding.png';
+import errorSvg from '../../resource/image/Name/name_error.svg';
 
 const NameScreen = ({navigation}) => {
   const [userName, setUserName] = useState('');
@@ -44,7 +46,7 @@ const NameScreen = ({navigation}) => {
     setCheckTextError(
       validateText(userName)
         ? ''
-        : '닉네임에 특수문자 및 공백을 포함 할 수 없어요',
+        : '닉네임에 특수문자 및 공백을 포함할 수 없어요',
     );
     setCheckTextPass(validateText(userName) ? '' : null);
 
@@ -61,90 +63,92 @@ const NameScreen = ({navigation}) => {
   // 중복 확인 구현
   const duplicationCheck = () => {
     duplicationCheckAPI(userName).then(response => {
-      if (response === true) {
-        setCheckTextPass('사용 가능한 닉네임입니다');
+      console.log(response);
+      if (response === response) {
+        setCheckTextPass('사용 가능한 닉네임이에요!');
       } else {
-        setCheckTextError('이미 존재하는 닉네임입니다');
+        setCheckTextError('이미 존재하는 닉네임이에요');
       }
     });
   };
 
-  const handleRemove = () => {
-    setUserName('');
-    setCheckTextError('');
-    setCheckTextPass('');
-  };
-
   const goAgree = () => {
     setNickName(userName);
+    console.log(nickName);
     navigation.navigate('Agree');
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
+        <Progress.Bar
+          progress={0.5}
+          width={350}
+          height={10}
+          unfilledColor={'#CED6FF'}
+          borderWidth={0}
+          color={'#585FFF'}
+          style={styles.barWrap}
+        />
         <View style={styles.title}>
-          <Text style={styles.titleText}>내 캐릭터의</Text>
-          <Text style={styles.titleText}>닉네임을 입력해주세요</Text>
+          <Text style={styles.titleText}>
+            내 캐릭터의 {'\n'}닉네임을 입력해주세요
+          </Text>
         </View>
         <View style={styles.form}>
           <View style={styles.inputWrapper}>
             <TextInput
               value={userName}
               onChangeText={handleTextChange}
-              style={styles.textInput}
-              // maxLength={11} : 코드로 제한해도 input으로 글자가 계속 입력되는 버그 확인
+              style={[
+                styles.textInput,
+                {borderColor: checkTextError ? '#F05D5D' : '#AFAFAF'},
+              ]}
               autoCapitalize="none"
-              fontSize={17}
-              placeholder={'11자 내 작성 (공백, 특수문자 불가)'}
-              placeholderTextColor={'D0D0D0'}
+              fontSize={15}
+              placeholder="닉네임 입력"
+              placeholderTextColor="#AFAFAF"
             />
+            {checkTextError ? (
+              <WithLocalSvg style={styles.errorImg} asset={errorSvg} />
+            ) : null}
             <TouchableOpacity
-              style={styles.inputBtn}
-              activeOpacity={0.8}
-              onPress={handleRemove}>
-              <Text style={styles.inputBtnText}>X</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.inputBtn}
-              activeOpacity={0.8}
+              style={[
+                styles.duplicationBtn,
+                {borderColor: checkTextPass ? '#CED6FF' : '#585FFF'},
+              ]}
+              activeOpacity={1.0}
               onPress={duplicationCheck}
               disabled={checkDisabled}>
-              <Text style={styles.inputBtnText}>중복확인</Text>
+              <Text
+                style={[
+                  styles.duplicationText,
+                  {color: checkTextPass ? '#CED6FF' : '#585FFF'},
+                ]}>
+                중복확인
+              </Text>
             </TouchableOpacity>
           </View>
+          {!checkTextError && !checkTextPass ? (
+            <Text style={styles.inputText}>
+              11자 내로 작성해 주세요 (공백, 특수문자 불가)
+            </Text>
+          ) : null}
           <Text style={styles.errorText}>{checkTextError}</Text>
           <Text style={styles.passText}>{checkTextPass}</Text>
         </View>
         <View style={styles.gifView}>
-          <FastImage // 캐릭터 GIF 예정
-            style={{width: 250, height: 300}}
-            source={testGif}
-          />
+          <FastImage style={styles.onboardingImg} source={NameOnboarding} />
         </View>
-        <Progress.Bar
-          progress={0.5}
-          width={350}
-          height={10}
-          unfilledColor={'#8f8f89'}
-          borderWidth={0}
-          color={'#181817'}
-          style={styles.barWrap}
-        />
         <TouchableOpacity
           style={[
-            styles.Nextbutton,
-            {backgroundColor: disabled ? '#D9D9D9' : '#272727'},
+            styles.nextButton,
+            {backgroundColor: disabled ? '#CED6FF' : '#585FFF'},
           ]}
           onPress={goAgree}
+          activeOpacity={1.0}
           disabled={disabled}>
-          <Text
-            style={[
-              styles.NextbuttonText,
-              {color: disabled ? '#000000' : '#FFFFFF'},
-            ]}>
-            다음
-          </Text>
+          <Text style={styles.nextButtonText}>다음</Text>
         </TouchableOpacity>
       </SafeAreaView>
     </TouchableWithoutFeedback>
@@ -163,84 +167,97 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   titleText: {
-    fontSize: 30,
-    color: 'black',
+    fontSize: 22,
+    fontFamily: 'Pretendard-Bold',
+    color: '#000',
   },
   form: {
     flex: 4,
   },
   inputWrapper: {
     width: '130%',
+    position: 'relative',
     paddingBottom: 20,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
-  label: {
-    fontSize: 20,
-    paddingBottom: 6,
-    marginTop: 15,
-  },
   textInput: {
-    width: '60%',
-    height: 40,
-    borderBottomWidth: 1.5,
-  },
-  buttons: {
-    width: '100%',
-    height: 45,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  button: {
-    width: '30%',
-    borderRadius: 10,
+    width: 238,
+    height: 48,
     borderWidth: 1,
-    justifyContent: 'center',
+    borderColor: '#AFAFAF',
+    borderRadius: 5,
+    paddingLeft: 20,
+    fontFamily: 'Pretendard-Bold',
+  },
+  nextButton: {
+    width: 400,
+    height: 58,
     alignItems: 'center',
+    padding: 15,
+    marginLeft: -25,
   },
-  buttonText: {
-    fontSize: 20,
-  },
-  Nextbutton: {
-    width: '100%',
-    alignItems: 'center',
-    borderRadius: 15,
-    padding: 10,
-    marginBottom: 10,
-  },
-  NextbuttonText: {
-    fontSize: 25,
+  nextButtonText: {
+    top: 2,
+    fontSize: 16,
+    fontFamily: 'Pretendard-Medium',
+    color: '#fff',
   },
   barWrap: {
     width: '100%',
-    marginBottom: 20,
+    height: 6,
+    marginTop: 50,
+    marginBottom: 10,
   },
-  inputBtn: {
-    marginLeft: 10,
+  duplicationBtn: {
+    width: 102,
+    height: 48,
+    borderWidth: 1,
+    borderColor: '#585FFF',
+    borderRadius: 5,
+    marginLeft: 5,
+  },
+  duplicationText: {
+    color: '#585FFF',
+    fontFamily: 'Pretendard-Medium',
+    textAlign: 'center',
+    fontSize: 16,
+    marginTop: 11,
   },
   gifView: {
     alignItems: 'center',
     width: '100%',
-    flex: 13,
+    marginBottom: 100,
+  },
+  inputText: {
+    color: '#AFAFAF',
+    marginTop: -13,
+    fontSize: 12,
+    fontFamily: 'Pretendard-Medium',
   },
   errorText: {
-    color: '#FF0000',
-    marginTop: -10,
+    color: '#F05D5D',
+    marginTop: -13,
+    fontSize: 12,
+    fontFamily: 'Pretendard-Medium',
   },
   passText: {
-    color: 'green',
-    marginTop: -20,
+    color: '#00B528',
+    fontSize: 12,
+    fontFamily: 'Pretendard-Medium',
+    marginTop: -17,
   },
-  inputBtnText: {
-    color: '#000',
-    width: 60,
-    marginLeft: -10,
-    marginRight: -40,
-    height: 33,
-    marginTop: 6.5,
-    borderBottomWidth: 1.5,
-    fontSize: 16,
+  onboardingImg: {
+    width: 400,
+    height: 269,
+  },
+  errorImg: {
+    width: 18,
+    height: 18,
+    position: 'absolute',
+    left: 200,
+    top: 15,
   },
 });
 

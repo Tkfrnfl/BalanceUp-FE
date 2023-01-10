@@ -20,17 +20,16 @@ import ProgressCircle from 'react-native-progress-circle';
 // import WeekCalendar from 'react-native-calendars';
 import {MarkingProps} from '../../utils/MarkingProps';
 import moment from 'moment';
-import {Shadow} from 'react-native-shadow-2';
 import {format} from 'date-fns';
 import * as Progress from 'react-native-progress';
 import KeyumIcon from '../../resource/image/KeyumEmoticon.png';
 import arrow from '../../resource/image/Main/arrow.png';
 import arrow2 from '../../resource/image/Main/arrow2.png';
 import arrow3 from '../../resource/image/Main/arrow3.png';
-import life from '../../resource/image/life.png';
-import education from '../../resource/image/education.png';
-import mental from '../../resource/image/mental.png';
-import health from '../../resource/image/health.png';
+import life from '../../resource/image/SetTodo/life.png';
+import education from '../../resource/image/SetTodo/education.png';
+import mental from '../../resource/image/SetTodo/mental.png';
+import health from '../../resource/image/SetTodo/health.png';
 import lv1 from '../../resource/image/Main/1lv.gif';
 import edit from '../../resource/image/Main/edit.png';
 import delete2 from '../../resource/image/Main/delete.png';
@@ -69,8 +68,8 @@ import {
   CalendarProvider,
 } from 'react-native-calendars';
 import modalInnerStyles from '../../css/modalStyles';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import PushNotification from 'react-native-push-notification';
+import {Shadow} from 'react-native-shadow-2';
+import {HomeBottomTab} from '../BottomTab';
 
 LocaleConfig.locales.fr = {
   monthNames: [
@@ -111,17 +110,7 @@ let year = today.getFullYear(); // 년도
 let month = today.getMonth() + 1; // 월
 let date = today.getDate(); // 날짜
 
-const MainScreen = ({navigation, route}) => {
-  // 루틴 넘기는거 확인
-  // const {planText} = route.params;
-  // const {dayText} = route.params;
-  // const {todoText} = route.params;
-  // const {time} = route.params;
-  // console.log('카테고리:' + planText);
-  // console.log('루틴명:' + todoText);
-  // console.log('선택 요일:' + dayText);
-  // console.log('선택 시간:' + time);
-
+const MainScreen = ({navigation: {navigate}}) => {
   // React.useEffect(() => {
   //   const value = AsyncStorage.getItem('jwt');
   //   const valueRefresh = AsyncStorage.getItem('jwtRefresh');
@@ -212,7 +201,7 @@ const MainScreen = ({navigation, route}) => {
           <Image source={lv1} style={styles.img3} />
           <TouchableOpacity
             onPress={() => {
-              navigation.push('HomeNoti');
+              navigate('HomeNoti');
             }}>
             <Text style={styles.mainText8}>키움 성장 가이드</Text>
           </TouchableOpacity>
@@ -289,6 +278,11 @@ const MainScreen = ({navigation, route}) => {
         </View>
         <View style={commonStyles.spacing2} />
         <View>
+          {/* <TouchableOpacity
+            activeOpacity={1.0}
+            onPress={() => navigate('Guide')}>
+            <Text style={styles.guideText}>키움 성장 가이드</Text>
+          </TouchableOpacity> */}
           <Text style={[commonStyles.boldText, styles.centering]}>
             완료하지 않은 루틴이 있어요!
           </Text>
@@ -312,7 +306,7 @@ const MainScreen = ({navigation, route}) => {
           </Text>
           <TouchableOpacity
             style={styles.button2}
-            onPress={() => navigation.push('LookAll')}>
+            onPress={() => navigate('LookAll')}>
             <Text> &nbsp; 전체보기 &nbsp;</Text>
           </TouchableOpacity>
         </View>
@@ -552,38 +546,8 @@ const MainScreen = ({navigation, route}) => {
             </ScrollView>
           ))}
         </View>
-        <View style={commonStyles.spacing}>
-          <Text> </Text>
-        </View>
       </ScrollView>
-      <View>
-        {/* 하단 탭바 */}
-        <Shadow distance={3}>
-          <View style={commonStyles.bottomTabSheet}>
-            <TouchableOpacity onPress={goHome}>
-              <Text
-                style={[
-                  commonStyles.selectText,
-                  {
-                    marginTop: 15,
-                    marginLeft: 15,
-                  },
-                ]}>
-                홈
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={goSet}>
-              <Text style={commonStyles.commonText}>작성</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={goLookAll}>
-              <Text style={commonStyles.commonText}>루틴</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={goMyPage}>
-              <Text style={commonStyles.commonText}>마이페이지</Text>
-            </TouchableOpacity>
-          </View>
-        </Shadow>
-      </View>
+      <HomeBottomTab navigate={navigate} />
     </SafeAreaView>
   );
 };
@@ -635,7 +599,6 @@ const svg2 = x =>
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
   },
@@ -651,6 +614,16 @@ const styles = StyleSheet.create({
   title2: {
     fontSize: 40,
   },
+  guideText: {
+    width: 81,
+    fontSize: 12,
+    color: '#888888',
+    marginLeft: 295,
+    borderBottomWidth: 1,
+    borderBottomColor: '#888888',
+    fontFamily: 'Pretendard-Medium',
+  },
+
   button: {
     width: '70%',
     height: 50,
