@@ -136,11 +136,10 @@ const styles = StyleSheet.create({
   },
   checkView: {
     alignItems: 'center',
-    padding: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#CACACA',
-    borderBottomWidth: 1,
-    borderBottomColor: '#CACACA',
+  },
+  boxView: {
+    alignItems: 'center',
+    flexDirection: 'row',
   },
 });
 

@@ -84,7 +84,7 @@ const SetPlanScreen = ({navigation, route}) => {
 
   const resetBottomSheet = Animated.timing(panY, {
     toValue: 0,
-    duration: 300,
+    duration: 20,
     useNativeDriver: true,
   });
 
@@ -293,6 +293,7 @@ const SetPlanScreen = ({navigation, route}) => {
               styles.nextBtn,
               {backgroundColor: disabled ? '#CED6FF' : '#585FFF'},
             ]}
+            activeOpacity={1.0}
             disabled={disabled}
             onPress={handleCheck}>
             <Text style={styles.nextBtnText}>완료</Text>
@@ -319,26 +320,30 @@ const SetPlanScreen = ({navigation, route}) => {
                   설정한 루틴이 맞나요?
                 </Text>
                 <View style={styles.checkView}>
-                  <Text style={{color: '#000', fontWeight: 'bold'}}>
-                    [{planText}]
-                  </Text>
-                  <Text style={modalInnerStyles.todoText}>{todoText}</Text>
-                  <Text style={modalInnerStyles.dayText}>{dayText}</Text>
-                  {shouldShow ? (
-                    <Text style={modalInnerStyles.timeText}>
-                      {alertHour}:{alertMin}에 알림
-                    </Text>
-                  ) : null}
+                  <View style={styles.boxView}>
+                    <Text style={modalInnerStyles.planText}>[{planText}]</Text>
+                    <Text style={modalInnerStyles.todoText}>{todoText}</Text>
+                  </View>
+                  <View style={styles.boxView}>
+                    <Text style={modalInnerStyles.dayText}>{dayText}</Text>
+                    {shouldShow ? (
+                      <Text style={modalInnerStyles.timeText}>
+                        {alertHour}:{alertMin}에 알림
+                      </Text>
+                    ) : null}
+                  </View>
                 </View>
                 <View style={modalInnerStyles.modalFlex}>
                   <TouchableOpacity
-                    style={modalInnerStyles.noCheckBtn}
+                    style={modalInnerStyles.noBtn}
+                    activeOpacity={1.0}
                     onPress={() => setClearModalVisible(false)}>
                     <Text style={modalInnerStyles.noText}>아니요</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={modalInnerStyles.yesBtn}
-                    onPress={goClear}>
+                    activeOpacity={1.0}
+                    // onPress={}
+                    style={modalInnerStyles.yesBtn}>
                     <Text style={modalInnerStyles.nextText}>맞습니다!</Text>
                   </TouchableOpacity>
                 </View>

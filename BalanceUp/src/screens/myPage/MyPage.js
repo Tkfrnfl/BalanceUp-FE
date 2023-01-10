@@ -22,6 +22,7 @@ import {MyBottomTab} from '../../screens/BottomTab/index';
 import moreInfoArrow from '../../resource/image/Agree/moreInfoArrow.svg';
 import modalInnerStyles from '../../css/modalStyles';
 import errorSvg from '../../resource/image/Name/name_error.svg';
+import newNotice from '../../resource/image/Common/noti_new.svg';
 
 const MyPage = ({navigation: {navigate}}) => {
   const [userName, setUserName] = useState('');
@@ -41,6 +42,7 @@ const MyPage = ({navigation: {navigate}}) => {
     {
       id: 2,
       title: '공지사항',
+      img: newNotice,
       func: 'Notice',
     },
     {
@@ -61,7 +63,7 @@ const MyPage = ({navigation: {navigate}}) => {
 
   const resetBottomSheet = Animated.timing(panY, {
     toValue: 0,
-    duration: 300,
+    duration: 10,
     useNativeDriver: true,
   });
 
@@ -173,6 +175,7 @@ const MyPage = ({navigation: {navigate}}) => {
           {sheetData.map(data => (
             <View key={data.id} style={styles.menuSheet}>
               <Text style={styles.menuText}>{data.title}</Text>
+              <WithLocalSvg asset={data.img} style={{top: 18, left: 12}} />
               <TouchableOpacity
                 onPress={() => {
                   onClick(data.id, data.func);
@@ -182,7 +185,7 @@ const MyPage = ({navigation: {navigate}}) => {
                   asset={moreInfoArrow}
                   style={[
                     styles.arrowBtnStyle,
-                    {left: data.id === 1 ? 272 : 290},
+                    {left: data.id === 3 ? 290 : 272},
                   ]}
                 />
               </TouchableOpacity>
