@@ -3,23 +3,17 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
   SafeAreaView,
-  Image,
   ScrollView,
-  ViewStyle,
-  Button,
   useWindowDimensions,
 } from 'react-native';
 // import WeekCalendar from '../../components/WeekCalendar';
 // import WeekCalendar from 'react-native-calendars';
 import {Theme} from '../../utils/theme';
-import {MarkingProps} from '../../utils/MarkingProps';
-import moment from 'moment';
+import {WithLocalSvg} from 'react-native-svg';
 import {format} from 'date-fns';
 import commonStyles from '../../css/commonStyles';
 // import * as Progress from 'react-native-progress';
-import KeyumIcon from '../../resource/image/KeyumEmoticon.png';
 import Svg, {
   Circle,
   Ellipse,
@@ -51,9 +45,9 @@ import {
   CalendarProvider,
 } from 'react-native-calendars';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
-import {Shadow} from 'react-native-shadow-2';
 import Progress from './Progress';
 import Complete from './Complete';
+import {CheckBottomTab} from '../BottomTab';
 
 LocaleConfig.locales.fr = {
   monthNames: [
@@ -105,7 +99,7 @@ const renderScene = SceneMap({
   second: Complete,
 });
 
-const LookAll = ({navigation}) => {
+const LookAll = ({navigation: {navigate}}) => {
   const todo = ['할일1', '할일2', '할일3', '할일4'];
   const todoTmp = ['item1', 'item2', 'item3'];
   const todoTmpSub = ['itemSub1', 'itemSub2', 'itemSub3'];
@@ -148,20 +142,6 @@ const LookAll = ({navigation}) => {
   };
   const fomatToday =
     year.toString() + '-' + month.toString() + '-' + date.toString();
-
-  // 하단 탭바 네이게이션
-  const goHome = () => {
-    navigation.navigate('Main');
-  };
-  const goSet = () => {
-    navigation.navigate('Set');
-  };
-  const goLookAll = () => {
-    navigation.navigate('LookAll');
-  };
-  const goMyPage = () => {
-    navigation.navigate('MyPage');
-  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -218,33 +198,7 @@ const LookAll = ({navigation}) => {
             )}
           />
         </ScrollView>
-
-        {/* 하단 탭바 */}
-        <Shadow distance={3}>
-          <View style={commonStyles.bottomTabSheet}>
-            <TouchableOpacity onPress={goHome}>
-              <Text
-                style={[
-                  commonStyles.commonText,
-                  {
-                    marginTop: 15,
-                    marginLeft: 15,
-                  },
-                ]}>
-                홈
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={goSet}>
-              <Text style={commonStyles.commonText}>작성</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={goLookAll}>
-              <Text style={commonStyles.selectText}>루틴</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={goMyPage}>
-              <Text style={commonStyles.commonText}>마이페이지</Text>
-            </TouchableOpacity>
-          </View>
-        </Shadow>
+        <CheckBottomTab navigate={navigate} />
       </View>
     </SafeAreaView>
   );
