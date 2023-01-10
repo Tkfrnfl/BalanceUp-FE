@@ -15,7 +15,6 @@ import ProgressCircle from 'react-native-progress-circle';
 import {Theme} from '../../utils/theme';
 import {MarkingProps} from '../../utils/MarkingProps';
 import moment from 'moment';
-import {Shadow} from 'react-native-shadow-2';
 import {format} from 'date-fns';
 import * as Progress from 'react-native-progress';
 import KeyumIcon from '../../resource/image/KeyumEmoticon.png';
@@ -174,6 +173,11 @@ const MainScreen = ({navigation: {navigate}}) => {
         <View style={commonStyles.spacing} />
         <View style={commonStyles.spacing} />
         <View>
+          <TouchableOpacity
+            activeOpacity={1.0}
+            onPress={() => navigate('Guide')}>
+            <Text style={styles.guideText}>키움 성장 가이드</Text>
+          </TouchableOpacity>
           <Text style={[commonStyles.boldText, styles.centering]}>
             아직 완료하지 않은 루틴이 있어요!
           </Text>
@@ -292,6 +296,16 @@ const styles = StyleSheet.create({
   title2: {
     fontSize: 40,
   },
+  guideText: {
+    width: 81,
+    fontSize: 12,
+    color: '#888888',
+    marginLeft: 295,
+    borderBottomWidth: 1,
+    borderBottomColor: '#888888',
+    fontFamily: 'Pretendard-Medium',
+  },
+
   button: {
     width: '70%',
     height: 50,
