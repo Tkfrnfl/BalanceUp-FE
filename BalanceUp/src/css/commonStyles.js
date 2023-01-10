@@ -7,6 +7,9 @@ const commonStyles = StyleSheet.create({
   spacing2: {
     height: 50,
   },
+  spacing3: {
+    height: 25,
+  },
   row: {
     flexDirection: 'row',
   },

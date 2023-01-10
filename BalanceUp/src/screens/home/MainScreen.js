@@ -34,6 +34,10 @@ import health from '../../resource/image/health.png';
 import lv1 from '../../resource/image/Main/1lv.gif';
 import edit from '../../resource/image/Main/edit.png';
 import delete2 from '../../resource/image/Main/delete.png';
+import oneDay from '../../resource/image/Main/oneDay.png';
+import twoWeeks from '../../resource/image/Main/twoWeeks.png';
+import exMark from '../../resource/image/Main/exMark.png';
+
 import Svg, {
   Circle,
   Ellipse,
@@ -125,46 +129,12 @@ const MainScreen = ({navigation, route}) => {
   //   console.log(dataToken);
   // }, []);
 
-  React.useEffect(() => {
-    PushNotification.setApplicationIconBadgeNumber(0);
-    // PushNotification.cancelAllLocalNotifications();
-    // PushNotification.localNotificationSchedule({
-    //   vibrate: true,
-    //   vibration: 300,
-    //   priority: 'hight',
-    //   visibility: 'public',
-    //   importance: 'hight',
-    //   message: messages,
-    //   playSound: false,
-    //   number: 1,
-    //   actions: '["OK"]',
-    //   date: sendTime,
-    // });
-  }, []);
 
   const todo = ['일상', '학습', '마음관리', '운동'];
   const todoImg = [life, education, mental, health];
   const todoTmp = ['item1', 'item2', 'item3'];
   const todoTmpSub = ['itemSub1', 'itemSub2', 'itemSub3'];
   const todoComplete = [0.5, 1, 0.5, 1];
-  // const buttonStyle: ViewStyle = {
-  //   backgroundColor: '#626262',
-  //   borderColr: '#626262',
-  // };
-  // const theme: Theme = {
-  //   todayBackgroundColor: '#626262',
-  //   todayDotColor: '#626262',
-  //   dotColor: 'black',
-  //   indicatorColor: 'black',
-  //   selectedDayBackgroundColor: 'black',
-  // };
-  // const MarkingProps: MarkingProps = {
-  //   color: 'black',
-  //   dotColor: 'black',
-  //   selectedColor: 'black',
-  //   textColor: 'red',
-  //   dots: {selectedDotColor: 'black', color: 'black'},
-  // };
 
   const fomatToday =
     year.toString() + '-' + month.toString() + '-' + date.toString();
@@ -173,6 +143,7 @@ const MainScreen = ({navigation, route}) => {
     format(new Date(), 'yyyy-MM-dd'),
   );
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
+  const [completeDay, setCompleteDayModalVisible] = useState(0);
   const [completeChangeModalVisible, setCompleteChangeModalVisible] =
     useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
@@ -218,29 +189,10 @@ const MainScreen = ({navigation, route}) => {
     navigation.navigate('MyPage');
   };
 
-  const notify = () => {
-    PushNotification.createChannel(
-      {
-        channelId: 'channel-id',
-        channelName: 'My channel',
-        channelDescription: 'A channel to categorise your notifications',
-        playSound: false,
-        soundName: 'default',
-        vibrate: true,
-      },
-      created => console.log(`createChannel returned '${created}'`),
-    );
-
-    PushNotification.localNotificationSchedule({
-      channelId: 'channel-id',
-      message: 'notified',
-      date: new Date(Date.now() + 15 * 1000), // in 60 secs
-    });
-  };
-
   const checkComplete = index => {
     if (todoComplete[index] === 1) {
       setCompleteModalVisible(true);
+      setCompleteDayModalVisible(2); // 1일시 하루, 아닐시 2주 모달 띄움
     } else {
       setCompleteChangeModalVisible(true);
     }
@@ -258,7 +210,12 @@ const MainScreen = ({navigation, route}) => {
           <Text style={styles.mainText7}>?RP 달성시, LV.? 레벨 업!</Text>
 
           <Image source={lv1} style={styles.img3} />
-          <Text style={styles.mainText8}>키움 성장 가이드</Text>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.push('HomeNoti');
+            }}>
+            <Text style={styles.mainText8}>키움 성장 가이드</Text>
+          </TouchableOpacity>
 
           <Shadow distance={10} startColor={'#F1F1F1'}>
             <Svg height={100} width={350} styles={[]}>
@@ -330,16 +287,6 @@ const MainScreen = ({navigation, route}) => {
 
           <View style={commonStyles.spacing2} />
         </View>
-
-        {/* 알람 테스트 코드 */}
-        {/* <TouchableOpacity
-            style = {{hegith:100+"%", width:100+"%", flex:1, justifyContent:"center", alignItems:"center"}}
-            onPress={() =>{notify()}}
-          >
-                        <Text>
-              알림(클릭)
-            </Text>
-          </TouchableOpacity> */}
         <View style={commonStyles.spacing2} />
         <View>
           <Text style={[commonStyles.boldText, styles.centering]}>
@@ -414,7 +361,6 @@ const MainScreen = ({navigation, route}) => {
                 source={todoImg[index]}
                 style={img2(todoComplete[index]).bar}
               />
-
               <View style={aimText1(todoComplete[index]).bar}>
                 <Text style={commonStyles.boldText}>item1</Text>
                 <Text>{todoTmpSub[index]}</Text>
@@ -446,37 +392,71 @@ const MainScreen = ({navigation, route}) => {
                 onPress={() => setDeleteModalVisible(true)}>
                 <Image source={delete2} />
               </TouchableWithoutFeedback>
-              {/* 완료 모달 구현 코드 */}
+              {/* 완료 모달 구현 코드 (one Day)*/}
               <Modal
                 visible={completeModalVisible}
                 animationType={'fade'}
                 transparent={true}
                 statusBarTranslucent={true}>
-                <Pressable
-                  style={modalInnerStyles.complteModalOverlay}
-                  onPress={() =>
-                    setCompleteModalVisible(!completeModalVisible)
-                  }>
-                  <TouchableWithoutFeedback>
-                    <Animated.View
-                      style={{
-                        ...modalInnerStyles.centerSheetContainer,
-                        // transform: [{translateY: translateY}],
-                      }}
-                      // {...panResponder.panHandlers}
-                    >
-                      {/* 모달에 들어갈 내용을 아래에 작성 */}
-                      <Text style={modalInnerStyles.logoutModalTitle}>
-                        오늘의 루틴을 완료했습니다! (그래픽 예정)
-                      </Text>
-                      <Text style={modalInnerStyles.logoutModalTitle}>
-                        +1 RP
-                      </Text>
-                    </Animated.View>
-                  </TouchableWithoutFeedback>
-                </Pressable>
+                {completeDay === 1 ? (
+                  <Pressable
+                    style={modalInnerStyles.complteModalOverlay}
+                    onPress={() =>
+                      setCompleteModalVisible(!completeModalVisible)
+                    }>
+                    <TouchableWithoutFeedback>
+                      <Animated.View
+                        style={{
+                          ...modalInnerStyles.centerSheetContainer,
+                          // transform: [{translateY: translateY}],
+                        }}
+                        // {...panResponder.panHandlers}
+                      >
+                        {/* 모달에 들어갈 내용을 아래에 작성 */}
+                        <Text style={modalInnerStyles.completeText1}>
+                          +1 RP
+                        </Text>
+                        <Text style={modalInnerStyles.completeText2}>
+                          오늘의 루틴을 완료했습니다!
+                        </Text>
+                        <View style={modalInnerStyles.completeImg1}>
+                          <Image source={oneDay} />
+                        </View>
+                      </Animated.View>
+                    </TouchableWithoutFeedback>
+                  </Pressable>
+                ) : (
+                  <Pressable
+                    style={modalInnerStyles.complteModalOverlay}
+                    onPress={() =>
+                      setCompleteModalVisible(!completeModalVisible)
+                    }>
+                    <TouchableWithoutFeedback>
+                      <Animated.View
+                        style={{
+                          ...modalInnerStyles.centerSheetContainer,
+                          // transform: [{translateY: translateY}],
+                        }}
+                        // {...panResponder.panHandlers}
+                      >
+                        {/* 모달에 들어갈 내용을 아래에 작성 */}
+                        <Text style={modalInnerStyles.completeText1}>
+                          +10 RP
+                        </Text>
+                        <Text style={modalInnerStyles.completeText2}>
+                          2주간 완벽하게 루틴을 완료했어요
+                        </Text>
+                        <Text style={modalInnerStyles.completeImg1}>
+                          앞으로도 꾸준한 루틴 기대할게요!
+                        </Text>
+                        <View style={modalInnerStyles.completeImg1}>
+                          <Image source={twoWeeks} />
+                        </View>
+                      </Animated.View>
+                    </TouchableWithoutFeedback>
+                  </Pressable>
+                )}
               </Modal>
-
               {/* 완료 취소 모달 구현 코드 */}
               <Modal
                 visible={completeChangeModalVisible}
@@ -525,7 +505,6 @@ const MainScreen = ({navigation, route}) => {
                   </TouchableWithoutFeedback>
                 </Pressable>
               </Modal>
-
               {/* 삭제 모달 구현 코드 */}
               <Modal
                 visible={deleteModalVisible}
@@ -720,7 +699,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     alignSelf: 'flex-end',
     textDecorationLine: 'underline',
-    marginRight: 30,
+    marginRight: -170,
     marginBottom: 20,
   },
   mainText2: {

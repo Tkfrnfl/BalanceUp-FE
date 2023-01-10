@@ -9,6 +9,7 @@ import MyPage from '../screens/myPage/MyPage';
 import Withdrawal from '../screens/myPage/Withdrawal';
 import Login from '../screens/Login/Login';
 import Notice from '../screens/myPage/Notice';
+import HomeNoti from '../screens/home/HomeNoti';
 
 const MainStack = createStackNavigator();
 
@@ -54,6 +55,11 @@ export function MainRouter() {
         <MainStack.Screen
           name="Notice"
           component={Notice}
+          options={{headerShown: false}}
+        />
+        <MainStack.Screen
+          name="HomeNoti"
+          component={HomeNoti}
           options={{headerShown: false}}
         />
       </MainStack.Navigator>

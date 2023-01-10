@@ -16,7 +16,8 @@ import {
 import DatePicker from 'react-native-date-picker';
 import modalInnerStyles from '../../css/modalStyles';
 import styles from '../../css/SetPlanScreenStyles';
-
+import PushNotification from 'react-native-push-notification';
+import moment from 'moment';
 const SetPlanScreen = ({navigation, route}) => {
   // const {planText} = route.params;
 
@@ -90,7 +91,9 @@ const SetPlanScreen = ({navigation, route}) => {
     closeBottomSheet.start(() => setIsModalVisible(false));
     closeBottomSheet.start(() => setClearModalVisible(false));
   };
-
+  React.useEffect(() => {
+    PushNotification.setApplicationIconBadgeNumber(0);
+  }, []);
   useEffect(() => {
     if (isModalVisible) {
       resetBottomSheet.start();
@@ -103,6 +106,63 @@ const SetPlanScreen = ({navigation, route}) => {
     }
   }, [clearModalVisible]);
 
+  // 팝업 알림 설정 구현
+  const notify = () => {
+    let activeDays = [
+      sunActive,
+      monActive,
+      tueActive,
+      wenActive,
+      thurActive,
+      friActive,
+      satActive,
+    ];
+
+    activeDays.map((day, index) => {
+      if (day === 1) {
+        PushNotification.createChannel(
+          {
+            channelId: `${todoText}${index}`,
+            channelName: 'My channel',
+            channelDescription: 'A channel to categorise your notifications',
+            playSound: false,
+            soundName: 'default',
+            vibrate: true,
+          },
+          created => console.log(`createChannel returned '${created}'`),
+        );
+
+        PushNotification.localNotificationSchedule({
+          channelId: `${todoText}${index}`,
+          title: todoText,
+          message: '김루틴님, 오늘의 루틴을 완료해보세요!',
+          date: calculateDateByDay(index),
+          repeatType: 'week',
+        });
+      }
+    });
+  };
+  // 팝업 알람 날짜 계산
+  const calculateDateByDay = (index: any) => {
+    let now = new Date();
+    let m = moment().utcOffset(0);
+    m.set({hour: alertHour, minute: alertMin, second: 0, millisecond: 0});
+    console.log(now.getDay());
+
+    const daysFromNow = index - now.getDay();
+    if (daysFromNow <= 0) {
+      // 요일 초과시 다음주로
+      m = moment(m).add(daysFromNow + 7, 'day');
+    } else {
+      m = moment(m).add(daysFromNow, 'day');
+    }
+    m.toDate();
+
+    var retrunTime = new Date(m);
+
+    console.log(retrunTime);
+    return retrunTime;
+  };
   // input 기능 구현
   const handleTextChange = toDo => {
     setLengthTodo(toDo.length);
@@ -221,6 +281,7 @@ const SetPlanScreen = ({navigation, route}) => {
       todoText: todoText,
       time: alertHour + alertMin,
     });
+    notify();
     setClearModalVisible(false);
   };
 

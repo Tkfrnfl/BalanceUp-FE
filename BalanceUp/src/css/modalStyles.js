@@ -152,12 +152,29 @@ const modalInnerStyles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
   centerSheetContainer: {
-    width: 300,
+    width: 350,
     height: 250,
     justifyContent: 'center',
     backgroundColor: '#fff',
     borderRadius: 20,
     padding: 30,
+  },
+  completeText1:{
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#585FFF',
+  },
+  completeText2:{
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#000',
+    marginTop:20
+  },
+  completeImg1:{
+    textAlign: 'center',
+    alignItems: 'center',
   },
 
   // Progress 삭제 모달
