@@ -1,10 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {WithLocalSvg} from 'react-native-svg';
 
-import checkOn from '../../resource/image/Agree/check_on.svg';
-import checkOff from '../../resource/image/Agree/check_off.svg';
-import backArrow from '../../resource/image/Common/backArrow.svg';
+import CheckOn from '../../resource/image/Agree/check_on.svg';
+import CheckOff from '../../resource/image/Agree/check_off.svg';
+import BackArrow from '../../resource/image/Common/backArrow.svg';
 
 const Withdrawal = ({navigation: {navigate}}) => {
   const [useCheck, setUseCheck] = useState(false);
@@ -28,7 +27,7 @@ const Withdrawal = ({navigation: {navigate}}) => {
         <TouchableOpacity
           onPress={() => navigate('MyPage')}
           activeOpacity={1.0}>
-          <WithLocalSvg style={styles.arrowBtn} asset={backArrow} />
+          <BackArrow style={styles.arrowBtn} />
         </TouchableOpacity>
         <View style={styles.topSheet}>
           <Text style={styles.topTitle}>회원 탈퇴</Text>
@@ -53,17 +52,9 @@ const Withdrawal = ({navigation: {navigate}}) => {
         </View>
         <View style={styles.agreeSheet}>
           {useCheck ? (
-            <WithLocalSvg
-              style={styles.allCheckBox}
-              asset={checkOn}
-              onPress={useBtnEvent}
-            />
+            <CheckOn style={styles.allCheckBox} onPress={useBtnEvent} />
           ) : (
-            <WithLocalSvg
-              style={styles.allCheckBox}
-              asset={checkOff}
-              onPress={useBtnEvent}
-            />
+            <CheckOff style={styles.allCheckBox} onPress={useBtnEvent} />
           )}
           <Text style={styles.agreeText}>
             위 내용에 동의하고 탈퇴하겠습니다

@@ -13,16 +13,16 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   TouchableOpacity,
+  Linking,
 } from 'react-native';
-import {WithLocalSvg} from 'react-native-svg';
 import {validateText} from '../../utils/regex';
 import {ChangeNameAPI} from '../../actions/checkNameAPI';
 import {MyBottomTab} from '../../screens/BottomTab/index';
 
-import moreInfoArrow from '../../resource/image/Agree/moreInfoArrow.svg';
+import MoreInfoArrow from '../../resource/image/Agree/moreInfoArrow.svg';
 import modalInnerStyles from '../../css/modalStyles';
-import errorSvg from '../../resource/image/Name/name_error.svg';
-import newNotice from '../../resource/image/Common/noti_new.svg';
+import ErrorSvg from '../../resource/image/Name/name_error.svg';
+import NewNotice from '../../resource/image/Common/noti_new.svg';
 
 const MyPage = ({navigation: {navigate}}) => {
   const [userName, setUserName] = useState('');
@@ -42,12 +42,17 @@ const MyPage = ({navigation: {navigate}}) => {
     {
       id: 2,
       title: '공지사항',
-      img: newNotice,
       func: 'Notice',
     },
+  ];
+  const sheetData_ = [
     {
-      id: 3,
-      title: '로그아웃',
+      id: 1,
+      title: '개인정보 처리 방침',
+    },
+    {
+      id: 2,
+      title: '서비스 이용약관',
     },
   ];
 
@@ -160,6 +165,18 @@ const MyPage = ({navigation: {navigate}}) => {
     }
   };
 
+  const onClick_ = id => {
+    if (id === 1) {
+      Linking.openURL(
+        'https://keyum.notion.site/KEYUM-dc7a7a7e475f402ea75025985a34061e',
+      );
+    } else if (id === 2) {
+      Linking.openURL(
+        'https://keyum.notion.site/KEYUM-dd9853b3ffa74f34951a57cfb7d195ce',
+      );
+    }
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
@@ -175,25 +192,46 @@ const MyPage = ({navigation: {navigate}}) => {
           {sheetData.map(data => (
             <View key={data.id} style={styles.menuSheet}>
               <Text style={styles.menuText}>{data.title}</Text>
-              <WithLocalSvg asset={data.img} style={{top: 18, left: 12}} />
+              {data.id === 2 ? <NewNotice style={styles.newSvg} /> : null}
               <TouchableOpacity
                 onPress={() => {
                   onClick(data.id, data.func);
                 }}
                 activeOpacity={1.0}>
-                <WithLocalSvg
-                  asset={moreInfoArrow}
+                <MoreInfoArrow style={[styles.arrowBtnStyle, {left: 272}]} />
+              </TouchableOpacity>
+            </View>
+          ))}
+          {sheetData_.map(data => (
+            <View
+              key={data.id}
+              style={[styles.menuSheet, {marginTop: data.id === 1 ? 15 : 2}]}>
+              <Text style={styles.menuText}>{data.title}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  onClick_(data.id);
+                }}
+                activeOpacity={1.0}>
+                <MoreInfoArrow
                   style={[
                     styles.arrowBtnStyle,
-                    {left: data.id === 3 ? 290 : 272},
+                    {left: data.id === 1 ? 228 : 245},
                   ]}
                 />
               </TouchableOpacity>
             </View>
           ))}
+          <TouchableOpacity
+            onPress={() => setLogoutModalVisible(!logoutModalVisible)}
+            activeOpacity={0.5}>
+            <View style={[styles.menuSheet]}>
+              <Text style={styles.menuText}>로그아웃</Text>
+            </View>
+          </TouchableOpacity>
           <Text style={styles.verText}>Ver 1.0.0</Text>
         </View>
         <MyBottomTab navigate={navigate} />
+
         {/* 닉네임 변경 모달 코드 */}
         <Modal
           visible={isModalVisible}
@@ -230,7 +268,7 @@ const MyPage = ({navigation: {navigate}}) => {
                       placeholderTextColor="#AFAFAF"
                     />
                     {checkTextError ? (
-                      <WithLocalSvg style={styles.errorImg} asset={errorSvg} />
+                      <ErrorSvg style={styles.errorImg} />
                     ) : null}
                     <TouchableOpacity
                       style={[
@@ -440,6 +478,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 180,
     top: 15,
+  },
+  newSvg: {
+    top: 18,
+    left: 12,
   },
 });
 

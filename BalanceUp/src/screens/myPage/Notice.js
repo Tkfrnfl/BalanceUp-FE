@@ -1,8 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {WithLocalSvg} from 'react-native-svg';
 
-import backArrow from '../../resource/image/Common/backArrow.svg';
+import BackArrow from '../../resource/image/Common/backArrow.svg';
 
 const Notice = ({navigation: {navigate}}) => {
   const noticeData = [
@@ -23,7 +22,7 @@ const Notice = ({navigation: {navigate}}) => {
         <TouchableOpacity
           onPress={() => navigate('MyPage')}
           activeOpacity={1.0}>
-          <WithLocalSvg style={styles.arrowBtn} asset={backArrow} />
+          <BackArrow style={styles.arrowBtn} />
         </TouchableOpacity>
         <Text style={styles.topTitle}>공지사항</Text>
       </View>
