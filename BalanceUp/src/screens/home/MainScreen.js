@@ -154,8 +154,9 @@ const MainScreen = ({navigation: {navigate}}) => {
 
           <Image source={lv1} style={styles.img3} />
           <TouchableOpacity
+            activeOpacity={1.0}
             onPress={() => {
-              navigate('HomeNoti');
+              navigate('Guide');
             }}>
             <Text style={styles.mainText8}>키움 성장 가이드</Text>
           </TouchableOpacity>
@@ -623,7 +624,7 @@ const styles = StyleSheet.create({
   mainText8: {
     fontSize: 12,
     color: '#888888',
-    fontWeight: '600',
+    fontFamily: 'Pretendard-Medium',
     alignSelf: 'flex-end',
     textDecorationLine: 'underline',
     marginRight: -170,
