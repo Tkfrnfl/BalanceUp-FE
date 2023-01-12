@@ -215,7 +215,7 @@ const MyPage = ({navigation: {navigate}}) => {
                 <MoreInfoArrow
                   style={[
                     styles.arrowBtnStyle,
-                    {left: data.id === 1 ? 228 : 245},
+                    {left: data.id === 1 ? 227 : 244},
                   ]}
                 />
               </TouchableOpacity>
