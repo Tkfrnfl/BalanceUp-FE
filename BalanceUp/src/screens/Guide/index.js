@@ -15,7 +15,7 @@ export default function Guide({navigation: {navigate}}) {
     <ScrollView style={styles.container}>
       <Top navigate={navigate} />
       <View style={{alignItems: 'center', marginTop: 30}}>
-        <Shadow distance={8} startColor="#f3f6f4" offset={[2, 2]}>
+        <Shadow distance={8} startColor="#f0f0f0" offset={[2, 2]}>
           <View style={styles.infoSheet}>
             <Text style={[styles.infoText, {marginTop: 25}]}>
               설정한 루틴을 완료하면
@@ -62,7 +62,7 @@ export default function Guide({navigation: {navigate}}) {
         </Shadow>
       </View>
       <View style={{alignItems: 'center', marginTop: 30}}>
-        <Shadow distance={8} startColor="#f3f6f4" offset={[2, 2]}>
+        <Shadow distance={8} startColor="#f0f0f0" offset={[2, 2]}>
           <View style={styles.infoSheet_}>
             <Text style={[styles.infoText, {marginTop: 25}]}>
               <Text style={styles.point}>RP</Text>를 모으면
@@ -78,7 +78,7 @@ export default function Guide({navigation: {navigate}}) {
         </Shadow>
       </View>
       <View style={{alignItems: 'center', marginTop: 30}}>
-        <Shadow distance={8} startColor="#f3f6f4" offset={[2, 2]}>
+        <Shadow distance={8} startColor="#f0f0f0" offset={[2, 2]}>
           <View style={styles.infoSheet__}>
             <Text style={[styles.infoText, {marginTop: 25}]}>
               <Text style={styles.point}>레벨</Text>에 따라

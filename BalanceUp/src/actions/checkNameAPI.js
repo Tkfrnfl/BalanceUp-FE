@@ -1,38 +1,37 @@
 import axios from 'axios';
+import {api} from '../utils/Api';
 
 const duplicationCheckAPI = async userName => {
   let return_value;
   await axios
-    .post(
-      'http://ec2-15-165-88-42.ap-northeast-2.compute.amazonaws.com:8080/user/nickname',
-      {
-        nickname: userName,
-      },
-    )
+    .post(api + '/user/nickname', {
+      nickname: userName,
+    })
     .then(response => {
+      console.log(response.data);
       return_value = response.data;
     })
     .catch(function (error) {
       console.log(error);
+      return_value = false;
     });
   return return_value;
 };
 
-const ChangeNameAPI = async userName => {
+const ChangeNameAPI = async (userName, token) => {
   let return_value;
   await axios
-    .put(
-      'http://ec2-15-165-88-42.ap-northeast-2.compute.amazonaws.com:8080/user/nickname',
-      {
-        nickname: userName,
-        token: token, // 임시
-      },
-    )
+    .put(api + '/user/nickname', {
+      nickname: userName,
+      token: token,
+    })
     .then(response => {
+      console.log(response.data);
       return_value = response.data;
     })
     .catch(function (error) {
       console.log(error);
+      return_value = false;
     });
   return return_value;
 };

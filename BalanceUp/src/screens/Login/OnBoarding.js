@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import {WithLocalSvg} from 'react-native-svg';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import Swiper from 'react-native-swiper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -130,8 +129,8 @@ export default function OnBoarding({navigation}) {
         loop={false}
         removeClippedSubviews={false}
         onIndexChanged={handleChange}
-        nextButton={<WithLocalSvg style={styles.svgStyle} asset={NextBtn} />}
-        prevButton={<WithLocalSvg style={styles.svgStyle} asset={PrevBtn} />}
+        nextButton={<NextBtn style={styles.svgStyle} />}
+        prevButton={<PrevBtn style={styles.svgStyle} />}
         showsButtons={true}>
         {TextData.map(data => (
           <View style={styles.slide} key={data.id}>
