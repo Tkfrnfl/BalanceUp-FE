@@ -22,11 +22,10 @@ import {
   useResetRecoilState,
 } from 'recoil';
 import {joinKakao} from '../../actions/memberJoinApi';
-import {WithLocalSvg} from 'react-native-svg';
 
-import checkOn from '../../resource/image/Agree/check_on.svg';
-import checkOff from '../../resource/image/Agree/check_off.svg';
-import moreInfoArrow from '../../resource/image/Agree/moreInfoArrow.svg';
+import CheckOn from '../../resource/image/Agree/check_on.svg';
+import CheckOff from '../../resource/image/Agree/check_off.svg';
+import MoreInfoArrow from '../../resource/image/Agree/moreInfoArrow.svg';
 
 const AgreeScreen = ({navigation}) => {
   const [disabled, setDisabled] = useState(false);
@@ -108,36 +107,26 @@ const AgreeScreen = ({navigation}) => {
         <Text style={styles.title}>약관 동의</Text>
         <View style={styles.allBtnWrap}>
           {allCheck ? (
-            <WithLocalSvg
-              style={styles.allCheckBox}
-              asset={checkOn}
-              onPress={allBtnEvent}
-            />
+            <CheckOn style={styles.allCheckBox} onPress={allBtnEvent} />
           ) : (
-            <WithLocalSvg
-              style={styles.allCheckBox}
-              asset={checkOff}
-              onPress={allBtnEvent}
-            />
+            <CheckOff style={styles.allCheckBox} onPress={allBtnEvent} />
           )}
           <Text style={styles.allAgreeText}>모두 동의합니다</Text>
         </View>
         <View style={styles.boderLine} />
         <View style={styles.btnWrap}>
           {useCheck ? (
-            <WithLocalSvg
+            <CheckOn
               width={22}
               height={22}
               style={styles.checkBox}
-              asset={checkOn}
               onPress={useBtnEvent}
             />
           ) : (
-            <WithLocalSvg
+            <CheckOff
               width={22}
               height={22}
               style={styles.checkBox}
-              asset={checkOff}
               onPress={useBtnEvent}
             />
           )}
@@ -149,24 +138,22 @@ const AgreeScreen = ({navigation}) => {
               )
             }
             activeOpacity={1.0}>
-            <WithLocalSvg asset={moreInfoArrow} style={styles.arrow} />
+            <MoreInfoArrow style={styles.arrow} />
           </TouchableOpacity>
         </View>
         <View style={styles.btnWrap}>
           {serviceCheck ? (
-            <WithLocalSvg
+            <CheckOn
               width={22}
               height={22}
               style={styles.checkBox}
-              asset={checkOn}
               onPress={serviceBtnEvent}
             />
           ) : (
-            <WithLocalSvg
+            <CheckOff
               width={22}
               height={22}
               style={styles.checkBox}
-              asset={checkOff}
               onPress={serviceBtnEvent}
             />
           )}
@@ -178,24 +165,22 @@ const AgreeScreen = ({navigation}) => {
               )
             }
             activeOpacity={1.0}>
-            <WithLocalSvg asset={moreInfoArrow} style={styles.arrow1} />
+            <MoreInfoArrow style={styles.arrow1} />
           </TouchableOpacity>
         </View>
         <View style={styles.btnWrap}>
           {ageCheck ? (
-            <WithLocalSvg
+            <CheckOn
               width={22}
               height={22}
               style={styles.checkBox}
-              asset={checkOn}
               onPress={ageBtnEvent}
             />
           ) : (
-            <WithLocalSvg
+            <CheckOff
               width={22}
               height={22}
               style={styles.checkBox}
-              asset={checkOff}
               onPress={ageBtnEvent}
             />
           )}

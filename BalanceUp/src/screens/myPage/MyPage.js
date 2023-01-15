@@ -13,19 +13,23 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   TouchableOpacity,
+  Linking,
 } from 'react-native';
-import {WithLocalSvg} from 'react-native-svg';
+import {useRecoilState} from 'recoil';
 import {validateText} from '../../utils/regex';
 import {ChangeNameAPI} from '../../actions/checkNameAPI';
 import {MyBottomTab} from '../../screens/BottomTab/index';
+import {nickNameState} from '../../recoil/atom';
 
-import moreInfoArrow from '../../resource/image/Agree/moreInfoArrow.svg';
+import MoreInfoArrow from '../../resource/image/Agree/moreInfoArrow.svg';
 import modalInnerStyles from '../../css/modalStyles';
-import errorSvg from '../../resource/image/Name/name_error.svg';
-import newNotice from '../../resource/image/Common/noti_new.svg';
+import ErrorSvg from '../../resource/image/Name/name_error.svg';
+import NewNotice from '../../resource/image/Common/noti_new.svg';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MyPage = ({navigation: {navigate}}) => {
   const [userName, setUserName] = useState('');
+  const [nickName, setNickName] = useRecoilState(nickNameState);
   const [checkTextError, setCheckTextError] = useState('');
   const [checkTextPass, setCheckTextPass] = useState('');
   const [checkDisabled, setCheckDisabled] = useState(true);
@@ -42,12 +46,17 @@ const MyPage = ({navigation: {navigate}}) => {
     {
       id: 2,
       title: '공지사항',
-      img: newNotice,
       func: 'Notice',
     },
+  ];
+  const sheetData_ = [
     {
-      id: 3,
-      title: '로그아웃',
+      id: 1,
+      title: '개인정보 처리 방침',
+    },
+    {
+      id: 2,
+      title: '서비스 이용약관',
     },
   ];
 
@@ -133,15 +142,26 @@ const MyPage = ({navigation: {navigate}}) => {
     }
   };
 
+  AsyncStorage.getItem('jwt', (err, result) => {
+    const token = JSON.parse(result);
+    console.log('token: ', token);
+  });
+
   // 닉네임 변경 구현
   const handleChangeName = () => {
     ChangeNameAPI(userName).then(response => {
       if (response === true) {
         setCheckTextPass('사용 가능한 닉네임이에요!');
-      } else {
+      } else if (response === false) {
         setCheckTextError('이미 존재하는 닉네임입니다');
       }
     });
+  };
+
+  const goChange = () => {
+    setNickName(userName);
+    console.log(nickName);
+    setIsModalVisible(!isModalVisible);
   };
 
   // 네이게이션 구현
@@ -160,12 +180,24 @@ const MyPage = ({navigation: {navigate}}) => {
     }
   };
 
+  const onClick_ = id => {
+    if (id === 1) {
+      Linking.openURL(
+        'https://keyum.notion.site/KEYUM-dc7a7a7e475f402ea75025985a34061e',
+      );
+    } else if (id === 2) {
+      Linking.openURL(
+        'https://keyum.notion.site/KEYUM-dd9853b3ffa74f34951a57cfb7d195ce',
+      );
+    }
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <View style={styles.innerContainer}>
           <View style={styles.topSheet}>
-            <Text style={styles.topTitle}>김루틴님</Text>
+            <Text style={styles.topTitle}>???님</Text>
             <TouchableOpacity
               onPress={() => navigate('Withdrawal')}
               activeOpacity={1.0}>
@@ -175,25 +207,46 @@ const MyPage = ({navigation: {navigate}}) => {
           {sheetData.map(data => (
             <View key={data.id} style={styles.menuSheet}>
               <Text style={styles.menuText}>{data.title}</Text>
-              <WithLocalSvg asset={data.img} style={{top: 18, left: 12}} />
+              {data.id === 2 ? <NewNotice style={styles.newSvg} /> : null}
               <TouchableOpacity
                 onPress={() => {
                   onClick(data.id, data.func);
                 }}
                 activeOpacity={1.0}>
-                <WithLocalSvg
-                  asset={moreInfoArrow}
+                <MoreInfoArrow style={[styles.arrowBtnStyle, {left: 272}]} />
+              </TouchableOpacity>
+            </View>
+          ))}
+          {sheetData_.map(data => (
+            <View
+              key={data.id}
+              style={[styles.menuSheet, {marginTop: data.id === 1 ? 15 : 2}]}>
+              <Text style={styles.menuText}>{data.title}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  onClick_(data.id);
+                }}
+                activeOpacity={1.0}>
+                <MoreInfoArrow
                   style={[
                     styles.arrowBtnStyle,
-                    {left: data.id === 3 ? 290 : 272},
+                    {left: data.id === 1 ? 227 : 244.5},
                   ]}
                 />
               </TouchableOpacity>
             </View>
           ))}
+          <TouchableOpacity
+            onPress={() => setLogoutModalVisible(!logoutModalVisible)}
+            activeOpacity={0.5}>
+            <View style={[styles.menuSheet]}>
+              <Text style={styles.menuText}>로그아웃</Text>
+            </View>
+          </TouchableOpacity>
           <Text style={styles.verText}>Ver 1.0.0</Text>
         </View>
         <MyBottomTab navigate={navigate} />
+
         {/* 닉네임 변경 모달 코드 */}
         <Modal
           visible={isModalVisible}
@@ -230,7 +283,7 @@ const MyPage = ({navigation: {navigate}}) => {
                       placeholderTextColor="#AFAFAF"
                     />
                     {checkTextError ? (
-                      <WithLocalSvg style={styles.errorImg} asset={errorSvg} />
+                      <ErrorSvg style={styles.errorImg} />
                     ) : null}
                     <TouchableOpacity
                       style={[
@@ -261,6 +314,7 @@ const MyPage = ({navigation: {navigate}}) => {
                   <View style={modalInnerStyles.modalFlex}>
                     <TouchableOpacity
                       disabled={disabled}
+                      onPress={goChange}
                       style={[
                         modalInnerStyles.saveBtn,
                         {backgroundColor: disabled ? '#CED6FF' : '#585FFF'},
@@ -440,6 +494,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 180,
     top: 15,
+  },
+  newSvg: {
+    top: 18,
+    left: 12,
   },
 });
 

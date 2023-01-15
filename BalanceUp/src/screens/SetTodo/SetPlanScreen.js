@@ -15,12 +15,11 @@ import {
   FlatList,
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import {WithLocalSvg} from 'react-native-svg';
 import modalInnerStyles from '../../css/modalStyles';
 import styles from '../../css/SetPlanScreenStyles';
 import PushNotification from 'react-native-push-notification';
 import moment from 'moment';
-import backArrow from '../../resource/image/Common/backArrow.svg';
+import BackArrow from '../../resource/image/Common/backArrow.svg';
 
 const SetPlanScreen = ({navigation, route}) => {
   const {planText} = route.params;
@@ -187,6 +186,7 @@ const SetPlanScreen = ({navigation, route}) => {
     console.log(retrunTime);
     return retrunTime;
   };
+
   // 버튼 활성화/비활성화
   useEffect(() => {
     setDisabled(!(lengthTodo && dayText));
@@ -265,7 +265,7 @@ const SetPlanScreen = ({navigation, route}) => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <TouchableOpacity onPress={() => navigation.navigate('Set')}>
-          <WithLocalSvg style={styles.arrowBtn} asset={backArrow} />
+          <BackArrow style={styles.arrowBtn} />
         </TouchableOpacity>
         <Text style={styles.topTitle}>
           나를 키울 루틴은 {'\n'}어떻게 진행되나요?

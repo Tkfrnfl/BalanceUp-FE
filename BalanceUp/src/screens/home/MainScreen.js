@@ -11,18 +11,12 @@ import {
   Pressable,
   Animated,
   Modal,
-  Platform,
-  ImageBackground,
 } from 'react-native';
 import commonStyles from '../../css/commonStyles';
-import ProgressCircle from 'react-native-progress-circle';
 // import WeekCalendar from '../../components/WeekCalendar';
 // import WeekCalendar from 'react-native-calendars';
-import {MarkingProps} from '../../utils/MarkingProps';
-import moment from 'moment';
 import {format} from 'date-fns';
 import * as Progress from 'react-native-progress';
-import KeyumIcon from '../../resource/image/KeyumEmoticon.png';
 import arrow from '../../resource/image/Main/arrow.png';
 import arrow2 from '../../resource/image/Main/arrow2.png';
 import arrow3 from '../../resource/image/Main/arrow3.png';
@@ -35,34 +29,9 @@ import edit from '../../resource/image/Main/edit.png';
 import delete2 from '../../resource/image/Main/delete.png';
 import oneDay from '../../resource/image/Main/oneDay.png';
 import twoWeeks from '../../resource/image/Main/twoWeeks.png';
-import exMark from '../../resource/image/Main/exMark.png';
 
-import Svg, {
-  Circle,
-  Ellipse,
-  G,
-  TSpan,
-  TextPath,
-  Path,
-  Polygon,
-  Polyline,
-  Line,
-  Text as SvgText,
-  Rect,
-  Use,
-  Symbol,
-  Defs,
-  LinearGradient,
-  RadialGradient,
-  Stop,
-  ClipPath,
-  Pattern,
-  Mask,
-} from 'react-native-svg';
+import Svg, {Text as SvgText, Rect} from 'react-native-svg';
 import {
-  Calendar,
-  CalendarList,
-  Agenda,
   LocaleConfig,
   ExpandableCalendar,
   CalendarProvider,
@@ -118,7 +87,6 @@ const MainScreen = ({navigation: {navigate}}) => {
   //   console.log(dataToken);
   // }, []);
 
-
   const todo = ['일상', '학습', '마음관리', '운동'];
   const todoImg = [life, education, mental, health];
   const todoTmp = ['item1', 'item2', 'item3'];
@@ -164,20 +132,6 @@ const MainScreen = ({navigation: {navigate}}) => {
     },
   };
 
-  // 하단 탭바 네이게이션
-  const goHome = () => {
-    navigation.navigate('Main');
-  };
-  const goSet = () => {
-    navigation.navigate('Set');
-  };
-  const goLookAll = () => {
-    navigation.navigate('LookAll');
-  };
-  const goMyPage = () => {
-    navigation.navigate('MyPage');
-  };
-
   const checkComplete = index => {
     if (todoComplete[index] === 1) {
       setCompleteModalVisible(true);
@@ -200,8 +154,9 @@ const MainScreen = ({navigation: {navigate}}) => {
 
           <Image source={lv1} style={styles.img3} />
           <TouchableOpacity
+            activeOpacity={1.0}
             onPress={() => {
-              navigate('HomeNoti');
+              navigate('Guide');
             }}>
             <Text style={styles.mainText8}>키움 성장 가이드</Text>
           </TouchableOpacity>
@@ -288,7 +243,7 @@ const MainScreen = ({navigation: {navigate}}) => {
           </Text>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             {todo.map((value, index) => (
-              <View>
+              <View key={value.id}>
                 <View style={styles.view1}>
                   <Image source={todoImg[index]} style={styles.img4} />
                 </View>
@@ -669,7 +624,7 @@ const styles = StyleSheet.create({
   mainText8: {
     fontSize: 12,
     color: '#888888',
-    fontWeight: '600',
+    fontFamily: 'Pretendard-Medium',
     alignSelf: 'flex-end',
     textDecorationLine: 'underline',
     marginRight: -170,

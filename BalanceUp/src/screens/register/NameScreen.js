@@ -8,22 +8,15 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   Keyboard,
-  Image,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
 import {nickNameState} from '../../recoil/atom';
-import {
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-  useResetRecoilState,
-} from 'recoil';
-import {WithLocalSvg} from 'react-native-svg';
+import {useRecoilState} from 'recoil';
 import FastImage from 'react-native-fast-image';
 import {validateText} from '../../utils/regex';
 import {duplicationCheckAPI} from '../../actions/checkNameAPI';
 import NameOnboarding from '../../resource/image/Name/NameOnboarding.png';
-import errorSvg from '../../resource/image/Name/name_error.svg';
+import ErrorSvg from '../../resource/image/Name/name_error.svg';
 
 const NameScreen = ({navigation}) => {
   const [userName, setUserName] = useState('');
@@ -63,10 +56,9 @@ const NameScreen = ({navigation}) => {
   // 중복 확인 구현
   const duplicationCheck = () => {
     duplicationCheckAPI(userName).then(response => {
-      console.log(response);
       if (response === response) {
         setCheckTextPass('사용 가능한 닉네임이에요!');
-      } else {
+      } else if (response === false) {
         setCheckTextError('이미 존재하는 닉네임이에요');
       }
     });
@@ -109,9 +101,7 @@ const NameScreen = ({navigation}) => {
               placeholder="닉네임 입력"
               placeholderTextColor="#AFAFAF"
             />
-            {checkTextError ? (
-              <WithLocalSvg style={styles.errorImg} asset={errorSvg} />
-            ) : null}
+            {checkTextError ? <ErrorSvg style={styles.errorImg} /> : null}
             <TouchableOpacity
               style={[
                 styles.duplicationBtn,

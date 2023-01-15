@@ -1,13 +1,12 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import {WithLocalSvg} from 'react-native-svg';
-import backArrow from '../../resource/image/Common/backArrow.svg';
+import BackArrow from '../../resource/image/Common/backArrow.svg';
 
 export default function Top({navigate}) {
   return (
     <View>
       <TouchableOpacity onPress={() => navigate('Main')} activeOpacity={1.0}>
-        <WithLocalSvg style={styles.arrowBtn} asset={backArrow} />
+        <BackArrow style={styles.arrowBtn} />
       </TouchableOpacity>
       <View style={styles.topSheet}>
         <Text style={styles.topTitle}>키움만의 성장 포인트</Text>
