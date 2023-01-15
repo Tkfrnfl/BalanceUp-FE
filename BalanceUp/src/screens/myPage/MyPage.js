@@ -15,17 +15,21 @@ import {
   TouchableOpacity,
   Linking,
 } from 'react-native';
+import {useRecoilState} from 'recoil';
 import {validateText} from '../../utils/regex';
 import {ChangeNameAPI} from '../../actions/checkNameAPI';
 import {MyBottomTab} from '../../screens/BottomTab/index';
+import {nickNameState} from '../../recoil/atom';
 
 import MoreInfoArrow from '../../resource/image/Agree/moreInfoArrow.svg';
 import modalInnerStyles from '../../css/modalStyles';
 import ErrorSvg from '../../resource/image/Name/name_error.svg';
 import NewNotice from '../../resource/image/Common/noti_new.svg';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MyPage = ({navigation: {navigate}}) => {
   const [userName, setUserName] = useState('');
+  const [nickName, setNickName] = useRecoilState(nickNameState);
   const [checkTextError, setCheckTextError] = useState('');
   const [checkTextPass, setCheckTextPass] = useState('');
   const [checkDisabled, setCheckDisabled] = useState(true);
@@ -138,15 +142,26 @@ const MyPage = ({navigation: {navigate}}) => {
     }
   };
 
+  AsyncStorage.getItem('jwt', (err, result) => {
+    const token = JSON.parse(result);
+    console.log('token: ', token);
+  });
+
   // 닉네임 변경 구현
   const handleChangeName = () => {
     ChangeNameAPI(userName).then(response => {
       if (response === true) {
         setCheckTextPass('사용 가능한 닉네임이에요!');
-      } else {
+      } else if (response === false) {
         setCheckTextError('이미 존재하는 닉네임입니다');
       }
     });
+  };
+
+  const goChange = () => {
+    setNickName(userName);
+    console.log(nickName);
+    setIsModalVisible(!isModalVisible);
   };
 
   // 네이게이션 구현
@@ -182,7 +197,7 @@ const MyPage = ({navigation: {navigate}}) => {
       <View style={styles.container}>
         <View style={styles.innerContainer}>
           <View style={styles.topSheet}>
-            <Text style={styles.topTitle}>김루틴님</Text>
+            <Text style={styles.topTitle}>???님</Text>
             <TouchableOpacity
               onPress={() => navigate('Withdrawal')}
               activeOpacity={1.0}>
@@ -299,6 +314,7 @@ const MyPage = ({navigation: {navigate}}) => {
                   <View style={modalInnerStyles.modalFlex}>
                     <TouchableOpacity
                       disabled={disabled}
+                      onPress={goChange}
                       style={[
                         modalInnerStyles.saveBtn,
                         {backgroundColor: disabled ? '#CED6FF' : '#585FFF'},

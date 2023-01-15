@@ -8,16 +8,10 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   Keyboard,
-  Image,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
 import {nickNameState} from '../../recoil/atom';
-import {
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-  useResetRecoilState,
-} from 'recoil';
+import {useRecoilState} from 'recoil';
 import FastImage from 'react-native-fast-image';
 import {validateText} from '../../utils/regex';
 import {duplicationCheckAPI} from '../../actions/checkNameAPI';
@@ -62,10 +56,9 @@ const NameScreen = ({navigation}) => {
   // 중복 확인 구현
   const duplicationCheck = () => {
     duplicationCheckAPI(userName).then(response => {
-      console.log(response);
       if (response === response) {
         setCheckTextPass('사용 가능한 닉네임이에요!');
-      } else {
+      } else if (response === false) {
         setCheckTextError('이미 존재하는 닉네임이에요');
       }
     });
