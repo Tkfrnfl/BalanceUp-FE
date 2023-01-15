@@ -35,6 +35,9 @@ const commonStyles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: '#EEEEEE',
   },
+  bottomTabSheet2: {
+    marginLeft:-70
+  },
   commonText: {
     right: 2,
     bottom: 3,

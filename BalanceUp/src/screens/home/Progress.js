@@ -20,6 +20,15 @@ import KeyumIcon from '../../resource/image/KeyumEmoticon.png';
 import Svg, {Circle, Text as SvgText, Rect} from 'react-native-svg';
 import * as ProgressLib from 'react-native-progress';
 import Crystal from '../../resource/image/Modal/Crystal.png';
+import life from '../../resource/image/SetTodo/life.png';
+import education from '../../resource/image/SetTodo/education.png';
+import mental from '../../resource/image/SetTodo/mental.png';
+import health from '../../resource/image/SetTodo/health.png';
+import oneDay from '../../resource/image/Main/oneDay.png';
+import twoWeeks from '../../resource/image/Main/twoWeeks.png';
+import exMark from '../../resource/image/Main/exMark.png';
+import edit from '../../resource/image/Main/edit.png';
+import delete2 from '../../resource/image/Main/delete.png';
 
 const todoTmpSub = ['운동하기', '청소하기', '공부하기'];
 
@@ -43,6 +52,7 @@ const Progress = () => {
   ]);
   const [nowdata, setNowdata] = useState();
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
+  const [completeDay, setCompleteDayModalVisible] = useState(0);
   const [completeChangeModalVisible, setCompleteChangeModalVisible] =
     useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
@@ -69,6 +79,8 @@ const Progress = () => {
     useNativeDriver: true,
   });
 
+  const todoImg = [life, education, mental, health];
+  const todoComplete = [0.5, 1, 0.5, 1];
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -107,6 +119,15 @@ const Progress = () => {
       resetBottomSheet.start();
     }
   }, [deleteModalVisible]);
+
+  const checkComplete = index => {
+    if (todoComplete[index] === 1) {
+      setCompleteModalVisible(true);
+      setCompleteDayModalVisible(2); // 1일시 하루, 아닐시 2주 모달 띄움
+    } else {
+      setCompleteChangeModalVisible(true);
+    }
+  };
 
   // 완료 체크 기능 구현
   const handleComplete = id => {
@@ -155,136 +176,103 @@ const Progress = () => {
 
   return (
     <View>
-      <View style={commonStyles.spacing2} />
-      <Svg height={80} style={styles.svg1}>
-        <Rect
-          x={40}
-          y={0}
-          width={300}
-          height={60}
-          style={styles.svg1}
-          strokeWidth="2"
-          stroke="#D9D9D9"
-          fill="none"
-        />
-        <SvgText
-          x="55"
-          y="20"
-          text-anchor="middle"
-          fill="black"
-          style={styles.mainText1}>
-          진행도
-        </SvgText>
-        <SvgText
-          x="295"
-          y="20"
-          text-anchor="middle"
-          fill="black"
-          style={styles.mainText1}>
-          50%
-        </SvgText>
-        <View style={styles.progressBar}>
-          <ProgressLib.Bar
-            progress={0.3}
-            width={270}
-            height={12}
-            color="black"
-            unfilledColor="#D9D9D9"
-            borderWidth={0}
-            borderRadius={50}
-          />
-        </View>
-      </Svg>
-      <View style={commonStyles.spacing2} />
-      {todoTmp.map((data, index) => (
+      {todoTmp.map((value, index) => (
         <ScrollView
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          key={data.id}>
-          <View style={commonStyles.row}>
-            <View style={styles.img1}>
-              <Image source={KeyumIcon} style={styles.img2} />
-            </View>
-            <View style={styles.aimText1}>
-              <Text style={commonStyles.mainText}>{data.title}</Text>
-              <Text style={commonStyles.subText}>{todoTmpSub[index]}</Text>
-            </View>
-            <TouchableWithoutFeedback onPress={() => handleComplete(data.id)}>
-              <Svg height={80} style={styles.svg2}>
-                <Circle
-                  cx="30"
-                  cy="30"
-                  r="25"
-                  fill={data.completed ? '#D9D9D9' : null}
-                />
-                <SvgText
-                  x="15"
-                  y="35"
-                  text-anchor="middle"
-                  fill="black"
-                  style={styles.mainText2}>
-                  완료
-                </SvgText>
-              </Svg>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback>
-              {/* onPress={() => navigate('Plan')} */}
-              <Svg height={80} style={styles.svg3}>
-                <Rect width={50} height={60} fill="#F2F2F2" />
-                <SvgText
-                  x="15"
-                  y="35"
-                  text-anchor="middle"
-                  fill="black"
-                  style={styles.mainText2}>
-                  수정
-                </SvgText>
-              </Svg>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback
-              onPress={() => setDeleteModalVisible(!deleteModalVisible)}>
-              <Svg height={80} style={styles.svg3}>
-                <Rect width={50} height={60} fill="#D9D9D9" />
-                <SvgText
-                  x="15"
-                  y="35"
-                  text-anchor="middle"
-                  fill="black"
-                  style={styles.mainText2}>
-                  삭제
-                </SvgText>
-              </Svg>
-            </TouchableWithoutFeedback>
+          style={styles.view2}>
+          <Image source={todoImg[index]} style={styles.img2_gray} />
+          <Image
+            source={todoImg[index]}
+            style={img2(todoComplete[index]).bar}
+          />
+          <View style={aimText1(todoComplete[index]).bar}>
+            <Text style={commonStyles.boldText}>item1</Text>
+            <Text>{todoTmpSub[index]}</Text>
           </View>
-
-          {/* 완료 모달 구현 코드 */}
+          <TouchableWithoutFeedback onPress={() => checkComplete(index)}>
+            <Svg height={80} style={svg2(todoComplete[index]).bar}>
+              <Rect
+                x={20}
+                y={20}
+                width="60"
+                height="34"
+                rx="18"
+                fill="#585FFF"
+              />
+              <SvgText
+                x={37}
+                y={40}
+                style={styles.mainText12}
+                fill="white"
+                fontWeight={600}>
+                완료
+              </SvgText>
+            </Svg>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => console.log()}>
+            <Image source={edit} />
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => setDeleteModalVisible(true)}>
+            <Image source={delete2} />
+          </TouchableWithoutFeedback>
+          {/* 완료 모달 구현 코드 (one Day)*/}
           <Modal
             visible={completeModalVisible}
             animationType={'fade'}
             transparent={true}
             statusBarTranslucent={true}>
-            <Pressable
-              style={modalInnerStyles.complteModalOverlay}
-              onPress={() => setCompleteModalVisible(!completeModalVisible)}>
-              <TouchableWithoutFeedback>
-                <Animated.View
-                  style={{
-                    ...modalInnerStyles.centerSheetContainer,
-                    transform: [{translateY: translateY}],
-                  }}
-                  {...panResponder.panHandlers}>
-                  <Text style={modalInnerStyles.completeTitle}>+1RP</Text>
-                  <Text style={modalInnerStyles.modalTitle}>
-                    오늘의 루틴을 완료했습니다!
-                  </Text>
-                  <View style={{alignItems: 'center', marginTop: 10}}>
-                    <FastImage style={styles.modalImg} source={Crystal} />
-                  </View>
-                </Animated.View>
-              </TouchableWithoutFeedback>
-            </Pressable>
+            {completeDay === 1 ? (
+              <Pressable
+                style={modalInnerStyles.complteModalOverlay}
+                onPress={() => setCompleteModalVisible(!completeModalVisible)}>
+                <TouchableWithoutFeedback>
+                  <Animated.View
+                    style={{
+                      ...modalInnerStyles.centerSheetContainer,
+                      // transform: [{translateY: translateY}],
+                    }}
+                    // {...panResponder.panHandlers}
+                  >
+                    {/* 모달에 들어갈 내용을 아래에 작성 */}
+                    <Text style={modalInnerStyles.completeText1}>+1 RP</Text>
+                    <Text style={modalInnerStyles.completeText2}>
+                      오늘의 루틴을 완료했습니다!
+                    </Text>
+                    <View style={modalInnerStyles.completeImg1}>
+                      <Image source={oneDay} />
+                    </View>
+                  </Animated.View>
+                </TouchableWithoutFeedback>
+              </Pressable>
+            ) : (
+              <Pressable
+                style={modalInnerStyles.complteModalOverlay}
+                onPress={() => setCompleteModalVisible(!completeModalVisible)}>
+                <TouchableWithoutFeedback>
+                  <Animated.View
+                    style={{
+                      ...modalInnerStyles.centerSheetContainer,
+                      // transform: [{translateY: translateY}],
+                    }}
+                    // {...panResponder.panHandlers}
+                  >
+                    {/* 모달에 들어갈 내용을 아래에 작성 */}
+                    <Text style={modalInnerStyles.completeText1}>+10 RP</Text>
+                    <Text style={modalInnerStyles.completeText2}>
+                      2주간 완벽하게 루틴을 완료했어요
+                    </Text>
+                    <Text style={modalInnerStyles.completeImg1}>
+                      앞으로도 꾸준한 루틴 기대할게요!
+                    </Text>
+                    <View style={modalInnerStyles.completeImg1}>
+                      <Image source={twoWeeks} />
+                    </View>
+                  </Animated.View>
+                </TouchableWithoutFeedback>
+              </Pressable>
+            )}
           </Modal>
-
           {/* 완료 취소 모달 구현 코드 */}
           <Modal
             visible={completeChangeModalVisible}
@@ -292,38 +280,36 @@ const Progress = () => {
             transparent={true}
             statusBarTranslucent={true}>
             <Pressable
-              style={modalInnerStyles.progressModalOverlay}
+              style={modalInnerStyles.modalOverlay}
               onPress={() =>
                 setCompleteChangeModalVisible(!completeChangeModalVisible)
               }>
               <TouchableWithoutFeedback>
                 <Animated.View
                   style={{
-                    ...modalInnerStyles.complteBottomSheetContainer,
-                    transform: [{translateY: translateY}],
+                    ...modalInnerStyles.bottomSheetContainer,
+                    // transform: [{translateY: translateY}],
                   }}
-                  {...panResponder.panHandlers}>
-                  <Text style={modalInnerStyles.modalTitle}>
+                  // {...panResponder.panHandlers}
+                >
+                  {/* 모달에 들어갈 내용을 아래에 작성 */}
+                  <Text style={modalInnerStyles.logoutModalTitle}>
                     이미 완료한 루틴입니다!
                   </Text>
-                  <Text style={modalInnerStyles.deletModalText}>
-                    루틴 완료를 취소하시겠습니까?
-                  </Text>
-                  <Text style={modalInnerStyles.deletModalText_}>
+                  <Text style={modalInnerStyles.logoutModalText}>
+                    루틴 완료를 취소하시겠습니까? {'\n'}
                     루틴 완료 기록과 획득 RP가 사라집니다
                   </Text>
                   <View style={modalInnerStyles.modalFlex}>
                     <TouchableOpacity
                       style={modalInnerStyles.noBtn}
-                      activeOpacity={1.0}
                       onPress={() => setCompleteChangeModalVisible(false)}>
                       <Text style={modalInnerStyles.noText}>아니요</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={modalInnerStyles.yesBtn}
-                      activeOpacity={1.0}
                       onPress={() => {
-                        handleCompleteChange(data.id);
+                        // handleCompleteChange(data.id);
                         // console.log('complete change id : ', data.id);
                       }}>
                       <Text style={modalInnerStyles.nextText}>취소할래요!</Text>
@@ -333,7 +319,6 @@ const Progress = () => {
               </TouchableWithoutFeedback>
             </Pressable>
           </Modal>
-
           {/* 삭제 모달 구현 코드 */}
           <Modal
             visible={deleteModalVisible}
@@ -341,38 +326,34 @@ const Progress = () => {
             transparent={true}
             statusBarTranslucent={true}>
             <Pressable
-              style={modalInnerStyles.progressModalOverlay}
+              style={modalInnerStyles.modalOverlay}
               onPress={() => setDeleteModalVisible(!deleteModalVisible)}>
               <TouchableWithoutFeedback>
                 <Animated.View
                   style={{
                     ...modalInnerStyles.deleteSheetContainer,
-                    transform: [{translateY: translateY}],
+                    // transform: [{translateY: translateY}],
                   }}
-                  {...panResponder.panHandlers}>
-                  <Text style={modalInnerStyles.modalTitle}>
-                    진행 중인 루틴입니다!
+                  // {...panResponder.panHandlers}
+                >
+                  {/* 모달에 들어갈 내용을 아래에 작성 */}
+                  <Text style={modalInnerStyles.logoutModalTitle}>
+                    진행중인 루틴입니다!
                   </Text>
-                  <Text style={modalInnerStyles.deletModalText}>
-                    루틴을 삭제하시겠습니까?
-                  </Text>
-                  <Text style={modalInnerStyles.deletModalText_}>
-                    해당 루틴에 대한 모든 기록이 사라집니다
-                  </Text>
-                  <Text style={modalInnerStyles.deletModalText__}>
-                    * 루틴 완료 기록, 획득 RP
+                  <Text style={modalInnerStyles.logoutModalText}>
+                    루틴을 삭제하시겠습니까? {'\n'}
+                    해당 루틴에 대한 모든 기록이 사라집니다{'\n'}
+                    *루틴 완료 기록, 획득 RP
                   </Text>
                   <View style={modalInnerStyles.modalFlex}>
                     <TouchableOpacity
                       style={modalInnerStyles.noBtn}
-                      activeOpacity={1.0}
                       onPress={() => setDeleteModalVisible(false)}>
                       <Text style={modalInnerStyles.noText}>아니요</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={modalInnerStyles.yesBtn}
-                      activeOpacity={1.0}
-                      onPress={() => handleRemove(data.id)}>
+                      onPress={() => console.log()}>
                       <Text style={modalInnerStyles.nextText}>삭제할래요!</Text>
                     </TouchableOpacity>
                   </View>
@@ -385,6 +366,33 @@ const Progress = () => {
     </View>
   );
 };
+const img2 = x =>
+  StyleSheet.create({
+    bar: {
+      resizeMode: 'stretch',
+      height: 70,
+      width: 70,
+      opacity: x,
+    },
+  });
+const aimText1 = x =>
+  StyleSheet.create({
+    bar: {
+      paddingLeft: 20,
+      paddingRight: 100,
+      paddingTop: 10,
+      opacity: x,
+    },
+  });
+
+const svg2 = x =>
+  StyleSheet.create({
+    bar: {
+      width: 150,
+      zIndex: 10,
+      opacity: x,
+    },
+  });
 
 const styles = StyleSheet.create({
   mainText1: {
@@ -421,6 +429,26 @@ const styles = StyleSheet.create({
     width: 170,
     height: 110,
   },
+  view2: {
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 20},
+    shadowOpacity: 0.5,
+    shadowRadius: 30,
+    elevation: 7, // changed to a greater value
+    borderColor: 'black',
+    zIndex: 99, // added zIndex
+    backgroundColor: 'white', // added a background color
+    marginTop: 20,
+    paddingTop: 10,
+    marginLeft: 15,
+  },
+  img2_gray: {
+    resizeMode: 'stretch',
+    height: 70,
+    width: 70,
+    tintColor: 'gray',
+    position: 'absolute',
+  },
 });
 
-export default Progress;
+export {Progress};

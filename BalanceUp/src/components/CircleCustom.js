@@ -19,30 +19,65 @@ import Svg, {
   Rect,
 } from 'react-native-svg';
 
-function CircleCustom({size, percent}) {
+function CircleCustom({size, percent, percent2, percent3, percent4}) {
   return (
-    <Svg style={[{transform: [{rotateZ: '270deg'}]}, styles.circle]}>
+    <Svg
+      width={250}
+      height={250}
+      style={[{transform: [{rotateZ: '270deg'}]}, styles.circle]}>
       <Circle
-        x={10}
-        y={10}
+        x={50}
+        y={50}
         cx={size}
         cy={size}
         r={size}
-        stroke="gray"
-        strokeWidth="2.5"
+        stroke="#585FFF"
+        strokeWidth="60"
+        strokeDasharray={3.14 * 2 * size * 2}
+        strokeDashoffset={
+          3.14 *
+          2 *
+          size *
+          2 *
+          (1 - (percent + percent2 + percent3 + percent4) / 2)
+        }
       />
       <Circle
-        x={10}
-        y={10}
+        x={50}
+        y={50}
         cx={size}
         cy={size}
         r={size}
-        stroke="black"
-        strokeWidth="5"
+        stroke="#8397FF"
+        strokeWidth="60"
+        strokeDasharray={3.14 * 2 * size * 2}
+        strokeDashoffset={
+          3.14 * 2 * size * 2 * (1 - (percent + percent2 + percent3) / 2)
+        }
+      />
+      <Circle
+        x={50}
+        y={50}
+        cx={size}
+        cy={size}
+        r={size}
+        stroke="#B9C8FF"
+        strokeWidth="60"
+        strokeDasharray={3.14 * 2 * size * 2}
+        strokeDashoffset={3.14 * 2 * size * 2 * (1 - (percent + percent2) / 2)}
+      />
+
+      <Circle
+        x={50}
+        y={50}
+        cx={size}
+        cy={size}
+        r={size}
+        stroke="#D7E0FF"
+        strokeWidth="60"
         strokeDasharray={3.14 * 2 * size * 2}
         strokeDashoffset={3.14 * 2 * size * 2 * (1 - percent / 2)}
       />
-      <Text style={styles.text1}>{percent}</Text>
     </Svg>
   );
 }

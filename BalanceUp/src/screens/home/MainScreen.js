@@ -70,6 +70,7 @@ import {
 import modalInnerStyles from '../../css/modalStyles';
 import {Shadow} from 'react-native-shadow-2';
 import {HomeBottomTab} from '../BottomTab';
+import {Progress as ProgressComponent} from './Progress';
 
 LocaleConfig.locales.fr = {
   monthNames: [
@@ -118,7 +119,6 @@ const MainScreen = ({navigation: {navigate}}) => {
   //   console.log(dataToken);
   // }, []);
 
-
   const todo = ['일상', '학습', '마음관리', '운동'];
   const todoImg = [life, education, mental, health];
   const todoTmp = ['item1', 'item2', 'item3'];
@@ -162,20 +162,6 @@ const MainScreen = ({navigation: {navigate}}) => {
       selected: true,
       marked: markedDates[selectedDate]?.marked,
     },
-  };
-
-  // 하단 탭바 네이게이션
-  const goHome = () => {
-    navigation.navigate('Main');
-  };
-  const goSet = () => {
-    navigation.navigate('Set');
-  };
-  const goLookAll = () => {
-    navigation.navigate('LookAll');
-  };
-  const goMyPage = () => {
-    navigation.navigate('MyPage');
   };
 
   const checkComplete = index => {
@@ -310,10 +296,7 @@ const MainScreen = ({navigation: {navigate}}) => {
             <Text> &nbsp; 전체보기 &nbsp;</Text>
           </TouchableOpacity>
         </View>
-        <CalendarProvider
-          // todayButtonStyle={buttonStyle}
-          // style={styles.button2}
-          date={fomatToday}>
+        <CalendarProvider date={fomatToday}>
           <ExpandableCalendar
             monthFormat={'MM월'}
             leftArrowImageSource={arrow2}
@@ -343,209 +326,7 @@ const MainScreen = ({navigation: {navigate}}) => {
             // onDayPress={day => this.setState({selected_date: day.dateString})}
           />
         </CalendarProvider>
-
-        <View>
-          {todoTmp.map((value, index) => (
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              style={styles.view2}>
-              <Image source={todoImg[index]} style={styles.img2_gray} />
-              <Image
-                source={todoImg[index]}
-                style={img2(todoComplete[index]).bar}
-              />
-              <View style={aimText1(todoComplete[index]).bar}>
-                <Text style={commonStyles.boldText}>item1</Text>
-                <Text>{todoTmpSub[index]}</Text>
-              </View>
-              <TouchableWithoutFeedback onPress={() => checkComplete(index)}>
-                <Svg height={80} style={svg2(todoComplete[index]).bar}>
-                  <Rect
-                    x={20}
-                    y={20}
-                    width="60"
-                    height="34"
-                    rx="18"
-                    fill="#585FFF"
-                  />
-                  <SvgText
-                    x={37}
-                    y={40}
-                    style={styles.mainText12}
-                    fill="white"
-                    fontWeight={600}>
-                    완료
-                  </SvgText>
-                </Svg>
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback onPress={() => console.log()}>
-                <Image source={edit} />
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback
-                onPress={() => setDeleteModalVisible(true)}>
-                <Image source={delete2} />
-              </TouchableWithoutFeedback>
-              {/* 완료 모달 구현 코드 (one Day)*/}
-              <Modal
-                visible={completeModalVisible}
-                animationType={'fade'}
-                transparent={true}
-                statusBarTranslucent={true}>
-                {completeDay === 1 ? (
-                  <Pressable
-                    style={modalInnerStyles.complteModalOverlay}
-                    onPress={() =>
-                      setCompleteModalVisible(!completeModalVisible)
-                    }>
-                    <TouchableWithoutFeedback>
-                      <Animated.View
-                        style={{
-                          ...modalInnerStyles.centerSheetContainer,
-                          // transform: [{translateY: translateY}],
-                        }}
-                        // {...panResponder.panHandlers}
-                      >
-                        {/* 모달에 들어갈 내용을 아래에 작성 */}
-                        <Text style={modalInnerStyles.completeText1}>
-                          +1 RP
-                        </Text>
-                        <Text style={modalInnerStyles.completeText2}>
-                          오늘의 루틴을 완료했습니다!
-                        </Text>
-                        <View style={modalInnerStyles.completeImg1}>
-                          <Image source={oneDay} />
-                        </View>
-                      </Animated.View>
-                    </TouchableWithoutFeedback>
-                  </Pressable>
-                ) : (
-                  <Pressable
-                    style={modalInnerStyles.complteModalOverlay}
-                    onPress={() =>
-                      setCompleteModalVisible(!completeModalVisible)
-                    }>
-                    <TouchableWithoutFeedback>
-                      <Animated.View
-                        style={{
-                          ...modalInnerStyles.centerSheetContainer,
-                          // transform: [{translateY: translateY}],
-                        }}
-                        // {...panResponder.panHandlers}
-                      >
-                        {/* 모달에 들어갈 내용을 아래에 작성 */}
-                        <Text style={modalInnerStyles.completeText1}>
-                          +10 RP
-                        </Text>
-                        <Text style={modalInnerStyles.completeText2}>
-                          2주간 완벽하게 루틴을 완료했어요
-                        </Text>
-                        <Text style={modalInnerStyles.completeImg1}>
-                          앞으로도 꾸준한 루틴 기대할게요!
-                        </Text>
-                        <View style={modalInnerStyles.completeImg1}>
-                          <Image source={twoWeeks} />
-                        </View>
-                      </Animated.View>
-                    </TouchableWithoutFeedback>
-                  </Pressable>
-                )}
-              </Modal>
-              {/* 완료 취소 모달 구현 코드 */}
-              <Modal
-                visible={completeChangeModalVisible}
-                animationType={'fade'}
-                transparent={true}
-                statusBarTranslucent={true}>
-                <Pressable
-                  style={modalInnerStyles.modalOverlay}
-                  onPress={() =>
-                    setCompleteChangeModalVisible(!completeChangeModalVisible)
-                  }>
-                  <TouchableWithoutFeedback>
-                    <Animated.View
-                      style={{
-                        ...modalInnerStyles.bottomSheetContainer,
-                        // transform: [{translateY: translateY}],
-                      }}
-                      // {...panResponder.panHandlers}
-                    >
-                      {/* 모달에 들어갈 내용을 아래에 작성 */}
-                      <Text style={modalInnerStyles.logoutModalTitle}>
-                        이미 완료한 루틴입니다!
-                      </Text>
-                      <Text style={modalInnerStyles.logoutModalText}>
-                        루틴 완료를 취소하시겠습니까? {'\n'}
-                        루틴 완료 기록과 획득 RP가 사라집니다
-                      </Text>
-                      <View style={modalInnerStyles.modalFlex}>
-                        <TouchableOpacity
-                          style={modalInnerStyles.noBtn}
-                          onPress={() => setCompleteChangeModalVisible(false)}>
-                          <Text style={modalInnerStyles.noText}>아니요</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          style={modalInnerStyles.yesBtn}
-                          onPress={() => {
-                            // handleCompleteChange(data.id);
-                            // console.log('complete change id : ', data.id);
-                          }}>
-                          <Text style={modalInnerStyles.nextText}>
-                            취소할래요!
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                    </Animated.View>
-                  </TouchableWithoutFeedback>
-                </Pressable>
-              </Modal>
-              {/* 삭제 모달 구현 코드 */}
-              <Modal
-                visible={deleteModalVisible}
-                animationType={'fade'}
-                transparent={true}
-                statusBarTranslucent={true}>
-                <Pressable
-                  style={modalInnerStyles.modalOverlay}
-                  onPress={() => setDeleteModalVisible(!deleteModalVisible)}>
-                  <TouchableWithoutFeedback>
-                    <Animated.View
-                      style={{
-                        ...modalInnerStyles.deleteSheetContainer,
-                        // transform: [{translateY: translateY}],
-                      }}
-                      // {...panResponder.panHandlers}
-                    >
-                      {/* 모달에 들어갈 내용을 아래에 작성 */}
-                      <Text style={modalInnerStyles.logoutModalTitle}>
-                        진행중인 루틴입니다!
-                      </Text>
-                      <Text style={modalInnerStyles.logoutModalText}>
-                        루틴을 삭제하시겠습니까? {'\n'}
-                        해당 루틴에 대한 모든 기록이 사라집니다{'\n'}
-                        *루틴 완료 기록, 획득 RP
-                      </Text>
-                      <View style={modalInnerStyles.modalFlex}>
-                        <TouchableOpacity
-                          style={modalInnerStyles.noBtn}
-                          onPress={() => setDeleteModalVisible(false)}>
-                          <Text style={modalInnerStyles.noText}>아니요</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          style={modalInnerStyles.yesBtn}
-                          onPress={() => console.log()}>
-                          <Text style={modalInnerStyles.nextText}>
-                            삭제할래요!
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                    </Animated.View>
-                  </TouchableWithoutFeedback>
-                </Pressable>
-              </Modal>
-            </ScrollView>
-          ))}
-        </View>
+        <ProgressComponent />
       </ScrollView>
       <HomeBottomTab navigate={navigate} />
     </SafeAreaView>
@@ -565,35 +346,6 @@ const dstyleText = x =>
       marginLeft: x + 17,
       marginTop: 70,
       position: 'absolute',
-    },
-  });
-
-const img2 = x =>
-  StyleSheet.create({
-    bar: {
-      resizeMode: 'stretch',
-      height: 70,
-      width: 70,
-      opacity: x,
-    },
-  });
-
-const aimText1 = x =>
-  StyleSheet.create({
-    bar: {
-      paddingLeft: 20,
-      paddingRight: 100,
-      paddingTop: 10,
-      opacity: x,
-    },
-  });
-
-const svg2 = x =>
-  StyleSheet.create({
-    bar: {
-      width: 150,
-      zIndex: 10,
-      opacity: x,
     },
   });
 
@@ -771,19 +523,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white', // added a background color
     marginTop: 20,
     marginLeft: 20,
-  },
-  view2: {
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 20},
-    shadowOpacity: 0.5,
-    shadowRadius: 30,
-    elevation: 7, // changed to a greater value
-    borderColor: 'black',
-    zIndex: 99, // added zIndex
-    backgroundColor: 'white', // added a background color
-    marginTop: 20,
-    paddingTop: 10,
-    marginLeft: 15,
   },
 });
 

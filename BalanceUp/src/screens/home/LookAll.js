@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   ScrollView,
   useWindowDimensions,
+  Image,
 } from 'react-native';
 // import WeekCalendar from '../../components/WeekCalendar';
 // import WeekCalendar from 'react-native-calendars';
@@ -46,9 +47,14 @@ import {
   CalendarProvider,
 } from 'react-native-calendars';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
-import Progress from './Progress';
+import {Progress} from './Progress';
 import Complete from './Complete';
-import {CheckBottomTab} from '../BottomTab';
+import {CheckBottomTab,HomeBottomTab} from '../BottomTab';
+import {Shadow} from 'react-native-shadow-2';
+import * as ProgressLib from 'react-native-progress';
+
+import arrow2 from '../../resource/image/Main/arrow2.png';
+import arrow3 from '../../resource/image/Main/arrow3.png';
 
 LocaleConfig.locales.fr = {
   monthNames: [
@@ -108,99 +114,147 @@ const LookAll = ({navigation: {navigate}}) => {
   const layout = useWindowDimensions();
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    {key: 'first', title: '진행'},
-    {key: 'second', title: '완료'},
+    {key: 'first', title: '루틴'},
+    {key: 'second', title: '통계'},
   ]);
 
-  const [selectedDate, setSelectedDate] = useState(
-    format(new Date(), 'yyyy-MM-dd'),
-  );
+  const [selectedDate, setSelectedDate] = useState();
+  // format(new Date(), 'yyyy-MM-dd'),
   const posts = [
     {
       id: 1,
       title: '제목입니다.',
       contents: '내용입니다.',
-      date: '2022-02-26',
-    },
-    {
-      id: 2,
-      title: '제목입니다.',
-      contents: '내용입니다.',
-      date: '2022-02-27',
+      date: '2023-01-14',
     },
   ];
   const markedDates = posts.reduce((acc, current) => {
     const formattedDate = format(new Date(current.date), 'yyyy-MM-dd');
-    acc[formattedDate] = {marked: true};
+    acc[selectedDate] = {marked: true};
     return acc;
   }, {});
   const markedSelectedDates = {
-    ...markedDates,
+    // ...markedDates,
     [selectedDate]: {
       selected: true,
-      marked: markedDates[selectedDate]?.marked,
+      // marked: markedDates[selectedDate]?.marked,
     },
   };
   const fomatToday =
     year.toString() + '-' + month.toString() + '-' + date.toString();
+  const onclick = () => {
+    console.log(markedDates);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{flex: 1}}>
-        <ScrollView style={styles.scrollview}>
-          <View style={styles.titleWrapper}>
-            <View style={commonStyles.spacing} />
-            <Text style={styles.title2}>루틴</Text>
-          </View>
+      <ScrollView style={styles.scrollview}>
+        <View style={styles.titleWrapper}>
           <View style={commonStyles.spacing2} />
+          <Shadow distance={10} startColor={'#F1F1F1'} style={styles.calView2}>
+            <Calendar
+              // date={fomatToday}
+              monthFormat={'MM월'}
+              renderArrow={direction => {
+                if (direction === 'left') {
+                  return <Image source={arrow2} />;
+                } else {
+                  return <Image source={arrow3} />;
+                }
+              }}
+              style={styles.calView}
+              allowShadow={false}
+              markedDates={markedSelectedDates}
+              theme={{
+                agendaTodayColor: '#FF7391',
+                arrowColor: 'black',
+                textMonthFontWeight: '800',
+                selectedDayBackgroundColor: '#585FFF',
+                // dotColor: '#585FFF',
+                todayTextColor: '#009688',
+                'stylesheet.calendar.header': {
+                  header: {
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    paddingLeft: 50,
+                    paddingRight: 50,
+                    marginTop: 6,
+                    alignItems: 'center',
+                  },
+                },
+              }}
+              onDayPress={day => {
+                setSelectedDate(day.dateString);
+                onclick();
+              }}
+              // onDayPress={day => this.setState({selected_date: day.dateString})}
+            />
+          </Shadow>
+          <View style={commonStyles.spacing3} />
+          <Shadow distance={10} startColor={'#F1F1F1'}>
+            <Svg height={70} width={350}>
+              <Rect x={0} y={0} width={350} height={70} fill="none" />
+              <SvgText
+                x="25"
+                y="20"
+                text-anchor="middle"
+                fill="black"
+                style={styles.mainText1}>
+                루틴 진행률
+              </SvgText>
+              <SvgText
+                x="295"
+                y="20"
+                text-anchor="middle"
+                fill="#585FFF"
+                style={styles.mainText1}>
+                50%
+              </SvgText>
+              <View style={styles.progressBar}>
+                <ProgressLib.Bar
+                  progress={0.5}
+                  width={300}
+                  height={12}
+                  color="#585FFF"
+                  unfilledColor="#CED6FF"
+                  borderWidth={0}
+                  borderRadius={50}
+                />
+              </View>
+            </Svg>
+          </Shadow>
 
-          <Calendar
-            date={fomatToday}
-            monthFormat={'yyyy년 MM월'}
-            leftArrowImageSource=""
-            rightArrowImageSource=""
-            allowShadow={false}
-            markedDates={markedSelectedDates}
-            theme={{
-              selectedDayBackgroundColor: '#626262',
-              dotColor: '#626262',
-              todayTextColor: '#009688',
-            }}
-            onDayPress={day => {
-              setSelectedDate(day.dateString);
-            }}
-            // onDayPress={day => this.setState({selected_date: day.dateString})}
-          />
-          <View style={commonStyles.spacing2} />
-          <TabView
-            style={styles.tabview}
-            navigationState={{index, routes}}
-            renderScene={renderScene}
-            onIndexChange={setIndex}
-            initialLayout={{width: layout.width}}
-            renderTabBar={props => (
-              <TabBar
-                {...props}
-                activeColor="black"
-                inactiveColor="gray"
-                indicatorStyle={{
-                  backgroundColor: 'black',
-                  width: 70,
-                  alignItems: 'center',
-                  marginHorizontal: 65,
-                  borderWidth: 2,
-                }}
-                style={{
-                  backgroundColor: 'white',
-                  shadowColor: 'transparent',
-                  shadowOpacity: 0,
-                }}
-              />
-            )}
-          />
-        </ScrollView>
-        <CheckBottomTab navigate={navigate} />
-      </View>
+          <View style={commonStyles.spacing3} />
+        </View>
+        <TabView
+          style={styles.tabview}
+          navigationState={{index, routes}}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={{width: layout.width}}
+          renderTabBar={props => (
+            <TabBar
+              {...props}
+              activeColor="#585FFF"
+              inactiveColor="gray"
+              labelStyle={{fontWeight: '600'}}
+              indicatorStyle={{
+                borderColor:'#585FFF',
+                width: 180,
+                alignItems: 'center',
+                marginHorizontal: 15,
+                borderWidth: 2,
+              }}
+              style={{
+                backgroundColor: 'white',
+                shadowColor: 'transparent',
+                shadowOpacity: 0,
+              }}
+            />
+          )}
+        />
+      </ScrollView>
+      <CheckBottomTab navigate={navigate} />
     </SafeAreaView>
   );
 };
@@ -208,14 +262,12 @@ const LookAll = ({navigation: {navigate}}) => {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFBFF',
     flex: 1,
   },
   titleWrapper: {
     width: '100%',
-    height: 100,
     alignItems: 'center',
-    justifyContent: 'center',
   },
   title1: {
     fontSize: 65,
@@ -238,11 +290,16 @@ const styles = StyleSheet.create({
     fontSize: 25,
   },
   scrollview: {
-    marginLeft: 20,
-    width: 390,
+    width: '100%',
   },
   mainText: {
     fontSize: 20,
+  },
+  mainText1: {
+    fontSize: 12,
+    color: 'black',
+    zIndex: 30,
+    fontWeight: 600,
   },
   mainText2: {
     fontSize: 20,
@@ -277,8 +334,19 @@ const styles = StyleSheet.create({
     width: 150,
     zIndex: 10,
   },
+  progressBar: {
+    paddingLeft: 25,
+    paddingTop: 35,
+  },
   tabview: {
     height: 500,
+  },
+  calView: {
+    width: 350,
+  },
+  view1: {
+    width: 300,
+    paddingLeft: 180,
   },
 });
 
