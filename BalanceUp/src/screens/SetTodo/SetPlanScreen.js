@@ -264,7 +264,9 @@ const SetPlanScreen = ({navigation, route}) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => navigation.navigate('Set')}>
+        <TouchableOpacity
+          activeOpacity={1.0}
+          onPress={() => navigation.navigate('Set')}>
           <BackArrow style={styles.arrowBtn} />
         </TouchableOpacity>
         <Text style={styles.topTitle}>

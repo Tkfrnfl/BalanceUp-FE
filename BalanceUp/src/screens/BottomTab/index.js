@@ -84,7 +84,7 @@ function SetBottomTab({navigate}) {
 }
 function CheckBottomTab({navigate}) {
   return (
-    <View style={[commonStyles.bottomTabSheet, commonStyles.bottomTabSheet2]}>
+    <View style={commonStyles.bottomTabSheet}>
       {bottomData.map(data => (
         <TouchableOpacity
           key={data.id}

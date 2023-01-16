@@ -149,6 +149,13 @@ const modalInnerStyles = StyleSheet.create({
     color: '#000',
   },
 
+  // Progress 완료 취소 모달
+  complteChangeModalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+  }, // 모달이 띄워졌을 때 화면을 어둡게 하기 위한 오버레이
+
   // Progress 완료 모달
   complteModalOverlay: {
     flex: 1,
@@ -199,7 +206,7 @@ const modalInnerStyles = StyleSheet.create({
 
   // Progress 삭제 모달
   deleteSheetContainer: {
-    height: 250,
+    height: 240,
     backgroundColor: '#fff',
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,

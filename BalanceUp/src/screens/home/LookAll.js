@@ -49,7 +49,7 @@ import {
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import {Progress} from './Progress';
 import Complete from './Complete';
-import {CheckBottomTab,HomeBottomTab} from '../BottomTab';
+import {CheckBottomTab, HomeBottomTab} from '../BottomTab';
 import {Shadow} from 'react-native-shadow-2';
 import * as ProgressLib from 'react-native-progress';
 
@@ -239,7 +239,7 @@ const LookAll = ({navigation: {navigate}}) => {
               inactiveColor="gray"
               labelStyle={{fontWeight: '600'}}
               indicatorStyle={{
-                borderColor:'#585FFF',
+                borderColor: '#585FFF',
                 width: 180,
                 alignItems: 'center',
                 marginHorizontal: 15,
@@ -261,7 +261,6 @@ const LookAll = ({navigation: {navigate}}) => {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
     backgroundColor: '#FAFBFF',
     flex: 1,
   },

@@ -15,7 +15,7 @@ const commonStyles = StyleSheet.create({
   },
   boldText: {
     fontSize: 20,
-    fontWeight: '700',
+    fontFamily: 'Pretendard-Bold',
     color: 'black',
   },
   imgView: {
@@ -34,9 +34,6 @@ const commonStyles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
     borderColor: '#EEEEEE',
-  },
-  bottomTabSheet2: {
-    marginLeft:-70
   },
   commonText: {
     right: 2,

@@ -13,12 +13,9 @@ import {
   Pressable,
   ScrollView,
 } from 'react-native';
-import FastImage from 'react-native-fast-image';
 import commonStyles from '../../css/commonStyles';
 import modalInnerStyles from '../../css/modalStyles';
-import KeyumIcon from '../../resource/image/KeyumEmoticon.png';
 import Svg, {Circle, Text as SvgText, Rect} from 'react-native-svg';
-import * as ProgressLib from 'react-native-progress';
 import Crystal from '../../resource/image/Modal/Crystal.png';
 import life from '../../resource/image/SetTodo/life.png';
 import education from '../../resource/image/SetTodo/education.png';
@@ -26,7 +23,6 @@ import mental from '../../resource/image/SetTodo/mental.png';
 import health from '../../resource/image/SetTodo/health.png';
 import oneDay from '../../resource/image/Main/oneDay.png';
 import twoWeeks from '../../resource/image/Main/twoWeeks.png';
-import exMark from '../../resource/image/Main/exMark.png';
 import edit from '../../resource/image/Main/edit.png';
 import delete2 from '../../resource/image/Main/delete.png';
 
@@ -280,7 +276,7 @@ const Progress = () => {
             transparent={true}
             statusBarTranslucent={true}>
             <Pressable
-              style={modalInnerStyles.modalOverlay}
+              style={modalInnerStyles.complteChangeModalOverlay}
               onPress={() =>
                 setCompleteChangeModalVisible(!completeChangeModalVisible)
               }>
@@ -293,7 +289,7 @@ const Progress = () => {
                   // {...panResponder.panHandlers}
                 >
                   {/* 모달에 들어갈 내용을 아래에 작성 */}
-                  <Text style={modalInnerStyles.logoutModalTitle}>
+                  <Text style={modalInnerStyles.modalTitle}>
                     이미 완료한 루틴입니다!
                   </Text>
                   <Text style={modalInnerStyles.logoutModalText}>
@@ -302,12 +298,14 @@ const Progress = () => {
                   </Text>
                   <View style={modalInnerStyles.modalFlex}>
                     <TouchableOpacity
+                      activeOpacity={1.0}
                       style={modalInnerStyles.noBtn}
                       onPress={() => setCompleteChangeModalVisible(false)}>
                       <Text style={modalInnerStyles.noText}>아니요</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={modalInnerStyles.yesBtn}
+                      activeOpacity={1.0}
                       onPress={() => {
                         // handleCompleteChange(data.id);
                         // console.log('complete change id : ', data.id);
@@ -337,7 +335,7 @@ const Progress = () => {
                   // {...panResponder.panHandlers}
                 >
                   {/* 모달에 들어갈 내용을 아래에 작성 */}
-                  <Text style={modalInnerStyles.logoutModalTitle}>
+                  <Text style={modalInnerStyles.modalTitle}>
                     진행중인 루틴입니다!
                   </Text>
                   <Text style={modalInnerStyles.logoutModalText}>
@@ -348,11 +346,13 @@ const Progress = () => {
                   <View style={modalInnerStyles.modalFlex}>
                     <TouchableOpacity
                       style={modalInnerStyles.noBtn}
+                      activeOpacity={1.0}
                       onPress={() => setDeleteModalVisible(false)}>
                       <Text style={modalInnerStyles.noText}>아니요</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={modalInnerStyles.yesBtn}
+                      activeOpacity={1.0}
                       onPress={() => console.log()}>
                       <Text style={modalInnerStyles.nextText}>삭제할래요!</Text>
                     </TouchableOpacity>
