@@ -19,7 +19,7 @@ import {useRecoilState} from 'recoil';
 import {validateText} from '../../utils/regex';
 import {ChangeNameAPI} from '../../actions/checkNameAPI';
 import {MyBottomTab} from '../../screens/BottomTab/index';
-import {nickNameState} from '../../recoil/atom';
+import {jwtState, nickNameState} from '../../recoil/atom';
 
 import MoreInfoArrow from '../../resource/image/Agree/moreInfoArrow.svg';
 import modalInnerStyles from '../../css/modalStyles';
@@ -34,7 +34,7 @@ const MyPage = ({navigation: {navigate}}) => {
   const [checkTextPass, setCheckTextPass] = useState('');
   const [checkDisabled, setCheckDisabled] = useState(true);
   const [disabled, setDisabled] = useState(true);
-
+  const [token, setToken] = useState(jwtState);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
 
@@ -142,14 +142,18 @@ const MyPage = ({navigation: {navigate}}) => {
     }
   };
 
-  AsyncStorage.getItem('jwt', (err, result) => {
-    const token = JSON.parse(result);
-    console.log('token: ', token);
+  // 닉네임 변경 구현
+  AsyncStorage.getItem('nickName', (err, nameResult) => {
+    console.log(nameResult);
+    setNickName(JSON.parse(nameResult));
   });
 
-  // 닉네임 변경 구현
+  AsyncStorage.getItem('jwt', (err, result) => {
+    setToken(JSON.parse(result));
+  });
+
   const handleChangeName = () => {
-    ChangeNameAPI(userName).then(response => {
+    ChangeNameAPI(userName, token).then(response => {
       if (response === true) {
         setCheckTextPass('사용 가능한 닉네임이에요!');
       } else if (response === false) {

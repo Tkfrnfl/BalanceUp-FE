@@ -56,7 +56,7 @@ const NameScreen = ({navigation}) => {
   // 중복 확인 구현
   const duplicationCheck = () => {
     duplicationCheckAPI(userName).then(response => {
-      if (response === response) {
+      if (response === true) {
         setCheckTextPass('사용 가능한 닉네임이에요!');
       } else if (response === false) {
         setCheckTextError('이미 존재하는 닉네임이에요');

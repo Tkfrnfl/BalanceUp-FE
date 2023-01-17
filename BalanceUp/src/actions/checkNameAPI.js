@@ -9,12 +9,13 @@ const duplicationCheckAPI = async userName => {
     })
     .then(response => {
       console.log(response.data);
-      return_value = response.data;
+      return_value = true;
     })
     .catch(function (error) {
-      console.log(error);
+      console.log(error.response.data);
       return_value = false;
     });
+  console.log(return_value);
   return return_value;
 };
 
@@ -27,12 +28,13 @@ const ChangeNameAPI = async (userName, token) => {
     })
     .then(response => {
       console.log(response.data);
-      return_value = response.data;
+      return_value = true;
     })
     .catch(function (error) {
-      console.log(error);
+      console.log(error.response.data);
       return_value = false;
     });
+  console.log(return_value);
   return return_value;
 };
 

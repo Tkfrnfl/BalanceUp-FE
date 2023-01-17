@@ -21,11 +21,6 @@ import education from '../../resource/image/SetTodo/education.png';
 import mental from '../../resource/image/SetTodo/mental.png';
 import health from '../../resource/image/SetTodo/health.png';
 import lv1 from '../../resource/image/Main/1lv.gif';
-import edit from '../../resource/image/Main/edit.png';
-import delete2 from '../../resource/image/Main/delete.png';
-import oneDay from '../../resource/image/Main/oneDay.png';
-import twoWeeks from '../../resource/image/Main/twoWeeks.png';
-
 import Svg, {Text as SvgText, Rect} from 'react-native-svg';
 import {
   LocaleConfig,
@@ -35,6 +30,9 @@ import {
 import {Shadow} from 'react-native-shadow-2';
 import {HomeBottomTab} from '../BottomTab';
 import {Progress as ProgressComponent} from './Progress';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useRecoilState} from 'recoil';
+import {nickNameState} from '../../recoil/atom';
 
 LocaleConfig.locales.fr = {
   monthNames: [
@@ -88,6 +86,7 @@ const MainScreen = ({navigation: {navigate}}) => {
   const todoTmp = ['item1', 'item2', 'item3'];
   const todoTmpSub = ['itemSub1', 'itemSub2', 'itemSub3'];
   const todoComplete = [0.5, 1, 0.5, 1];
+  const [nickName, setNickName] = useRecoilState(nickNameState);
 
   const fomatToday =
     year.toString() + '-' + month.toString() + '-' + date.toString();
@@ -136,6 +135,12 @@ const MainScreen = ({navigation: {navigate}}) => {
       setCompleteChangeModalVisible(true);
     }
   };
+
+  AsyncStorage.getItem('nickName', (err, result) => {
+    console.log(result);
+    setNickName(JSON.parse(result));
+  });
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollview}>
