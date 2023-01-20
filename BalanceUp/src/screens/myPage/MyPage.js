@@ -143,10 +143,10 @@ const MyPage = ({navigation: {navigate}}) => {
   };
 
   // 닉네임 변경 구현
-  AsyncStorage.getItem('nickName', (err, nameResult) => {
-    console.log(nameResult);
-    setNickName(JSON.parse(nameResult));
-  });
+  // AsyncStorage.getItem('nickName', (err, nameResult) => {
+  // console.log(nameResult);
+  //   setNickName(JSON.parse(nameResult));
+  // });
 
   AsyncStorage.getItem('jwt', (err, result) => {
     setToken(JSON.parse(result));
@@ -165,6 +165,9 @@ const MyPage = ({navigation: {navigate}}) => {
   const goChange = () => {
     setNickName(userName);
     console.log(nickName);
+    setUserName('');
+    setCheckTextError('');
+    setCheckTextPass('');
     setIsModalVisible(!isModalVisible);
   };
 
@@ -196,12 +199,19 @@ const MyPage = ({navigation: {navigate}}) => {
     }
   };
 
+  const handleCanel = () => {
+    setUserName('');
+    setCheckTextError('');
+    setCheckTextPass('');
+    setIsModalVisible(!isModalVisible);
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <View style={styles.innerContainer}>
           <View style={styles.topSheet}>
-            <Text style={styles.topTitle}>???님</Text>
+            <Text style={styles.topTitle}>{nickName}</Text>
             <TouchableOpacity
               onPress={() => navigate('Withdrawal')}
               activeOpacity={1.0}>
@@ -262,7 +272,7 @@ const MyPage = ({navigation: {navigate}}) => {
             behavior={'padding'}>
             <Pressable
               style={modalInnerStyles.modalOverlay}
-              onPress={() => setIsModalVisible(!isModalVisible)}>
+              onPress={handleCanel}>
               <TouchableWithoutFeedback>
                 <Animated.View
                   style={{
@@ -318,6 +328,7 @@ const MyPage = ({navigation: {navigate}}) => {
                   <View style={modalInnerStyles.modalFlex}>
                     <TouchableOpacity
                       disabled={disabled}
+                      activeOpacity={1.0}
                       onPress={goChange}
                       style={[
                         modalInnerStyles.saveBtn,

@@ -22,10 +22,17 @@ const duplicationCheckAPI = async userName => {
 const ChangeNameAPI = async (userName, token) => {
   let return_value;
   await axios
-    .put(api + '/user/nickname', {
-      nickname: userName,
-      token: token,
-    })
+    .put(
+      api + '/user/nickname',
+      {
+        nickname: userName,
+      },
+      {
+        headers: {
+          Authorization: token,
+        },
+      },
+    )
     .then(response => {
       console.log(response.data);
       return_value = true;

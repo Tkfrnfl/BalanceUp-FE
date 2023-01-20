@@ -217,6 +217,7 @@ const SetPlanScreen = ({navigation, route}) => {
     [selected],
   );
   console.log(dayText);
+  console.log(dayText.join(''));
 
   // 토글 스위치 구현
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
@@ -389,7 +390,9 @@ const SetPlanScreen = ({navigation, route}) => {
                     <Text style={modalInnerStyles.todoText}>{todoText}</Text>
                   </View>
                   <View style={styles.boxView}>
-                    <Text style={modalInnerStyles.dayText}>{dayText}</Text>
+                    <Text style={modalInnerStyles.dayText}>
+                      {dayText.join(', ')}
+                    </Text>
                     {shouldShow ? (
                       <Text style={modalInnerStyles.timeText}>
                         {alertHour}:{alertMin}에 알림

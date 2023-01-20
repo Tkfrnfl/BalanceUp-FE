@@ -90,8 +90,8 @@ const modalInnerStyles = StyleSheet.create({
   dayText: {
     color: '#888888',
     fontFamily: 'Pretendard-Medium',
-    letterSpacing: 5,
     fontSize: 14,
+    marginRight: 3,
     marginTop: 5,
   },
   timeText: {
