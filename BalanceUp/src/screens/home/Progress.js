@@ -16,13 +16,12 @@ import {
 import commonStyles from '../../css/commonStyles';
 import modalInnerStyles from '../../css/modalStyles';
 import Svg, {Circle, Text as SvgText, Rect} from 'react-native-svg';
-import Crystal from '../../resource/image/Modal/Crystal.png';
 import life from '../../resource/image/SetTodo/life.png';
 import education from '../../resource/image/SetTodo/education.png';
 import mental from '../../resource/image/SetTodo/mental.png';
 import health from '../../resource/image/SetTodo/health.png';
-import oneDay from '../../resource/image/Main/oneDay.png';
-import twoWeeks from '../../resource/image/Main/twoWeeks.png';
+import oneDay from '../../resource/image/Modal/Crystal.png';
+import twoWeeks from '../../resource/image/Modal/10routine.png';
 import edit from '../../resource/image/Main/edit.png';
 import delete2 from '../../resource/image/Main/delete.png';
 
@@ -212,6 +211,7 @@ const Progress = () => {
           <TouchableWithoutFeedback onPress={() => setDeleteModalVisible(true)}>
             <Image source={delete2} />
           </TouchableWithoutFeedback>
+
           {/* 완료 모달 구현 코드 (one Day)*/}
           <Modal
             visible={completeModalVisible}
@@ -247,13 +247,15 @@ const Progress = () => {
                 onPress={() => setCompleteModalVisible(!completeModalVisible)}>
                 <TouchableWithoutFeedback>
                   <Animated.View
-                    style={{
-                      ...modalInnerStyles.centerSheetContainer,
-                      // transform: [{translateY: translateY}],
-                    }}
+                    style={[
+                      {
+                        ...modalInnerStyles.centerSheetContainer,
+                        // transform: [{translateY: translateY}],
+                      },
+                      {height: 270},
+                    ]}
                     // {...panResponder.panHandlers}
                   >
-                    {/* 모달에 들어갈 내용을 아래에 작성 */}
                     <Text style={modalInnerStyles.completeText1}>+10 RP</Text>
                     <Text style={modalInnerStyles.completeText2}>
                       2주간 완벽하게 루틴을 완료했어요
@@ -262,13 +264,17 @@ const Progress = () => {
                       앞으로도 꾸준한 루틴 기대할게요!
                     </Text>
                     <View style={modalInnerStyles.completeImg1}>
-                      <Image source={twoWeeks} />
+                      <Image
+                        source={twoWeeks}
+                        style={{width: 270, height: 140, bottom: 15}}
+                      />
                     </View>
                   </Animated.View>
                 </TouchableWithoutFeedback>
               </Pressable>
             )}
           </Modal>
+
           {/* 완료 취소 모달 구현 코드 */}
           <Modal
             visible={completeChangeModalVisible}
@@ -283,17 +289,18 @@ const Progress = () => {
               <TouchableWithoutFeedback>
                 <Animated.View
                   style={{
-                    ...modalInnerStyles.bottomSheetContainer,
+                    ...modalInnerStyles.complteChangeSheetContainer,
                     // transform: [{translateY: translateY}],
                   }}
                   // {...panResponder.panHandlers}
                 >
-                  {/* 모달에 들어갈 내용을 아래에 작성 */}
                   <Text style={modalInnerStyles.modalTitle}>
                     이미 완료한 루틴입니다!
                   </Text>
-                  <Text style={modalInnerStyles.logoutModalText}>
-                    루틴 완료를 취소하시겠습니까? {'\n'}
+                  <Text style={modalInnerStyles.deletModalText}>
+                    루틴 완료를 취소하시겠습니까?
+                  </Text>
+                  <Text style={modalInnerStyles.deletModalText_}>
                     루틴 완료 기록과 획득 RP가 사라집니다
                   </Text>
                   <View style={modalInnerStyles.modalFlex}>
@@ -317,6 +324,7 @@ const Progress = () => {
               </TouchableWithoutFeedback>
             </Pressable>
           </Modal>
+
           {/* 삭제 모달 구현 코드 */}
           <Modal
             visible={deleteModalVisible}
@@ -324,7 +332,7 @@ const Progress = () => {
             transparent={true}
             statusBarTranslucent={true}>
             <Pressable
-              style={modalInnerStyles.modalOverlay}
+              style={modalInnerStyles.complteChangeModalOverlay}
               onPress={() => setDeleteModalVisible(!deleteModalVisible)}>
               <TouchableWithoutFeedback>
                 <Animated.View
@@ -334,13 +342,16 @@ const Progress = () => {
                   }}
                   // {...panResponder.panHandlers}
                 >
-                  {/* 모달에 들어갈 내용을 아래에 작성 */}
                   <Text style={modalInnerStyles.modalTitle}>
                     진행중인 루틴입니다!
                   </Text>
-                  <Text style={modalInnerStyles.logoutModalText}>
-                    루틴을 삭제하시겠습니까? {'\n'}
-                    해당 루틴에 대한 모든 기록이 사라집니다{'\n'}
+                  <Text style={modalInnerStyles.deletModalText}>
+                    루틴을 삭제하시겠습니까?
+                  </Text>
+                  <Text style={modalInnerStyles.deletModalText_}>
+                    해당 루틴에 대한 모든 기록이 사라집니다
+                  </Text>
+                  <Text style={modalInnerStyles.deletModalText__}>
                     *루틴 완료 기록, 획득 RP
                   </Text>
                   <View style={modalInnerStyles.modalFlex}>

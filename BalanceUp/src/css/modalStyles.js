@@ -64,11 +64,11 @@ const modalInnerStyles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'Pretendard-Bold',
     textAlign: 'center',
-    marginTop: 5,
+    marginTop: -3,
     marginBottom: 15,
   },
   clearSheetContainer: {
-    height: 250,
+    height: 235,
     backgroundColor: '#fff',
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
@@ -90,6 +90,7 @@ const modalInnerStyles = StyleSheet.create({
   dayText: {
     color: '#888888',
     fontFamily: 'Pretendard-Medium',
+    letterSpacing: 4,
     fontSize: 14,
     marginRight: 3,
     marginTop: 5,
@@ -150,6 +151,13 @@ const modalInnerStyles = StyleSheet.create({
   },
 
   // Progress 완료 취소 모달
+  complteChangeSheetContainer: {
+    height: 230,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    padding: 30,
+  },
   complteChangeModalOverlay: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -172,21 +180,26 @@ const modalInnerStyles = StyleSheet.create({
     padding: 30,
   },
   completeText1: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 22,
+    fontFamily: 'Pretendard-Bold',
     textAlign: 'center',
+    marginTop: 15,
+    top: 3,
     color: '#585FFF',
   },
   completeText2: {
     fontSize: 20,
-    fontWeight: 'bold',
+    marginTop: 10,
+    fontFamily: 'Pretendard-Bold',
     textAlign: 'center',
     color: '#000',
-    marginTop: 20,
   },
   completeImg1: {
+    marginTop: 4,
+    fontFamily: 'Pretendard-Medium',
     textAlign: 'center',
     alignItems: 'center',
+    color: '#888888',
   },
   complteBottomSheetContainer: {
     height: 240,
@@ -206,7 +219,7 @@ const modalInnerStyles = StyleSheet.create({
 
   // Progress 삭제 모달
   deleteSheetContainer: {
-    height: 240,
+    height: 260,
     backgroundColor: '#fff',
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,

@@ -19,7 +19,6 @@ import Svg, {
   Rect,
 } from 'react-native-svg';
 import commonStyles from '../../css/commonStyles';
-import KeyumIcon from '../../resource/image/KeyumEmoticon.png';
 import ProgressCircle from 'react-native-progress-circle';
 import * as Progress from 'react-native-progress';
 import CircleCustom from '../../components/CircleCustom';
