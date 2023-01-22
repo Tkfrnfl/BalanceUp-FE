@@ -1,4 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
+import axios from 'axios';
 import {
   StyleSheet,
   Text,
@@ -13,9 +14,11 @@ import {
   Pressable,
   ScrollView,
 } from 'react-native';
+import {useIsFocused} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import commonStyles from '../../css/commonStyles';
 import modalInnerStyles from '../../css/modalStyles';
-import Svg, {Circle, Text as SvgText, Rect} from 'react-native-svg';
+import Svg, {Text as SvgText, Rect} from 'react-native-svg';
 import life from '../../resource/image/SetTodo/life.png';
 import education from '../../resource/image/SetTodo/education.png';
 import mental from '../../resource/image/SetTodo/mental.png';
@@ -24,43 +27,54 @@ import oneDay from '../../resource/image/Modal/Crystal.png';
 import twoWeeks from '../../resource/image/Modal/10routine.png';
 import edit from '../../resource/image/Main/edit.png';
 import delete2 from '../../resource/image/Main/delete.png';
-
-const todoTmpSub = ['운동하기', '청소하기', '공부하기'];
+import {api} from '../../utils/Api';
+import {jwtState} from '../../recoil/atom';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {deleteRoutine} from '../../actions/routineAPI';
 
 const Progress = () => {
-  const [todoTmp, setTodoTmp] = useState([
-    {
-      id: '1',
-      title: '운동하기',
-      completed: false,
-    },
-    {
-      id: '2',
-      title: '청소하기',
-      completed: false,
-    },
-    {
-      id: '3',
-      title: '공부하기',
-      completed: false,
-    },
-  ]);
-  const [nowdata, setNowdata] = useState();
+  const [routines, setRoutines] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState(jwtState);
+  const [routineId, setRoutineId] = useState();
+  const [routineCategory, setroutineCategory] = useState();
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
   const [completeDay, setCompleteDayModalVisible] = useState(0);
   const [completeChangeModalVisible, setCompleteChangeModalVisible] =
     useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const isFocused = useIsFocused();
+  const navigation = useNavigation();
+
+  AsyncStorage.getItem('jwt', (err, result) => {
+    setToken(JSON.parse(result));
+  });
+
+  const fetchRoutineData = async () => {
+    await axios
+      .get(api + '/routines', {
+        headers: {
+          Authorization: token,
+        },
+      })
+      .then(response => {
+        setRoutines(response.data.body);
+        setLoading(false);
+        console.log(response.data.body);
+      })
+      .catch(function (error) {
+        console.log(error.response.data);
+      });
+  };
+
+  useEffect(() => {
+    if (isFocused) fetchRoutineData();
+  }, [isFocused, loading]);
 
   // 모달 기능 구현
   const screenHeight = Dimensions.get('screen').height;
 
   const panY = useRef(new Animated.Value(screenHeight)).current;
-
-  const translateY = panY.interpolate({
-    inputRange: [-1, 0, 1],
-    outputRange: [-1, 0, 1],
-  });
 
   const resetBottomSheet = Animated.timing(panY, {
     toValue: 0,
@@ -98,22 +112,14 @@ const Progress = () => {
   };
 
   useEffect(() => {
-    if (completeModalVisible) {
+    if (
+      completeModalVisible ||
+      completeChangeModalVisible ||
+      deleteModalVisible
+    ) {
       resetBottomSheet.start();
     }
-  }, [completeModalVisible]);
-
-  useEffect(() => {
-    if (completeChangeModalVisible) {
-      resetBottomSheet.start();
-    }
-  }, [completeChangeModalVisible]);
-
-  useEffect(() => {
-    if (deleteModalVisible) {
-      resetBottomSheet.start();
-    }
-  }, [deleteModalVisible]);
+  }, [completeModalVisible, completeChangeModalVisible, deleteModalVisible]);
 
   const checkComplete = index => {
     if (todoComplete[index] === 1) {
@@ -162,17 +168,28 @@ const Progress = () => {
     });
   };
 
+  // 수정 기능 구현
+  const handleEdit = (routineId, routineCategory) => {
+    setRoutineId(routineId);
+    setroutineCategory(routineCategory);
+    navigation.navigate('Plan', {
+      routineId: routineId,
+      planText: routineCategory,
+    });
+  };
+
   // 삭제 기능 구현
-  const handleRemove = id => {
-    let newTodoTmp = todoTmp.filter(data => data.id !== id);
+  const handleRemove = routineId => {
     setDeleteModalVisible(!deleteModalVisible);
-    setTodoTmp(newTodoTmp);
+    setRoutineId(routineId);
+    console.log(routineId);
   };
 
   return (
     <View>
-      {todoTmp.map((value, index) => (
+      {routines.map((data, index) => (
         <ScrollView
+          key={data.routineId}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           style={styles.view2}>
@@ -182,8 +199,10 @@ const Progress = () => {
             style={img2(todoComplete[index]).bar}
           />
           <View style={aimText1(todoComplete[index]).bar}>
-            <Text style={commonStyles.boldText}>item1</Text>
-            <Text>{todoTmpSub[index]}</Text>
+            <Text style={commonStyles.boldText}>{data.routineTitle}</Text>
+            <Text>
+              {data.routineCategory} | {data.days} {data.alarmTime}
+            </Text>
           </View>
           <TouchableWithoutFeedback onPress={() => checkComplete(index)}>
             <Svg height={80} style={svg2(todoComplete[index]).bar}>
@@ -205,10 +224,12 @@ const Progress = () => {
               </SvgText>
             </Svg>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={() => console.log()}>
+          <TouchableWithoutFeedback
+            onPress={() => handleEdit(data.routineId, data.routineCategory)}>
             <Image source={edit} />
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={() => setDeleteModalVisible(true)}>
+          <TouchableWithoutFeedback
+            onPress={() => handleRemove(data.routineId)}>
             <Image source={delete2} />
           </TouchableWithoutFeedback>
 
@@ -226,7 +247,6 @@ const Progress = () => {
                   <Animated.View
                     style={{
                       ...modalInnerStyles.centerSheetContainer,
-                      // transform: [{translateY: translateY}],
                     }}
                     // {...panResponder.panHandlers}
                   >
@@ -250,7 +270,6 @@ const Progress = () => {
                     style={[
                       {
                         ...modalInnerStyles.centerSheetContainer,
-                        // transform: [{translateY: translateY}],
                       },
                       {height: 270},
                     ]}
@@ -290,7 +309,6 @@ const Progress = () => {
                 <Animated.View
                   style={{
                     ...modalInnerStyles.complteChangeSheetContainer,
-                    // transform: [{translateY: translateY}],
                   }}
                   // {...panResponder.panHandlers}
                 >
@@ -324,56 +342,62 @@ const Progress = () => {
               </TouchableWithoutFeedback>
             </Pressable>
           </Modal>
-
-          {/* 삭제 모달 구현 코드 */}
-          <Modal
-            visible={deleteModalVisible}
-            animationType={'fade'}
-            transparent={true}
-            statusBarTranslucent={true}>
-            <Pressable
-              style={modalInnerStyles.complteChangeModalOverlay}
-              onPress={() => setDeleteModalVisible(!deleteModalVisible)}>
-              <TouchableWithoutFeedback>
-                <Animated.View
-                  style={{
-                    ...modalInnerStyles.deleteSheetContainer,
-                    // transform: [{translateY: translateY}],
-                  }}
-                  // {...panResponder.panHandlers}
-                >
-                  <Text style={modalInnerStyles.modalTitle}>
-                    진행중인 루틴입니다!
-                  </Text>
-                  <Text style={modalInnerStyles.deletModalText}>
-                    루틴을 삭제하시겠습니까?
-                  </Text>
-                  <Text style={modalInnerStyles.deletModalText_}>
-                    해당 루틴에 대한 모든 기록이 사라집니다
-                  </Text>
-                  <Text style={modalInnerStyles.deletModalText__}>
-                    *루틴 완료 기록, 획득 RP
-                  </Text>
-                  <View style={modalInnerStyles.modalFlex}>
-                    <TouchableOpacity
-                      style={modalInnerStyles.noBtn}
-                      activeOpacity={1.0}
-                      onPress={() => setDeleteModalVisible(false)}>
-                      <Text style={modalInnerStyles.noText}>아니요</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={modalInnerStyles.yesBtn}
-                      activeOpacity={1.0}
-                      onPress={() => console.log()}>
-                      <Text style={modalInnerStyles.nextText}>삭제할래요!</Text>
-                    </TouchableOpacity>
-                  </View>
-                </Animated.View>
-              </TouchableWithoutFeedback>
-            </Pressable>
-          </Modal>
         </ScrollView>
       ))}
+
+      {/* 삭제 모달 구현 코드 */}
+      <Modal
+        visible={deleteModalVisible}
+        animationType={'fade'}
+        transparent={true}
+        statusBarTranslucent={true}>
+        <Pressable
+          style={modalInnerStyles.complteChangeModalOverlay}
+          onPress={() => setDeleteModalVisible(!deleteModalVisible)}>
+          <TouchableWithoutFeedback>
+            <Animated.View
+              style={{
+                ...modalInnerStyles.deleteSheetContainer,
+                // transform: [{translateY: translateY}],
+              }}
+              // {...panResponder.panHandlers}
+            >
+              <Text style={modalInnerStyles.modalTitle}>
+                진행중인 루틴입니다!
+              </Text>
+              <Text style={modalInnerStyles.deletModalText}>
+                루틴을 삭제하시겠습니까?
+              </Text>
+              <Text style={modalInnerStyles.deletModalText_}>
+                해당 루틴에 대한 모든 기록이 사라집니다
+              </Text>
+              <Text style={modalInnerStyles.deletModalText__}>
+                *루틴 완료 기록, 획득 RP
+              </Text>
+              <View style={modalInnerStyles.modalFlex}>
+                <TouchableOpacity
+                  style={modalInnerStyles.noBtn}
+                  activeOpacity={1.0}
+                  onPress={() => setDeleteModalVisible(false)}>
+                  <Text style={modalInnerStyles.noText}>아니요</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={modalInnerStyles.yesBtn}
+                  activeOpacity={1.0}
+                  onPress={() =>
+                    deleteRoutine(token, routineId).then(
+                      setDeleteModalVisible(!deleteModalVisible),
+                      setLoading(true),
+                      console.log(routineId),
+                    )
+                  }>
+                  <Text style={modalInnerStyles.nextText}>삭제할래요!</Text>
+                </TouchableOpacity>
+              </View>
+            </Animated.View>
+          </TouchableWithoutFeedback>
+        </Pressable>
+      </Modal>
     </View>
   );
 };

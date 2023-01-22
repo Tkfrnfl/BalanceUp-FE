@@ -38,17 +38,14 @@ const createRoutine = async (
 const deleteRoutine = async (token, routineId) => {
   let res;
   await axios
-    .delete(
-      api + '/routine',
-      {
+    .delete(api + '/routine', {
+      data: {
         routineId: routineId,
       },
-      {
-        headers: {
-          Authorization: token,
-        },
+      headers: {
+        Authorization: token,
       },
-    )
+    })
     .then(response => {
       console.log(response.data);
       res = response.data;
@@ -62,9 +59,10 @@ const deleteRoutine = async (token, routineId) => {
 const modifyRoutine = async (
   token,
   routineId,
-  routineTitle,
-  days,
-  alarmTime,
+  todoText,
+  dayText,
+  alertHour,
+  alertMin,
 ) => {
   let res;
   await axios
@@ -72,9 +70,9 @@ const modifyRoutine = async (
       api + '/routine',
       {
         routineId: routineId,
-        routineTitle: routineTitle,
-        days: days,
-        alarmTime: alarmTime,
+        routineTitle: todoText,
+        days: dayText.join(''),
+        alarmTime: `${alertHour}:${alertMin}`,
       },
       {
         headers: {

@@ -22,15 +22,19 @@ import moment from 'moment';
 import BackArrow from '../../resource/image/Common/backArrow.svg';
 import {jwtState} from '../../recoil/atom';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {createRoutine} from '../../actions/routineAPI';
+import {createRoutine, modifyRoutine} from '../../actions/routineAPI';
 
-const SetPlanScreen = ({navigation, route}) => {
+const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const {planText} = route.params;
+  const {routineId} = route.params;
 
   const [token, setToken] = useState(jwtState);
+
   AsyncStorage.getItem('jwt', (err, result) => {
     setToken(JSON.parse(result));
   });
+
+  const [isEditing, setIsEditing] = useState(false);
   const [selected, setSelected] = useState(new Map());
   const [lengthTodo, setLengthTodo] = useState(0);
   const [todoText, setTodoText] = useState('');
@@ -121,20 +125,20 @@ const SetPlanScreen = ({navigation, route}) => {
     closeBottomSheet.start(() => setIsModalVisible(false));
     closeBottomSheet.start(() => setClearModalVisible(false));
   };
-  React.useEffect(() => {
-    PushNotification.setApplicationIconBadgeNumber(0);
-  }, []);
-  useEffect(() => {
-    if (isModalVisible) {
-      resetBottomSheet.start();
-    }
-  }, [isModalVisible]);
 
   useEffect(() => {
-    if (clearModalVisible) {
+    PushNotification.setApplicationIconBadgeNumber(0);
+  }, []);
+
+  useEffect(() => {
+    if (isModalVisible || clearModalVisible) {
       resetBottomSheet.start();
     }
-  }, [clearModalVisible]);
+  }, [isModalVisible, clearModalVisible]);
+
+  useEffect(() => {
+    if (routineId != null) console.log('in id'), setIsEditing(true);
+  }, []);
 
   // 팝업 알림 설정 구현
   const notify = () => {
@@ -242,8 +246,22 @@ const SetPlanScreen = ({navigation, route}) => {
 
   const handleCreate = () => {
     createRoutine(token, todoText, planText, dayText, alertHour, alertMin).then(
-      navigation.navigate('LookAll'),
+      navigate('LookAll'),
     );
+    // notify();
+    setClearModalVisible(false);
+  };
+
+  const handleEdit = () => {
+    console.log(routineId);
+    modifyRoutine(
+      token,
+      routineId,
+      todoText,
+      dayText,
+      alertHour,
+      alertMin,
+    ).then(navigate('LookAll'), routineId === null);
     // notify();
     setClearModalVisible(false);
   };
@@ -265,9 +283,7 @@ const SetPlanScreen = ({navigation, route}) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <TouchableOpacity
-          activeOpacity={1.0}
-          onPress={() => navigation.navigate('Set')}>
+        <TouchableOpacity activeOpacity={1.0} onPress={() => navigate('Set')}>
           <BackArrow style={styles.arrowBtn} />
         </TouchableOpacity>
         <Text style={styles.topTitle}>
@@ -405,12 +421,21 @@ const SetPlanScreen = ({navigation, route}) => {
                     onPress={() => setClearModalVisible(false)}>
                     <Text style={modalInnerStyles.noText}>아니요</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    activeOpacity={1.0}
-                    onPress={handleCreate}
-                    style={modalInnerStyles.yesBtn}>
-                    <Text style={modalInnerStyles.nextText}>맞습니다!</Text>
-                  </TouchableOpacity>
+                  {isEditing ? (
+                    <TouchableOpacity
+                      activeOpacity={1.0}
+                      onPress={handleEdit}
+                      style={modalInnerStyles.yesBtn}>
+                      <Text style={modalInnerStyles.nextText}>맞습니다!</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      activeOpacity={1.0}
+                      onPress={handleCreate}
+                      style={modalInnerStyles.yesBtn}>
+                      <Text style={modalInnerStyles.nextText}>맞습니다!</Text>
+                    </TouchableOpacity>
+                  )}
                 </View>
               </Animated.View>
             </TouchableWithoutFeedback>
