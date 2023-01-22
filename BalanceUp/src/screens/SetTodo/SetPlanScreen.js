@@ -20,10 +20,17 @@ import styles from '../../css/SetPlanScreenStyles';
 import PushNotification from 'react-native-push-notification';
 import moment from 'moment';
 import BackArrow from '../../resource/image/Common/backArrow.svg';
+import {jwtState} from '../../recoil/atom';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {createRoutine} from '../../actions/routineAPI';
 
 const SetPlanScreen = ({navigation, route}) => {
   const {planText} = route.params;
 
+  const [token, setToken] = useState(jwtState);
+  AsyncStorage.getItem('jwt', (err, result) => {
+    setToken(JSON.parse(result));
+  });
   const [selected, setSelected] = useState(new Map());
   const [lengthTodo, setLengthTodo] = useState(0);
   const [todoText, setTodoText] = useState('');
@@ -216,10 +223,8 @@ const SetPlanScreen = ({navigation, route}) => {
     },
     [selected],
   );
-  console.log(dayText);
-  console.log(dayText.join(''));
 
-  // 토글 스위치 구현
+  // 시간 토글 스위치 구현
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
   const handleSwitchOn = () => {
     setShouldShow(!shouldShow);
@@ -227,7 +232,7 @@ const SetPlanScreen = ({navigation, route}) => {
     isEnabled ? setAlertMin('') : setAlertMin('00');
   };
 
-  // 완료 버튼 구현
+  // 루틴 설정 완료 버튼 구현
   const handleCheck = () => {
     setClearModalVisible(!clearModalVisible);
     setDayText(
@@ -235,16 +240,11 @@ const SetPlanScreen = ({navigation, route}) => {
     );
   };
 
-  // 네비게이션 구현
-  const goClear = () => {
-    // state props 값 잘 넘어가는지 check
-    navigation.navigate('Main', {
-      // planText: planText,
-      dayText: dayText,
-      todoText: todoText,
-      time: alertHour + alertMin,
-    });
-    notify();
+  const handleCreate = () => {
+    createRoutine(token, todoText, planText, dayText, alertHour, alertMin).then(
+      navigation.navigate('LookAll'),
+    );
+    // notify();
     setClearModalVisible(false);
   };
 
@@ -390,9 +390,7 @@ const SetPlanScreen = ({navigation, route}) => {
                     <Text style={modalInnerStyles.todoText}>{todoText}</Text>
                   </View>
                   <View style={styles.boxView}>
-                    <Text style={modalInnerStyles.dayText}>
-                      {dayText.join(', ')}
-                    </Text>
+                    <Text style={modalInnerStyles.dayText}>{dayText}</Text>
                     {shouldShow ? (
                       <Text style={modalInnerStyles.timeText}>
                         {alertHour}:{alertMin}에 알림
@@ -409,7 +407,7 @@ const SetPlanScreen = ({navigation, route}) => {
                   </TouchableOpacity>
                   <TouchableOpacity
                     activeOpacity={1.0}
-                    // onPress={}
+                    onPress={handleCreate}
                     style={modalInnerStyles.yesBtn}>
                     <Text style={modalInnerStyles.nextText}>맞습니다!</Text>
                   </TouchableOpacity>
