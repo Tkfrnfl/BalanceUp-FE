@@ -89,13 +89,15 @@ function CheckBottomTab({navigate}) {
         <TouchableOpacity
           key={data.id}
           activeOpacity={1.0}
-          onPress={() => navigate(data.go)}>
+          onPress={() => navigate(data.go)}
+          style={{marginLeft:60}}
+          >
           {data.id === 3 ? <data.onImg /> : <data.offImg />}
           <Text
             style={[
               commonStyles.commonText,
               {color: data.id === 3 ? '#585FFF' : null},
-              {marginLeft: 60},
+
               ,
             ]}>
             {data.title}

@@ -89,5 +89,22 @@ const modifyRoutine = async (
     });
   return res;
 };
-
-export {createRoutine, deleteRoutine, modifyRoutine};
+const getAllRoutine = async token => {
+  let res;
+  console.log(token);
+  await axios
+    .get(api + '/routines', {
+      headers: {
+        Authorization: token,
+      },
+    })
+    .then(response => {
+      console.log(response.data);
+      res = response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return res;
+};
+export {createRoutine, deleteRoutine, modifyRoutine, getAllRoutine};

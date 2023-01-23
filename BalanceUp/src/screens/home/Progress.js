@@ -38,6 +38,24 @@ const Progress = () => {
   const [token, setToken] = useState(jwtState);
   const [routineId, setRoutineId] = useState();
   const [routineCategory, setroutineCategory] = useState();
+  const [todoTmp, setTodoTmp] = useState([
+    {
+      id: '1',
+      title: '운동하기',
+      completed: false,
+    },
+    {
+      id: '2',
+      title: '청소하기',
+      completed: false,
+    },
+    {
+      id: '3',
+      title: '공부하기',
+      completed: false,
+    },
+  ]);
+  // const [nowdata, setNowdata] = useState();
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
   const [completeDay, setCompleteDayModalVisible] = useState(0);
   const [completeChangeModalVisible, setCompleteChangeModalVisible] =
@@ -68,9 +86,11 @@ const Progress = () => {
   };
 
   useEffect(() => {
-    if (isFocused) fetchRoutineData();
+   // if (isFocused) fetchRoutineData();
   }, [isFocused, loading]);
 
+  const [completeChangeIndex, setCompleteChangeIndex] = useState(0);
+  const [todoComplete, setTodoComplete] = useState([0.5, 1, 0.5, 1]);
   // 모달 기능 구현
   const screenHeight = Dimensions.get('screen').height;
 
@@ -89,7 +109,7 @@ const Progress = () => {
   });
 
   const todoImg = [life, education, mental, health];
-  const todoComplete = [0.5, 1, 0.5, 1];
+  // const todoComplete = [0.5, 1, 0.5, 1];
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -124,48 +144,60 @@ const Progress = () => {
   const checkComplete = index => {
     if (todoComplete[index] === 1) {
       setCompleteModalVisible(true);
+      let tmp = todoComplete;
+      tmp[index] = 0.5;
+      console.log(tmp);
+      setTodoComplete(tmp);
       setCompleteDayModalVisible(2); // 1일시 하루, 아닐시 2주 모달 띄움
     } else {
       setCompleteChangeModalVisible(true);
+      setCompleteChangeIndex(index);
     }
   };
 
   // 완료 체크 기능 구현
-  const handleComplete = id => {
-    todoTmp.map(data => {
-      if (data.id === id && data.completed === false) {
-        let copy = [...todoTmp];
-        copy[parseInt(data.id) - 1] = {
-          id: data.id,
-          title: data.title,
-          completed: !data.completed,
-        };
-        setTodoTmp(copy);
-        setCompleteModalVisible(!completeModalVisible);
-      } else if (data.id === id && data.completed === true) {
-        setNowdata(data);
-        setCompleteChangeModalVisible(!completeChangeModalVisible);
-      }
-      return data;
-    });
-  };
+  // const handleComplete = id => {
+  //   todoTmp.map(data => {
+  //     if (data.id === id && data.completed === false) {
+  //       let copy = [...todoTmp];
+  //       copy[parseInt(data.id) - 1] = {
+  //         id: data.id,
+  //         title: data.title,
+  //         completed: !data.completed,
+  //       };
+  //       setTodoTmp(copy);
+  //       setCompleteModalVisible(!completeModalVisible);
+  //     } else if (data.id === id && data.completed === true) {
+  //       setNowdata(data);
+  //       setCompleteChangeModalVisible(!completeChangeModalVisible);
+  //     }
+  //     return data;
+  //   });
+  // };
 
   // 완료 체크 취소 기능 구현(미완성)
-  const handleCompleteChange = id => {
+  const handleCompleteChange = index => {
     // console.log(nowdata);
-    todoTmp.map(data => {
-      if (data.id === id) {
-        let copy = [...todoTmp];
-        copy[parseInt(nowdata.id) - 1] = {
-          id: nowdata.id,
-          title: nowdata.title,
-          completed: !nowdata.completed,
-        };
-        setTodoTmp(copy);
-        setCompleteChangeModalVisible(!completeChangeModalVisible);
-      }
-      return data;
-    });
+    // todoTmp.map(data => {
+    //   if (data.id === id) {
+    //     let copy = [...todoTmp];
+    //     copy[parseInt(nowdata.id) - 1] = {
+    //       id: nowdata.id,
+    //       title: nowdata.title,
+    //       completed: !nowdata.completed,
+    //     };
+    //     setTodoTmp(copy);
+    //     setCompleteChangeModalVisible(!completeChangeModalVisible);
+    //   }
+    //   return data;
+    // });
+    if (todoComplete[index] === 0.5) {
+      let tmp = todoComplete;
+      tmp[index] = 1;
+      setCompleteChangeModalVisible(false);
+      setTodoComplete(tmp);
+    } else {
+    }
   };
 
   // 수정 기능 구현
@@ -332,7 +364,7 @@ const Progress = () => {
                       style={modalInnerStyles.yesBtn}
                       activeOpacity={1.0}
                       onPress={() => {
-                        // handleCompleteChange(data.id);
+                        handleCompleteChange(completeChangeIndex);
                         // console.log('complete change id : ', data.id);
                       }}>
                       <Text style={modalInnerStyles.nextText}>취소할래요!</Text>

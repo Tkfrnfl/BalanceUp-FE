@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -20,6 +20,10 @@ import life from '../../resource/image/SetTodo/life.png';
 import education from '../../resource/image/SetTodo/education.png';
 import mental from '../../resource/image/SetTodo/mental.png';
 import health from '../../resource/image/SetTodo/health.png';
+import lifeGray from '../../resource/image/SetTodo/life_gray.png';
+import educationGray from '../../resource/image/SetTodo/education_gray.png';
+import mentalGray from '../../resource/image/SetTodo/mental_gray.png';
+import healthGray from '../../resource/image/SetTodo/health_gray.png';
 import lv1 from '../../resource/image/Main/1lv.gif';
 import Svg, {Text as SvgText, Rect} from 'react-native-svg';
 import {
@@ -33,6 +37,17 @@ import {Progress as ProgressComponent} from './Progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useRecoilState} from 'recoil';
 import {nickNameState} from '../../recoil/atom';
+import {jwtState} from '../../recoil/atom';
+import {
+  routineState,
+  routineStateComplete,
+  routineStateDays,
+} from '../../recoil/userState';
+
+import {getAllRoutine} from '../../actions/routineAPI';
+
+import axios from 'axios';
+import {api} from '../../utils/Api';
 
 LocaleConfig.locales.fr = {
   monthNames: [
@@ -74,20 +89,19 @@ let month = today.getMonth() + 1; // 월
 let date = today.getDate(); // 날짜
 
 const MainScreen = ({navigation: {navigate}}) => {
-  // React.useEffect(() => {
-  //   const value = AsyncStorage.getItem('jwt');
-  //   const valueRefresh = AsyncStorage.getItem('jwtRefresh');
-  //   const dataToken = JSON.parse(value);
-  //   console.log(dataToken);
-  // }, []);
-
   const todo = ['일상', '학습', '마음관리', '운동'];
   const todoImg = [life, education, mental, health];
+  const todoImgGray = [lifeGray, educationGray, mentalGray, healthGray];
   const todoTmp = ['item1', 'item2', 'item3'];
   const todoTmpSub = ['itemSub1', 'itemSub2', 'itemSub3'];
   const todoComplete = [0.5, 1, 0.5, 1];
   const [nickName, setNickName] = useRecoilState(nickNameState);
+  const [token, setToken] = useState(jwtState);
 
+  const [tmp, setTmp] = useState(0);
+  const [todoTotal, setTodoTotal] = useState([0, 0, 0, 0]);
+  const [todoCompleted, setTodoCompleted] = useState([0, 0, 0, 0]);
+  const [todoDays, setTodoDays] = useRecoilState(routineStateDays);
   const fomatToday =
     year.toString() + '-' + month.toString() + '-' + date.toString();
 
@@ -114,18 +128,33 @@ const MainScreen = ({navigation: {navigate}}) => {
       date: '2022-02-27',
     },
   ];
-  const markedDates = posts.reduce((acc, current) => {
-    const formattedDate = format(new Date(current.date), 'yyyy-MM-dd');
-    acc[formattedDate] = {marked: true};
-    return acc;
-  }, {});
-  const markedSelectedDates = {
-    ...markedDates,
-    [selectedDate]: {
+  // const markedDates = posts.reduce((acc, current) => {
+  //   const formattedDate = format(new Date(current.date), 'yyyy-MM-dd');
+  //   acc[formattedDate] = {marked: true};
+  //   return acc;
+  // }, {});
+  // const markedSelectedDates = {
+  //   ...markedDates,
+  //   [selectedDate]: {
+  //     selected: true,
+  //     marked: markedDates[selectedDate]?.marked,
+  //   },
+  // };
+  // 루틴 날짜 객체 생성
+  const routineDays = {};
+
+  const tmpvalue = todoDays.map((value, index) => {
+    value = value.date;
+
+    let tmp = {};
+    routineDays[value] = {
       selected: true,
-      marked: markedDates[selectedDate]?.marked,
-    },
-  };
+      selectedColor: '#F4F7FF',
+      selectedTextColor: '#000000',
+    };
+
+    return tmp;
+  });
 
   const checkComplete = index => {
     if (todoComplete[index] === 1) {
@@ -136,11 +165,154 @@ const MainScreen = ({navigation: {navigate}}) => {
     }
   };
 
-  AsyncStorage.getItem('nickName', (err, result) => {
-    console.log(result);
-    setNickName(JSON.parse(result));
-  });
+  const saveRoutineDays = (category, days, title, routineDays) => {
+    let tmp = JSON.parse(JSON.stringify(todoDays));
+    for (var i = 0; i < routineDays.length; i++) {
+      let todo = {
+        category: category,
+        days: days,
+        title: title,
+        id: routineDays[i].id,
+        date: routineDays[i].day,
+        completed: routineDays[i].completed,
+      };
+      tmp.push(todo);
+    }
+    setTodoDays(tmp);
+  };
 
+  const asyncGetAll = async () => {
+    const tok = JSON.parse(await AsyncStorage.getItem('jwt'));
+    let res;
+
+    res = await getAllRoutine(tok);
+    res = res.body;
+
+    for (var i = 0; i < res.length; i++) {
+      // 루틴 전체 불러오기
+      if (res[i].routineCategory === '일상') {
+        if (res[i].completed === true) {
+          let completedTmp, totalTmp;
+          completedTmp = todoCompleted;
+          totalTmp = todoTotal;
+          completedTmp[0] += 1;
+          totalTmp[0] += 1;
+          setTodoCompleted(completedTmp);
+          setTodoTotal(totalTmp);
+          saveRoutineDays(
+            '일상',
+            res[i].days,
+            res[i].routineTitle,
+            res[i].routineDays,
+          );
+        } else {
+          let totalTmp;
+          totalTmp = todoTotal;
+          totalTmp[0] += 1;
+          setTodoTotal(totalTmp);
+          saveRoutineDays(
+            '일상',
+            res[i].days,
+            res[i].routineTitle,
+            res[i].routineDays,
+          );
+        }
+      } else if (res[i].routineCategory === '학습') {
+        if (res[i].completed === true) {
+          let completedTmp, totalTmp;
+          completedTmp = todoCompleted;
+          totalTmp = todoTotal;
+          completedTmp[1] += 1;
+          totalTmp[1] += 1;
+          setTodoCompleted(completedTmp);
+          setTodoTotal(totalTmp);
+          saveRoutineDays(
+            '학습',
+            res[i].days,
+            res[i].routineTitle,
+            res[i].routineDays,
+          );
+        } else {
+          let totalTmp;
+          totalTmp = todoTotal;
+          totalTmp[1] += 1;
+          setTodoTotal(totalTmp);
+          saveRoutineDays(
+            '학습',
+            res[i].days,
+            res[i].routineTitle,
+            res[i].routineDays,
+          );
+        }
+      } else if (res[i].routineCategory === '마음관리') {
+        if (res[i].completed === true) {
+          let completedTmp, totalTmp;
+          completedTmp = todoCompleted;
+          totalTmp = todoTotal;
+          completedTmp[2] += 1;
+          totalTmp[2] += 1;
+          setTodoCompleted(completedTmp);
+          setTodoTotal(totalTmp);
+          saveRoutineDays(
+            '마음관리',
+            res[i].days,
+            res[i].routineTitle,
+            res[i].routineDays,
+          );
+        } else {
+          let totalTmp;
+          totalTmp = todoTotal;
+          totalTmp[2] += 1;
+          setTodoTotal(totalTmp);
+          saveRoutineDays(
+            '마음관리',
+            res[i].days,
+            res[i].routineTitle,
+            res[i].routineDays,
+          );
+        }
+      } else if (res[i].routineCategory === '운동') {
+        if (res[i].completed === true) {
+          let completedTmp, totalTmp;
+          completedTmp = todoCompleted;
+          totalTmp = todoTotal;
+          completedTmp[3] += 1;
+          totalTmp[3] += 1;
+          setTodoCompleted(completedTmp);
+          setTodoTotal(totalTmp);
+          saveRoutineDays(
+            '운동',
+            res[i].days,
+            res[i].routineTitle,
+            res[i].routineDays,
+          );
+        } else {
+          let totalTmp;
+          totalTmp = todoTotal;
+          totalTmp[3] += 1;
+          setTodoTotal(totalTmp);
+          saveRoutineDays(
+            '운동',
+            res[i].days,
+            res[i].routineTitle,
+            res[i].routineDays,
+          );
+        }
+      }
+    }
+    // 루틴 날짜별 정리
+  };
+
+  useEffect(() => {
+    asyncGetAll();
+    setTimeout(() => {
+      setTmp(5);
+    }, 1000);
+  }, []);
+
+  useEffect(() => {
+    // console.log(test);
+  }, [todoDays]);
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollview}>
@@ -241,10 +413,31 @@ const MainScreen = ({navigation: {navigate}}) => {
             {todo.map((value, index) => (
               <View key={value.id}>
                 <View style={styles.view1}>
-                  <Image source={todoImg[index]} style={styles.img4} />
+                  {todoCompleted[index] === todoTotal[index] ? (
+                    <View>
+                      <Image source={todoImgGray[index]} style={styles.img5} />
+                    </View>
+                  ) : (
+                    <View>
+                      <Image source={todoImg[index]} style={styles.img4} />
+                    </View>
+                  )}
                 </View>
-                <Text style={styles.mainText10}>{todo[index]}</Text>
-                <Text style={styles.mainText11}>0/1</Text>
+                {todoCompleted[index] === todoTotal[index] ? (
+                  <View>
+                    <Text style={styles.mainText10}>{todo[index]}</Text>
+                    <Text style={styles.mainText13}>
+                      {todoCompleted[index]}/{todoTotal[index]}
+                    </Text>
+                  </View>
+                ) : (
+                  <View>
+                    <Text style={styles.mainText10}>{todo[index]}</Text>
+                    <Text style={styles.mainText11}>
+                      {todoCompleted[index]}/{todoTotal[index]}
+                    </Text>
+                  </View>
+                )}
               </View>
             ))}
           </ScrollView>
@@ -267,7 +460,7 @@ const MainScreen = ({navigation: {navigate}}) => {
             leftArrowImageSource={arrow2}
             rightArrowImageSource={arrow3}
             allowShadow={false}
-            markedDates={markedSelectedDates}
+            markedDates={routineDays}
             theme={{
               arrowColor: 'black',
               textMonthFontWeight: '800',
@@ -425,6 +618,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontSize: 15,
   },
+  mainText13: {
+    marginTop: 10,
+    marginLeft: 20,
+    color: '#888888',
+    fontWeight: '600',
+    alignSelf: 'center',
+    fontSize: 15,
+  },
   centering: {
     alignItems: 'center',
     paddingLeft: 20,
@@ -470,6 +671,14 @@ const styles = StyleSheet.create({
     height: 90,
     borderRadius: 150 / 2,
     overflow: 'hidden',
+  },
+  img5: {
+    width: 60,
+    height: 60,
+    borderRadius: 150 / 2,
+    overflow: 'hidden',
+    marginLeft: 15,
+    marginTop: 15,
   },
   view1: {
     width: 90,

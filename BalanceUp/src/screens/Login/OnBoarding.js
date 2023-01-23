@@ -29,6 +29,7 @@ export default function OnBoarding({navigation}) {
   const [jwt, setjwt] = useRecoilState(jwtState);
   const [jwtRefresh, setJwtRefresh] = useRecoilState(jwtRefreshState);
 
+
   React.useEffect(() => {
     checkJwt('jwt');
   }, []);
