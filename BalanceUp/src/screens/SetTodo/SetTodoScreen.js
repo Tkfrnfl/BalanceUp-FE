@@ -81,7 +81,6 @@ const SetTodoScreen = ({navigation: {navigate}}) => {
       <Text style={styles.title}>
         내가 키울 루틴의 {'\n'}카테고리가 무엇인가요?
       </Text>
-      {/* 루틴 설정 */}
       <FlatList
         data={todoData}
         keyExtractor={item => item.id}

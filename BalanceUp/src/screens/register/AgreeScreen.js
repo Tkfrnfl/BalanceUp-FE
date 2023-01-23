@@ -15,12 +15,7 @@ import {
   jwtState,
   jwtRefreshState,
 } from '../../recoil/atom';
-import {
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-  useResetRecoilState,
-} from 'recoil';
+import {useRecoilState} from 'recoil';
 import {joinKakao} from '../../actions/memberJoinApi';
 
 import CheckOn from '../../resource/image/Agree/check_on.svg';
@@ -85,6 +80,7 @@ const AgreeScreen = ({navigation}) => {
         // jwt 로컬 스토리지 저장후 메인화면 보내기
         setjwt(res.body.token);
         setJwtRefresh(res.body.refreshToken);
+        AsyncStorage.setItem('nickName', nickName);
         AsyncStorage.setItem('jwt', res.body.token);
         AsyncStorage.setItem('jwtRefresh', res.body.refreshToken);
         navigation.push('Main');

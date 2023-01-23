@@ -4,13 +4,9 @@ import {
   Text,
   View,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   SafeAreaView,
   Image,
   ScrollView,
-  Pressable,
-  Animated,
-  Modal,
 } from 'react-native';
 import commonStyles from '../../css/commonStyles';
 // import WeekCalendar from '../../components/WeekCalendar';
@@ -25,21 +21,18 @@ import education from '../../resource/image/SetTodo/education.png';
 import mental from '../../resource/image/SetTodo/mental.png';
 import health from '../../resource/image/SetTodo/health.png';
 import lv1 from '../../resource/image/Main/1lv.gif';
-import edit from '../../resource/image/Main/edit.png';
-import delete2 from '../../resource/image/Main/delete.png';
-import oneDay from '../../resource/image/Main/oneDay.png';
-import twoWeeks from '../../resource/image/Main/twoWeeks.png';
-
 import Svg, {Text as SvgText, Rect} from 'react-native-svg';
 import {
   LocaleConfig,
   ExpandableCalendar,
   CalendarProvider,
 } from 'react-native-calendars';
-import modalInnerStyles from '../../css/modalStyles';
 import {Shadow} from 'react-native-shadow-2';
 import {HomeBottomTab} from '../BottomTab';
 import {Progress as ProgressComponent} from './Progress';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useRecoilState} from 'recoil';
+import {nickNameState} from '../../recoil/atom';
 
 LocaleConfig.locales.fr = {
   monthNames: [
@@ -93,6 +86,7 @@ const MainScreen = ({navigation: {navigate}}) => {
   const todoTmp = ['item1', 'item2', 'item3'];
   const todoTmpSub = ['itemSub1', 'itemSub2', 'itemSub3'];
   const todoComplete = [0.5, 1, 0.5, 1];
+  const [nickName, setNickName] = useRecoilState(nickNameState);
 
   const fomatToday =
     year.toString() + '-' + month.toString() + '-' + date.toString();
@@ -141,6 +135,12 @@ const MainScreen = ({navigation: {navigate}}) => {
       setCompleteChangeModalVisible(true);
     }
   };
+
+  AsyncStorage.getItem('nickName', (err, result) => {
+    console.log(result);
+    setNickName(JSON.parse(result));
+  });
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollview}>
@@ -234,11 +234,6 @@ const MainScreen = ({navigation: {navigate}}) => {
         </View>
         <View style={commonStyles.spacing2} />
         <View>
-          {/* <TouchableOpacity
-            activeOpacity={1.0}
-            onPress={() => navigate('Guide')}>
-            <Text style={styles.guideText}>키움 성장 가이드</Text>
-          </TouchableOpacity> */}
           <Text style={[commonStyles.boldText, styles.centering]}>
             완료하지 않은 루틴이 있어요!
           </Text>
@@ -330,9 +325,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#FAFBFF',
   },
-  title1: {
-    fontSize: 65,
-  },
   title2: {
     fontSize: 40,
   },
@@ -375,17 +367,17 @@ const styles = StyleSheet.create({
   mainText: {
     fontSize: 25,
     color: '#232323',
-    fontWeight: '600',
+    fontFamily: 'Pretendard-Bold',
   },
   mainText6: {
     fontSize: 25,
     color: '#585FFF',
-    fontWeight: '600',
+    fontFamily: 'Pretendard-Bold',
   },
   mainText7: {
     fontSize: 12,
     color: '#232323',
-    fontWeight: '600',
+    fontFamily: 'Pretendard-Medium',
     marginTop: 10,
   },
   mainText8: {
@@ -421,7 +413,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginLeft: 20,
     color: '#232323',
-    fontWeight: '600',
+    fontFamily: 'Pretendard-Medium',
     alignSelf: 'center',
     fontSize: 15,
   },

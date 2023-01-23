@@ -19,7 +19,7 @@ import {useRecoilState} from 'recoil';
 import {validateText} from '../../utils/regex';
 import {ChangeNameAPI} from '../../actions/checkNameAPI';
 import {MyBottomTab} from '../../screens/BottomTab/index';
-import {nickNameState} from '../../recoil/atom';
+import {jwtState, nickNameState} from '../../recoil/atom';
 
 import MoreInfoArrow from '../../resource/image/Agree/moreInfoArrow.svg';
 import modalInnerStyles from '../../css/modalStyles';
@@ -34,7 +34,7 @@ const MyPage = ({navigation: {navigate}}) => {
   const [checkTextPass, setCheckTextPass] = useState('');
   const [checkDisabled, setCheckDisabled] = useState(true);
   const [disabled, setDisabled] = useState(true);
-
+  const [token, setToken] = useState(jwtState);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
 
@@ -142,14 +142,18 @@ const MyPage = ({navigation: {navigate}}) => {
     }
   };
 
+  // 닉네임 변경 구현
+  // AsyncStorage.getItem('nickName', (err, nameResult) => {
+  // console.log(nameResult);
+  //   setNickName(JSON.parse(nameResult));
+  // });
+
   AsyncStorage.getItem('jwt', (err, result) => {
-    const token = JSON.parse(result);
-    console.log('token: ', token);
+    setToken(JSON.parse(result));
   });
 
-  // 닉네임 변경 구현
   const handleChangeName = () => {
-    ChangeNameAPI(userName).then(response => {
+    ChangeNameAPI(userName, token).then(response => {
       if (response === true) {
         setCheckTextPass('사용 가능한 닉네임이에요!');
       } else if (response === false) {
@@ -161,6 +165,9 @@ const MyPage = ({navigation: {navigate}}) => {
   const goChange = () => {
     setNickName(userName);
     console.log(nickName);
+    setUserName('');
+    setCheckTextError('');
+    setCheckTextPass('');
     setIsModalVisible(!isModalVisible);
   };
 
@@ -192,12 +199,19 @@ const MyPage = ({navigation: {navigate}}) => {
     }
   };
 
+  const handleCanel = () => {
+    setUserName('');
+    setCheckTextError('');
+    setCheckTextPass('');
+    setIsModalVisible(!isModalVisible);
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <View style={styles.innerContainer}>
           <View style={styles.topSheet}>
-            <Text style={styles.topTitle}>???님</Text>
+            <Text style={styles.topTitle}>{nickName}</Text>
             <TouchableOpacity
               onPress={() => navigate('Withdrawal')}
               activeOpacity={1.0}>
@@ -258,7 +272,7 @@ const MyPage = ({navigation: {navigate}}) => {
             behavior={'padding'}>
             <Pressable
               style={modalInnerStyles.modalOverlay}
-              onPress={() => setIsModalVisible(!isModalVisible)}>
+              onPress={handleCanel}>
               <TouchableWithoutFeedback>
                 <Animated.View
                   style={{
@@ -314,6 +328,7 @@ const MyPage = ({navigation: {navigate}}) => {
                   <View style={modalInnerStyles.modalFlex}>
                     <TouchableOpacity
                       disabled={disabled}
+                      activeOpacity={1.0}
                       onPress={goChange}
                       style={[
                         modalInnerStyles.saveBtn,
