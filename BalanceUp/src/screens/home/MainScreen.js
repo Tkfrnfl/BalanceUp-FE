@@ -38,6 +38,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useRecoilState} from 'recoil';
 import {nickNameState} from '../../recoil/atom';
 import {jwtState} from '../../recoil/atom';
+import {dateState} from '../../recoil/appState';
 import {
   routineState,
   routineStateComplete,
@@ -45,9 +46,6 @@ import {
 } from '../../recoil/userState';
 
 import {getAllRoutine} from '../../actions/routineAPI';
-
-import axios from 'axios';
-import {api} from '../../utils/Api';
 
 LocaleConfig.locales.fr = {
   monthNames: [
@@ -97,11 +95,15 @@ const MainScreen = ({navigation: {navigate}}) => {
   const todoComplete = [0.5, 1, 0.5, 1];
   const [nickName, setNickName] = useRecoilState(nickNameState);
   const [token, setToken] = useState(jwtState);
-
+  const [tmpRoutine, setTmpRoutine] = useState();
   const [tmp, setTmp] = useState(0);
   const [todoTotal, setTodoTotal] = useState([0, 0, 0, 0]);
   const [todoCompleted, setTodoCompleted] = useState([0, 0, 0, 0]);
   const [todoDays, setTodoDays] = useRecoilState(routineStateDays);
+  const [dateSelected, setDateState] = useRecoilState(dateState);
+  const [routineDays, setRoutineDays] = useState({});
+  const [checkedDateColor, setCheckedDateColor] = useState('#FFFFFF');
+  const [checkedDate, setCheckedDate] = useState();
   const fomatToday =
     year.toString() + '-' + month.toString() + '-' + date.toString();
 
@@ -140,21 +142,62 @@ const MainScreen = ({navigation: {navigate}}) => {
   //     marked: markedDates[selectedDate]?.marked,
   //   },
   // };
+
   // 루틴 날짜 객체 생성
-  const routineDays = {};
+  let tmpObj = {};
+  let tmpMonth = ('0' + month).slice(-2); // 오늘 제외
+  let tmpDate = ('0' + date).slice(-2);
+  let tmpToday = year + '-' + tmpMonth + '-' + tmpDate;
 
-  const tmpvalue = todoDays.map((value, index) => {
-    value = value.date;
+  const setCheckValue = () => {
+    for (var i = 0; i < todoDays.length; i++) {
+      if (todoDays[i].date != tmpToday) {
+        tmpObj[todoDays[i].date] = {
+          selected: true,
+          selectedColor: '#F4F7FF',
+          selectedTextColor: '#000000',
+        };
+      } else if (todoDays[i].date === tmpToday) {
+        setCheckedDateColor('#F4F7FF');
+        tmpObj[todoDays[i].date] = {
+          selected: true,
+          selectedColor: '#585FFF',
+          selectedTextColor: '#FFFFFF',
+        };
+      }
+    }
 
-    let tmp = {};
-    routineDays[value] = {
-      selected: true,
-      selectedColor: '#F4F7FF',
-      selectedTextColor: '#000000',
-    };
+    setRoutineDays(tmpObj);
+  };
+  // 날짜 누를시 선택날짜 색변화
+  const checkSelectedDate = date => {
+    setDateState(date);
+    tmpObj = JSON.parse(JSON.stringify(routineDays));
+    let tmpColor;
+    if (tmpObj[date] === undefined) {
+      tmpColor = '#FFFFFF';
 
-    return tmp;
-  });
+      tmpObj[date] = {
+        selected: true,
+        selectedColor: '#585FFF',
+        selectedTextColor: '#FFFFFF',
+      };
+    } else {
+      tmpColor = tmpObj[date].selectedColor;
+    }
+
+    tmpObj[date].selected = true;
+    tmpObj[date].selectedColor = '#585FFF';
+    tmpObj[date].selectedTextColor = '#FFFFFF';
+
+    tmpObj[checkedDate].selected = true;
+    tmpObj[checkedDate].selectedColor = checkedDateColor;
+    tmpObj[checkedDate].selectedTextColor = '#000000';
+
+    setRoutineDays(tmpObj);
+    setCheckedDate(date);
+    setCheckedDateColor(tmpColor);
+  };
 
   const checkComplete = index => {
     if (todoComplete[index] === 1) {
@@ -165,20 +208,28 @@ const MainScreen = ({navigation: {navigate}}) => {
     }
   };
 
-  const saveRoutineDays = (category, days, title, routineDays) => {
-    let tmp = JSON.parse(JSON.stringify(todoDays));
+  const saveRoutineDays = async (category, days, title, routineDays, alarm) => {
+    const tmp = [44]
+    console.log('??')
+    console.log(todoDays)
+    // console.log(category);
+    // console.log(routineDays);
     for (var i = 0; i < routineDays.length; i++) {
-      let todo = {
+      const todo = {
         category: category,
         days: days,
         title: title,
         id: routineDays[i].id,
         date: routineDays[i].day,
         completed: routineDays[i].completed,
+        alarm: alarm,
       };
-      tmp.push(todo);
+      //tmp.push(todo);
+ 
     }
-    setTodoDays(tmp);
+    await setTodoDays([33],...todoDays)
+     //setTodoDays(tmp, ...todoDays);
+    // console.log(todoDays);
   };
 
   const asyncGetAll = async () => {
@@ -204,6 +255,7 @@ const MainScreen = ({navigation: {navigate}}) => {
             res[i].days,
             res[i].routineTitle,
             res[i].routineDays,
+            res[i].alarmTime,
           );
         } else {
           let totalTmp;
@@ -215,6 +267,7 @@ const MainScreen = ({navigation: {navigate}}) => {
             res[i].days,
             res[i].routineTitle,
             res[i].routineDays,
+            res[i].alarmTime,
           );
         }
       } else if (res[i].routineCategory === '학습') {
@@ -231,6 +284,7 @@ const MainScreen = ({navigation: {navigate}}) => {
             res[i].days,
             res[i].routineTitle,
             res[i].routineDays,
+            res[i].alarmTime,
           );
         } else {
           let totalTmp;
@@ -242,6 +296,7 @@ const MainScreen = ({navigation: {navigate}}) => {
             res[i].days,
             res[i].routineTitle,
             res[i].routineDays,
+            res[i].alarmTime,
           );
         }
       } else if (res[i].routineCategory === '마음관리') {
@@ -258,6 +313,7 @@ const MainScreen = ({navigation: {navigate}}) => {
             res[i].days,
             res[i].routineTitle,
             res[i].routineDays,
+            res[i].alarmTime,
           );
         } else {
           let totalTmp;
@@ -269,6 +325,7 @@ const MainScreen = ({navigation: {navigate}}) => {
             res[i].days,
             res[i].routineTitle,
             res[i].routineDays,
+            res[i].alarmTime,
           );
         }
       } else if (res[i].routineCategory === '운동') {
@@ -285,6 +342,7 @@ const MainScreen = ({navigation: {navigate}}) => {
             res[i].days,
             res[i].routineTitle,
             res[i].routineDays,
+            res[i].alarmTime,
           );
         } else {
           let totalTmp;
@@ -296,6 +354,7 @@ const MainScreen = ({navigation: {navigate}}) => {
             res[i].days,
             res[i].routineTitle,
             res[i].routineDays,
+            res[i].alarmTime,
           );
         }
       }
@@ -311,7 +370,10 @@ const MainScreen = ({navigation: {navigate}}) => {
   }, []);
 
   useEffect(() => {
-    // console.log(test);
+    if (todoDays != []) {
+      setCheckValue();
+    }
+    setCheckedDate(tmpToday);
   }, [todoDays]);
   return (
     <SafeAreaView style={styles.container}>
@@ -480,6 +542,7 @@ const MainScreen = ({navigation: {navigate}}) => {
             }}
             onDayPress={day => {
               setSelectedDate(day.dateString);
+              checkSelectedDate(day.dateString);
             }}
             // onDayPress={day => this.setState({selected_date: day.dateString})}
           />

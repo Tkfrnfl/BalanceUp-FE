@@ -23,14 +23,25 @@ import life from '../../resource/image/SetTodo/life.png';
 import education from '../../resource/image/SetTodo/education.png';
 import mental from '../../resource/image/SetTodo/mental.png';
 import health from '../../resource/image/SetTodo/health.png';
+import lifeGray from '../../resource/image/SetTodo/life_gray.png';
+import educationGray from '../../resource/image/SetTodo/education_gray.png';
+import mentalGray from '../../resource/image/SetTodo/mental_gray.png';
+import healthGray from '../../resource/image/SetTodo/health_gray.png';
 import oneDay from '../../resource/image/Modal/Crystal.png';
 import twoWeeks from '../../resource/image/Modal/10routine.png';
 import edit from '../../resource/image/Main/edit.png';
 import delete2 from '../../resource/image/Main/delete.png';
 import {api} from '../../utils/Api';
 import {jwtState} from '../../recoil/atom';
+import {useRecoilState} from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {deleteRoutine} from '../../actions/routineAPI';
+import {
+  routineState,
+  routineStateComplete,
+  routineStateDays,
+} from '../../recoil/userState';
+import {dateState} from '../../recoil/appState';
 
 const Progress = () => {
   const [routines, setRoutines] = useState([]);
@@ -38,6 +49,10 @@ const Progress = () => {
   const [token, setToken] = useState(jwtState);
   const [routineId, setRoutineId] = useState();
   const [routineCategory, setroutineCategory] = useState();
+  const [todoDays, setTodoDays] = useRecoilState(routineStateDays);
+  const [dateSelected, setDateState] = useRecoilState(dateState);
+  const [todoList, setTodoList] = useState([]);
+
   const [todoTmp, setTodoTmp] = useState([
     {
       id: '1',
@@ -64,31 +79,80 @@ const Progress = () => {
   const isFocused = useIsFocused();
   const navigation = useNavigation();
 
-  AsyncStorage.getItem('jwt', (err, result) => {
-    setToken(JSON.parse(result));
-  });
-
-  const fetchRoutineData = async () => {
-    await axios
-      .get(api + '/routines', {
-        headers: {
-          Authorization: token,
-        },
-      })
-      .then(response => {
-        setRoutines(response.data.body);
-        setLoading(false);
-        console.log(response.data.body);
-      })
-      .catch(function (error) {
-        console.log(error.response.data);
-      });
-  };
+  // const fetchRoutineData = async () => {
+  //   await axios
+  //     .get(api + '/routines', {
+  //       headers: {
+  //         Authorization: token,
+  //       },
+  //     })
+  //     .then(response => {
+  //       setRoutines(response.data.body);
+  //       setLoading(false);
+  //       console.log(response.data.body);
+  //     })
+  //     .catch(function (error) {
+  //       console.log(error.response.data);
+  //     });
+  // };
 
   useEffect(() => {
-   // if (isFocused) fetchRoutineData();
+    // if (isFocused) fetchRoutineData();
   }, [isFocused, loading]);
 
+  useEffect(() => {
+    let tmpList = [];
+    for (var i = 0; i < todoDays.length; i++) {
+      if (dateSelected === todoDays[i].date) {
+        //console.log(todoDays);
+        // tmpList = JSON.parse(JSON.stringify(todoList));
+        let tmpCategory;
+
+        // todolist에 따라 리스트 생성
+        if (todoDays[i].category == '일상') {
+          if (todoDays[i].completed) {
+            tmpCategory = lifeGray;
+          } else {
+            tmpCategory = life;
+          }
+        } else if (todoDays[i].category == '학습') {
+          if (todoDays[i].completed) {
+            tmpCategory = educationGray;
+          } else {
+            tmpCategory = education;
+          }
+        } else if (todoDays[i].category == '마음관리') {
+          if (todoDays[i].completed) {
+            tmpCategory = mentalGray;
+          } else {
+            tmpCategory = mental;
+          }
+        } else if (todoDays[i].category == '운동') {
+          if (todoDays[i].completed) {
+            tmpCategory = healthGray;
+          } else {
+            tmpCategory = health;
+          }
+        }
+
+        let tmpObj = {
+          category: tmpCategory,
+          routineCategory: todoDays[i].category,
+          complete: todoDays[i].completed,
+          date: todoDays[i].date,
+          days: todoDays[i].days,
+          id: todoDays[i].id,
+          title: todoDays[i].title,
+          alarm: todoDays[i].alarm,
+        };
+        tmpList.push(tmpObj);
+      }
+    }
+    //console.log(tmpList);
+    setTodoList(tmpList);
+  }, [dateSelected]);
+
+  const setRoutinesByDate = () => {};
   const [completeChangeIndex, setCompleteChangeIndex] = useState(0);
   const [todoComplete, setTodoComplete] = useState([0.5, 1, 0.5, 1]);
   // 모달 기능 구현
@@ -219,21 +283,21 @@ const Progress = () => {
 
   return (
     <View>
-      {routines.map((data, index) => (
+      {todoList.map((data, index) => (
         <ScrollView
           key={data.routineId}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           style={styles.view2}>
-          <Image source={todoImg[index]} style={styles.img2_gray} />
-          <Image
+          <Image source={data.category} style={styles.img2_gray} />
+          {/* <Image
             source={todoImg[index]}
             style={img2(todoComplete[index]).bar}
-          />
-          <View style={aimText1(todoComplete[index]).bar}>
+          /> */}
+          <View style={aimText1(data.completed).bar}>
             <Text style={commonStyles.boldText}>{data.routineTitle}</Text>
             <Text>
-              {data.routineCategory} | {data.days} {data.alarmTime}
+              {data.routineCategory} | {data.days} {data.alarm}
             </Text>
           </View>
           <TouchableWithoutFeedback onPress={() => checkComplete(index)}>
@@ -376,7 +440,7 @@ const Progress = () => {
           </Modal>
         </ScrollView>
       ))}
-
+      <View style={commonStyles.spacing2} />
       {/* 삭제 모달 구현 코드 */}
       <Modal
         visible={deleteModalVisible}
@@ -448,7 +512,7 @@ const aimText1 = x =>
       paddingLeft: 20,
       paddingRight: 100,
       paddingTop: 10,
-      opacity: x,
+      opacity: 0.5,
     },
   });
 
