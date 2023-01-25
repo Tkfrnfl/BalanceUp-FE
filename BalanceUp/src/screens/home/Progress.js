@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
-import axios from 'axios';
+import axios from '../../utils/Client';
 import {
   StyleSheet,
   Text,
@@ -31,22 +31,14 @@ import oneDay from '../../resource/image/Modal/Crystal.png';
 import twoWeeks from '../../resource/image/Modal/10routine.png';
 import edit from '../../resource/image/Main/edit.png';
 import delete2 from '../../resource/image/Main/delete.png';
-import {api} from '../../utils/Api';
-import {jwtState} from '../../recoil/atom';
 import {useRecoilState} from 'recoil';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {deleteRoutine} from '../../actions/routineAPI';
-import {
-  routineState,
-  routineStateComplete,
-  routineStateDays,
-} from '../../recoil/userState';
+import {routineStateDays} from '../../recoil/userState';
 import {dateState} from '../../recoil/appState';
 
 const Progress = () => {
   const [routines, setRoutines] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [token, setToken] = useState(jwtState);
   const [routineId, setRoutineId] = useState();
   const [routineCategory, setroutineCategory] = useState();
   const [todoDays, setTodoDays] = useRecoilState(routineStateDays);
@@ -80,20 +72,10 @@ const Progress = () => {
   const navigation = useNavigation();
 
   // const fetchRoutineData = async () => {
-  //   await axios
-  //     .get(api + '/routines', {
-  //       headers: {
-  //         Authorization: token,
-  //       },
-  //     })
-  //     .then(response => {
-  //       setRoutines(response.data.body);
-  //       setLoading(false);
-  //       console.log(response.data.body);
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error.response.data);
-  //     });
+  //   const request = await axios.get('/routines');
+  //   setRoutines(request.data.body);
+  //   setLoading(false);
+  //   console.log(JSON.stringify(request.data.body));
   // };
 
   useEffect(() => {
@@ -481,7 +463,7 @@ const Progress = () => {
                   style={modalInnerStyles.yesBtn}
                   activeOpacity={1.0}
                   onPress={() =>
-                    deleteRoutine(token, routineId).then(
+                    deleteRoutine(routineId).then(
                       setDeleteModalVisible(!deleteModalVisible),
                       setLoading(true),
                       console.log(routineId),

@@ -10,12 +10,7 @@ import {
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import {loginKakao, SignInKakao} from '../../actions/memberJoinApi';
-import {
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-  useResetRecoilState,
-} from 'recoil';
+import {useRecoilState} from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {userNameState, jwtState, jwtRefreshState} from '../../recoil/atom';
 import FastImage from 'react-native-fast-image';
@@ -81,6 +76,7 @@ export default function Login({navigation}) {
         navigation.push('NickName');
       } else if (res.body.login === 'sign-in') {
         // setUserName(res.body.username);
+        AsyncStorage.setItem('username', res.body.username); // test 임시 저장
         signInKakao(res.body.username);
       }
     });

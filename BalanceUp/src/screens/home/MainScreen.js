@@ -34,16 +34,11 @@ import {
 import {Shadow} from 'react-native-shadow-2';
 import {HomeBottomTab} from '../BottomTab';
 import {Progress as ProgressComponent} from './Progress';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useRecoilState} from 'recoil';
 import {nickNameState} from '../../recoil/atom';
 import {jwtState} from '../../recoil/atom';
 import {dateState} from '../../recoil/appState';
-import {
-  routineState,
-  routineStateComplete,
-  routineStateDays,
-} from '../../recoil/userState';
+import {routineStateDays} from '../../recoil/userState';
 
 import {getAllRoutine} from '../../actions/routineAPI';
 
@@ -94,7 +89,6 @@ const MainScreen = ({navigation: {navigate}}) => {
   const todoTmpSub = ['itemSub1', 'itemSub2', 'itemSub3'];
   const todoComplete = [0.5, 1, 0.5, 1];
   const [nickName, setNickName] = useRecoilState(nickNameState);
-  const [token, setToken] = useState(jwtState);
   const [tmpRoutine, setTmpRoutine] = useState();
   const [tmp, setTmp] = useState(0);
   const [todoTotal, setTodoTotal] = useState([0, 0, 0, 0]);
@@ -209,9 +203,9 @@ const MainScreen = ({navigation: {navigate}}) => {
   };
 
   const saveRoutineDays = async (category, days, title, routineDays, alarm) => {
-    const tmp = [44]
-    console.log('??')
-    console.log(todoDays)
+    const tmp = [44];
+    console.log('??');
+    console.log(todoDays);
     // console.log(category);
     // console.log(routineDays);
     for (var i = 0; i < routineDays.length; i++) {
@@ -225,18 +219,16 @@ const MainScreen = ({navigation: {navigate}}) => {
         alarm: alarm,
       };
       //tmp.push(todo);
- 
     }
-    await setTodoDays([33],...todoDays)
-     //setTodoDays(tmp, ...todoDays);
+    await setTodoDays([33], ...todoDays);
+    //setTodoDays(tmp, ...todoDays);
     // console.log(todoDays);
   };
 
   const asyncGetAll = async () => {
-    const tok = JSON.parse(await AsyncStorage.getItem('jwt'));
     let res;
 
-    res = await getAllRoutine(tok);
+    res = await getAllRoutine();
     res = res.body;
 
     for (var i = 0; i < res.length; i++) {

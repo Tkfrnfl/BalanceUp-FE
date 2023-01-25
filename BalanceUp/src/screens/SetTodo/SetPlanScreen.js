@@ -20,19 +20,11 @@ import styles from '../../css/SetPlanScreenStyles';
 import PushNotification from 'react-native-push-notification';
 import moment from 'moment';
 import BackArrow from '../../resource/image/Common/backArrow.svg';
-import {jwtState} from '../../recoil/atom';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createRoutine, modifyRoutine} from '../../actions/routineAPI';
 
 const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const {planText} = route.params;
   const {routineId} = route.params;
-
-  const [token, setToken] = useState(jwtState);
-
-  AsyncStorage.getItem('jwt', (err, result) => {
-    setToken(JSON.parse(result));
-  });
 
   const [isEditing, setIsEditing] = useState(false);
   const [selected, setSelected] = useState(new Map());
@@ -245,7 +237,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   };
 
   const handleCreate = () => {
-    createRoutine(token, todoText, planText, dayText, alertHour, alertMin).then(
+    createRoutine(todoText, planText, dayText, alertHour, alertMin).then(
       navigate('LookAll'),
     );
     // notify();
@@ -254,14 +246,10 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
 
   const handleEdit = () => {
     console.log(routineId);
-    modifyRoutine(
-      token,
-      routineId,
-      todoText,
-      dayText,
-      alertHour,
-      alertMin,
-    ).then(navigate('LookAll'), routineId === null);
+    modifyRoutine(routineId, todoText, dayText, alertHour, alertMin).then(
+      navigate('LookAll'),
+      routineId === null,
+    );
     // notify();
     setClearModalVisible(false);
   };
