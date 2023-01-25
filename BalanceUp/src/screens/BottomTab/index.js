@@ -90,8 +90,7 @@ function CheckBottomTab({navigate}) {
           key={data.id}
           activeOpacity={1.0}
           onPress={() => navigate(data.go)}
-          style={{marginLeft:60}}
-          >
+          style={{marginLeft: 2}}>
           {data.id === 3 ? <data.onImg /> : <data.offImg />}
           <Text
             style={[
