@@ -33,26 +33,27 @@ import edit from '../../resource/image/Main/edit.png';
 import delete2 from '../../resource/image/Main/delete.png';
 import {api} from '../../utils/Api';
 import {jwtState} from '../../recoil/atom';
-import {useRecoilState} from 'recoil';
+import {useRecoilState, useRecoilValue} from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {deleteRoutine} from '../../actions/routineAPI';
 import {
   routineState,
   routineStateComplete,
   routineStateDays,
+  routineStateDaysSet,
 } from '../../recoil/userState';
 import {dateState} from '../../recoil/appState';
 
 const Progress = () => {
   const [routines, setRoutines] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [token, setToken] = useState(jwtState);
+  const [token, setToken] = useRecoilState(jwtState);
   const [routineId, setRoutineId] = useState();
   const [routineCategory, setroutineCategory] = useState();
   const [todoDays, setTodoDays] = useRecoilState(routineStateDays);
   const [dateSelected, setDateState] = useRecoilState(dateState);
   const [todoList, setTodoList] = useState([]);
-
+  const selectTodo = useRecoilValue(routineStateDaysSet(token));
   const [todoTmp, setTodoTmp] = useState([
     {
       id: '1',
@@ -102,53 +103,54 @@ const Progress = () => {
 
   useEffect(() => {
     let tmpList = [];
-    for (var i = 0; i < todoDays.length; i++) {
-      if (dateSelected === todoDays[i].date) {
-        //console.log(todoDays);
-        // tmpList = JSON.parse(JSON.stringify(todoList));
-        let tmpCategory;
+    console.log(selectTodo);
+    // for (var i = 0; i < todoDays.length; i++) {
+    //   if (dateSelected === todoDays[i].date) {
+    //     //console.log(todoDays);
+    //     // tmpList = JSON.parse(JSON.stringify(todoList));
+    //     let tmpCategory;
 
-        // todolist에 따라 리스트 생성
-        if (todoDays[i].category == '일상') {
-          if (todoDays[i].completed) {
-            tmpCategory = lifeGray;
-          } else {
-            tmpCategory = life;
-          }
-        } else if (todoDays[i].category == '학습') {
-          if (todoDays[i].completed) {
-            tmpCategory = educationGray;
-          } else {
-            tmpCategory = education;
-          }
-        } else if (todoDays[i].category == '마음관리') {
-          if (todoDays[i].completed) {
-            tmpCategory = mentalGray;
-          } else {
-            tmpCategory = mental;
-          }
-        } else if (todoDays[i].category == '운동') {
-          if (todoDays[i].completed) {
-            tmpCategory = healthGray;
-          } else {
-            tmpCategory = health;
-          }
-        }
+    //     // todolist에 따라 리스트 생성
+    //     if (todoDays[i].category == '일상') {
+    //       if (todoDays[i].completed) {
+    //         tmpCategory = lifeGray;
+    //       } else {
+    //         tmpCategory = life;
+    //       }
+    //     } else if (todoDays[i].category == '학습') {
+    //       if (todoDays[i].completed) {
+    //         tmpCategory = educationGray;
+    //       } else {
+    //         tmpCategory = education;
+    //       }
+    //     } else if (todoDays[i].category == '마음관리') {
+    //       if (todoDays[i].completed) {
+    //         tmpCategory = mentalGray;
+    //       } else {
+    //         tmpCategory = mental;
+    //       }
+    //     } else if (todoDays[i].category == '운동') {
+    //       if (todoDays[i].completed) {
+    //         tmpCategory = healthGray;
+    //       } else {
+    //         tmpCategory = health;
+    //       }
+    //     }
 
-        let tmpObj = {
-          category: tmpCategory,
-          routineCategory: todoDays[i].category,
-          complete: todoDays[i].completed,
-          date: todoDays[i].date,
-          days: todoDays[i].days,
-          id: todoDays[i].id,
-          title: todoDays[i].title,
-          alarm: todoDays[i].alarm,
-        };
-        tmpList.push(tmpObj);
-      }
-    }
-    //console.log(tmpList);
+    //     let tmpObj = {
+    //       category: tmpCategory,
+    //       routineCategory: todoDays[i].category,
+    //       complete: todoDays[i].completed,
+    //       date: todoDays[i].date,
+    //       days: todoDays[i].days,
+    //       id: todoDays[i].id,
+    //       title: todoDays[i].title,
+    //       alarm: todoDays[i].alarm,
+    //     };
+    //     tmpList.push(tmpObj);
+    //   }
+    // }
+    // console.log(tmpList);
     setTodoList(tmpList);
   }, [dateSelected]);
 

@@ -1,4 +1,5 @@
-import {atom} from 'recoil';
+import {atom, selector, selectorFamily} from 'recoil';
+import {getAllRoutine} from '../actions/routineAPI';
 
 interface User {
   userId: String;
@@ -35,4 +36,38 @@ let routineStateDays = atom({
   key: 'routineStateDays',
   default: [],
 });
-export {userState, routineState, routineStateComplete, routineStateDays};
+
+let routineStateDaysSet = selectorFamily({
+  key: 'routineStateDaysSet',
+  get: token => async () => {
+    let res = await getAllRoutine(token).then(res => {
+      return res;
+    });
+    console.log(res);
+    console.log('??');
+    res = res.body;
+    let routineList = [];
+    for (var i = 0; i < res.length; i++) {
+      for (var j = 0; j < res[i].routineDays.length; j++) {
+        let tmp = {
+          id: res[i].routineDays[j].id,
+          title: res[i].routineTitle,
+          category: res[i].routineCategory,
+          days: res[i].days,
+          alarm: res[i].alarm,
+          day: res[i].routineDays[j].day,
+          completed: res[i].routineDays[j].completed,
+        };
+        routineList.push(tmp);
+      }
+    }
+    return routineList;
+  },
+});
+export {
+  userState,
+  routineState,
+  routineStateComplete,
+  routineStateDays,
+  routineStateDaysSet,
+};

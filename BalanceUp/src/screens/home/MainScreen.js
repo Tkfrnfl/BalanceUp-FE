@@ -209,27 +209,24 @@ const MainScreen = ({navigation: {navigate}}) => {
   };
 
   const saveRoutineDays = async (category, days, title, routineDays, alarm) => {
-    const tmp = [44]
-    console.log('??')
-    console.log(todoDays)
-    // console.log(category);
-    // console.log(routineDays);
-    for (var i = 0; i < routineDays.length; i++) {
-      const todo = {
-        category: category,
-        days: days,
-        title: title,
-        id: routineDays[i].id,
-        date: routineDays[i].day,
-        completed: routineDays[i].completed,
-        alarm: alarm,
-      };
-      //tmp.push(todo);
+
+
+    // for (var i = 0; i < routineDays.length; i++) {
+    //   const todo = {
+    //     category: category,
+    //     days: days,
+    //     title: title,
+    //     id: routineDays[i].id,
+    //     date: routineDays[i].day,
+    //     completed: routineDays[i].completed,
+    //     alarm: alarm,
+    //   };
+    //   //tmp.push(todo);
  
-    }
-    await setTodoDays([33],...todoDays)
+    // }
+
      //setTodoDays(tmp, ...todoDays);
-    // console.log(todoDays);
+
   };
 
   const asyncGetAll = async () => {
