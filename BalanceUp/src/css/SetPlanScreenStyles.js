@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
     height: 48,
     alignItems: 'center',
     padding: 15,
+    backgroundColor: '#585FFF',
     borderRadius: 5,
   },
   nextBtnText: {

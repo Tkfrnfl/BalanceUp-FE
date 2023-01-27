@@ -71,15 +71,15 @@ const Progress = () => {
   const isFocused = useIsFocused();
   const navigation = useNavigation();
 
-  // const fetchRoutineData = async () => {
-  //   const request = await axios.get('/routines');
-  //   setRoutines(request.data.body);
-  //   setLoading(false);
-  //   console.log(JSON.stringify(request.data.body));
-  // };
+  const fetchRoutineData = async () => {
+    const request = await axios.get('/routines');
+    setRoutines(request.data.body);
+    setLoading(false);
+    console.log(JSON.stringify(request.data.body));
+  };
 
   useEffect(() => {
-    // if (isFocused) fetchRoutineData();
+    if (isFocused) fetchRoutineData();
   }, [isFocused, loading]);
 
   useEffect(() => {
@@ -247,12 +247,21 @@ const Progress = () => {
   };
 
   // 수정 기능 구현
-  const handleEdit = (routineId, routineCategory) => {
+  const handleEdit = (
+    routineId,
+    routineCategory,
+    routineTitle,
+    alarm,
+    days,
+  ) => {
     setRoutineId(routineId);
     setroutineCategory(routineCategory);
     navigation.navigate('Plan', {
       routineId: routineId,
       planText: routineCategory,
+      routineTitle: routineTitle,
+      days: days,
+      alarm: alarm,
     });
   };
 
@@ -265,7 +274,7 @@ const Progress = () => {
 
   return (
     <View>
-      {todoList.map((data, index) => (
+      {routines.map((data, index) => (
         <ScrollView
           key={data.routineId}
           horizontal={true}
@@ -279,7 +288,7 @@ const Progress = () => {
           <View style={aimText1(data.completed).bar}>
             <Text style={commonStyles.boldText}>{data.routineTitle}</Text>
             <Text>
-              {data.routineCategory} | {data.days} {data.alarm}
+              {data.routineCategory} | {data.days} {data.alarmTime}
             </Text>
           </View>
           <TouchableWithoutFeedback onPress={() => checkComplete(index)}>
@@ -303,7 +312,15 @@ const Progress = () => {
             </Svg>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
-            onPress={() => handleEdit(data.routineId, data.routineCategory)}>
+            onPress={() =>
+              handleEdit(
+                data.routineId,
+                data.routineCategory,
+                data.routineTitle,
+                data.alarmTime,
+                data.days,
+              )
+            }>
             <Image source={edit} />
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback

@@ -1,19 +1,13 @@
 import axios from '../utils/Client';
 
-const createRoutine = async (
-  todoText,
-  planText,
-  dayText,
-  alertHour,
-  alertMin,
-) => {
+const createRoutine = async (todoText, planText, dayText, time) => {
   let res;
   await axios
     .post('/routine', {
       routineTitle: todoText,
       routineCategory: planText,
       days: dayText.join(''),
-      alarmTime: `${alertHour}:${alertMin}`,
+      alarmTime: time,
     })
     .then(response => {
       console.log(response.data);
@@ -43,20 +37,14 @@ const deleteRoutine = async routineId => {
   return res;
 };
 
-const modifyRoutine = async (
-  routineId,
-  todoText,
-  dayText,
-  alertHour,
-  alertMin,
-) => {
+const modifyRoutine = async (routineId, todoText, days, time) => {
   let res;
   await axios
     .put('/routine', {
       routineId: routineId,
       routineTitle: todoText,
-      days: dayText.join(''),
-      alarmTime: `${alertHour}:${alertMin}`,
+      days: days,
+      alarmTime: time,
     })
     .then(response => {
       console.log(response.data);
