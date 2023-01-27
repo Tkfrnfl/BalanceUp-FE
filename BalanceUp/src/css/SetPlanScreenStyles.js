@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   count: {
     fontSize: 12,
     marginLeft: 325,
-    fontFamily: 'Pretendard-Medium',
+    fontFamily: 'Pretendard-Light',
     marginTop: 5,
     bottom: 3,
     color: '#888888',
@@ -55,11 +55,11 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   recText: {
-    top: 3,
+    top: 2,
     fontSize: 12,
     color: '#888888',
     fontFamily: 'Pretendard-Medium',
-    marginLeft: 15,
+    marginLeft: 10,
   },
   daySelectBtnView: {
     flexDirection: 'row',

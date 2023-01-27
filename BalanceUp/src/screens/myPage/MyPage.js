@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
   verText: {
     color: '#888888',
     fontSize: 12,
-    fontFamily: 'Pretendard-Regular',
+    fontFamily: 'Pretendard-Light',
     marginLeft: 330,
     marginTop: 20,
   },

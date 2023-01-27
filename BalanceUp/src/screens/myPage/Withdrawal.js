@@ -111,14 +111,14 @@ const styles = StyleSheet.create({
   },
   infoText: {
     color: '#232323',
-    fontFamily: 'Pretendard-Regular',
+    fontFamily: 'Pretendard-Light',
     marginLeft: 20,
     marginTop: 8,
     right: 10,
   },
   info_Text: {
     color: '#232323',
-    fontFamily: 'Pretendard-Regular',
+    fontFamily: 'Pretendard-Light',
     marginLeft: 20,
     marginTop: 8,
   },
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     marginTop: 3,
     marginLeft: 10,
     color: '#232323',
-    fontFamily: 'Pretendard-Regular',
+    fontFamily: 'Pretendard-Light',
   },
   Nextbutton: {
     width: 400,

@@ -34,15 +34,17 @@ export default function Guide({navigation: {navigate}}) {
                 />
               </View>
             </View>
-            <View style={{flexDirection: 'row'}}>
+            <View style={{flexDirection: 'row', marginTop: -10}}>
               <View style={{alignItems: 'center', marginRight: 50}}>
                 <Text style={styles.infoText_}>오늘의 루틴 완료</Text>
-                <Text style={[styles.infoText_, {color: '#585FFF'}]}>+1RP</Text>
+                <Text style={[styles.infoText_, {color: '#585FFF', top: 1}]}>
+                  +1RP
+                </Text>
               </View>
-              <View style={{alignItems: 'center'}}>
+              <View style={{alignItems: 'center', left: 5}}>
                 <Text style={styles.infoText_}>2주 루틴 100% 완료</Text>
-                <Text style={[styles.infoText_, {color: '#585FFF'}]}>
-                  +10PR
+                <Text style={[styles.infoText_, {color: '#585FFF', top: 1}]}>
+                  +10RP
                 </Text>
               </View>
             </View>
@@ -71,7 +73,7 @@ export default function Guide({navigation: {navigate}}) {
             <View>
               <FastImage source={routine} style={styles.img_} />
             </View>
-            <Text style={styles.infoText_}>
+            <Text style={[styles.infoText_, {top: 10}]}>
               +20RP 획득 시 <Text style={styles.point}>LEVEL UP!</Text>
             </Text>
           </View>
@@ -110,7 +112,7 @@ export default function Guide({navigation: {navigate}}) {
                 <Text style={styles.infoText_}>Lv. 6~15</Text>
                 <Text style={styles.infoText__sub}>100~299RP 획득</Text>
               </View>
-              <View style={{alignItems: 'center', left: 40}}>
+              <View style={{alignItems: 'center', left: 43}}>
                 <Text style={styles.infoText_}>Lv. 16 이상</Text>
                 <Text style={styles.infoText__sub}>300RP 이상 획득</Text>
               </View>
@@ -183,13 +185,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 20,
     color: '#888888',
-    fontFamily: 'Pretendard-Regular',
+    fontFamily: 'Pretendard-Light',
   },
   infoText__sub: {
     fontSize: 12,
     marginTop: 3,
     color: '#888888',
-    fontFamily: 'Pretendard-Regular',
+    fontFamily: 'Pretendard-Light',
   },
   img: {
     width: 170,

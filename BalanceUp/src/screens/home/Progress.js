@@ -287,7 +287,7 @@ const Progress = () => {
           /> */}
           <View style={aimText1(data.completed).bar}>
             <Text style={commonStyles.boldText}>{data.routineTitle}</Text>
-            <Text>
+            <Text style={commonStyles.lightText}>
               {data.routineCategory} | {data.days} {data.alarmTime}
             </Text>
           </View>
