@@ -1,24 +1,5 @@
 import axios from '../utils/Client';
 
-const createRoutine = async (todoText, planText, dayText, time) => {
-  let res;
-  await axios
-    .post('/routine', {
-      routineTitle: todoText,
-      routineCategory: planText,
-      days: dayText.join(''),
-      alarmTime: time,
-    })
-    .then(response => {
-      console.log(response.data);
-      res = response.data;
-    })
-    .catch(function (error) {
-      console.log(error.response.data);
-    });
-  return res;
-};
-
 const deleteRoutine = async routineId => {
   let res;
   await axios
@@ -70,4 +51,4 @@ const getAllRoutine = async () => {
   return res;
 };
 
-export {createRoutine, deleteRoutine, modifyRoutine, getAllRoutine};
+export {deleteRoutine, modifyRoutine, getAllRoutine};
