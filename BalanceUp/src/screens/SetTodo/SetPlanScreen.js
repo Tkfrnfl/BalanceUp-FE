@@ -20,8 +20,7 @@ import styles from '../../css/SetPlanScreenStyles';
 import PushNotification from 'react-native-push-notification';
 import moment from 'moment';
 import BackArrow from '../../resource/image/Common/backArrow.svg';
-import {modifyRoutine} from '../../actions/routineAPI';
-import axios from '../../utils/Client';
+import {createRoutine, modifyRoutine} from '../../actions/routineAPI';
 
 const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const {planText} = route.params;
@@ -252,31 +251,15 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
     );
   };
 
-  // 루틴 생성
-  const handleCreate = async () => {
-    await axios
-      .post('/routine', {
-        routineTitle: todoText,
-        routineCategory: planText,
-        days: dayText.join(''),
-        alarmTime: time,
-      })
-      .then(response => {
-        console.log(response.data);
-        setClearModalVisible(false);
-        navigate('LookAll');
-        // notify();
-      })
-      .catch(function (error) {
-        console.log(error.response.data.message);
-        if (
-          error.response.data.message ===
-          '루틴 갯수는 4개를 초과할 수 없습니다.'
-        ) {
-          setClearModalVisible(false);
-          navigate('LookAll', {overRoutine: 'over'});
-        }
-      });
+  const handleCreate = () => {
+    createRoutine(todoText, planText, dayText, time).then(
+      res =>
+        res === '루틴 갯수는 4개를 초과할 수 없습니다.'
+          ? (setClearModalVisible(false),
+            navigate('LookAll', {overRoutine: 'over'}))
+          : (setClearModalVisible(false), navigate('LookAll')),
+      //notify()
+    );
   };
 
   // 루틴 수정
@@ -284,7 +267,6 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
     modifyRoutine(routineId, todoText, days, time).then(
       setClearModalVisible(false),
       navigate('LookAll'),
-      routineId === null,
     );
     // notify();
   };
