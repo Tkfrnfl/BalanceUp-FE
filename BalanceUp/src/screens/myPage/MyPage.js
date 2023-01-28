@@ -211,7 +211,7 @@ const MyPage = ({navigation: {navigate}}) => {
       <View style={styles.container}>
         <View style={styles.innerContainer}>
           <View style={styles.topSheet}>
-            <Text style={styles.topTitle}>{nickName}</Text>
+            <Text style={styles.topTitle}>{nickName}님</Text>
             <TouchableOpacity
               onPress={() => navigate('Withdrawal')}
               activeOpacity={1.0}>
@@ -406,11 +406,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
     marginTop: 40,
     marginLeft: 20,
-    marginBottom: 30,
+    marginBottom: 25,
     color: '#000',
   },
   withdrawalText: {
-    top: 43,
+    top: 45,
     right: 20,
     fontSize: 12,
     borderBottomWidth: 1,
