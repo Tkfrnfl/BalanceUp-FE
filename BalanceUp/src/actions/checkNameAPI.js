@@ -4,8 +4,10 @@ import {api} from '../utils/Api';
 const duplicationCheckAPI = async userName => {
   let return_value;
   await axios
-    .post(api + '/user/nickname', {
-      nickname: userName,
+    .get(api + '/nicknames', {
+      params: {
+        nickname: userName,
+      },
     })
     .then(response => {
       console.log(response.data);
