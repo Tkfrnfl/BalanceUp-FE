@@ -14,6 +14,7 @@ import {
   Switch,
   FlatList,
 } from 'react-native';
+import Toast from 'react-native-easy-toast';
 import DatePicker from 'react-native-date-picker';
 import modalInnerStyles from '../../css/modalStyles';
 import styles from '../../css/SetPlanScreenStyles';
@@ -67,6 +68,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const [dayText, setDayText] = useState('');
   const dayBy = ['월', '화', '수', '목', '금', '토', '일'];
 
+  const [toast, setToast] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [clearModalVisible, setClearModalVisible] = useState(false);
 
@@ -271,6 +273,13 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
     // notify();
   };
 
+  // 토스트 메세지
+  const toastRef = useRef();
+
+  const showCopyToast = useCallback(() => {
+    toastRef.current.show('진행 요일은 수정할 수 없어요.');
+  }, []);
+
   const Item = ({id, title, selected, onSelect}) => {
     return (
       <TouchableOpacity
@@ -279,9 +288,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
           {backgroundColor: selected ? '#585FFF' : '#CED6FF'},
         ]}
         activeOpacity={1.0}
-        onPress={() =>
-          isEditing ? console.log('edit...') : onSelect(id, title)
-        }>
+        onPress={() => (isEditing ? showCopyToast() : onSelect(id, title))}>
         <Text style={styles.btnText}>{title}</Text>
       </TouchableOpacity>
     );
@@ -290,6 +297,15 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
+        <Toast
+          ref={toastRef}
+          position="top"
+          positionValue={10}
+          fadeInDuration={300}
+          fadeOutDuration={1500}
+          style={styles.toastView}
+          textStyle={styles.toastText}
+        />
         {isEditing ? (
           <TouchableOpacity
             activeOpacity={1.0}
@@ -366,7 +382,6 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
             ]}
           />
         </View>
-
         {/* 시간 설정 모달 코드 */}
         <View>
           {shouldShow ? (
@@ -424,7 +439,6 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
             </TouchableOpacity>
           </View>
         )}
-
         {/* 완료 모달 구현 코드 */}
         <Modal
           visible={clearModalVisible}

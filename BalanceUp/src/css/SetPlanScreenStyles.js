@@ -142,6 +142,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
+  toastView: {
+    top: 20,
+    width: 230,
+    height: 47,
+    borderRadius: 35,
+    justifyContent: 'center',
+    backgroundColor: '#444444',
+  },
+  toastText: {
+    color: '#FFFFFF',
+    textAlign: 'center',
+    fontSize: 14,
+    fontFamily: 'Pretendard-Medium',
+  },
 });
 
 export default styles;
