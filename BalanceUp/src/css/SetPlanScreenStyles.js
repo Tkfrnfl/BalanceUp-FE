@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   count: {
     fontSize: 12,
     marginLeft: 325,
-    fontFamily: 'Pretendard-Medium',
+    fontFamily: 'Pretendard-Light',
     marginTop: 5,
     bottom: 3,
     color: '#888888',
@@ -55,11 +55,11 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   recText: {
-    top: 3,
+    top: 2,
     fontSize: 12,
     color: '#888888',
     fontFamily: 'Pretendard-Medium',
-    marginLeft: 15,
+    marginLeft: 10,
   },
   daySelectBtnView: {
     flexDirection: 'row',
@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
     height: 48,
     alignItems: 'center',
     padding: 15,
+    backgroundColor: '#585FFF',
     borderRadius: 5,
   },
   nextBtnText: {
@@ -140,6 +141,20 @@ const styles = StyleSheet.create({
   boxView: {
     alignItems: 'center',
     flexDirection: 'row',
+  },
+  toastView: {
+    top: 20,
+    width: 230,
+    height: 47,
+    borderRadius: 35,
+    justifyContent: 'center',
+    backgroundColor: '#444444',
+  },
+  toastText: {
+    color: '#FFFFFF',
+    textAlign: 'center',
+    fontSize: 14,
+    fontFamily: 'Pretendard-Medium',
   },
 });
 

@@ -251,6 +251,33 @@ const modalInnerStyles = StyleSheet.create({
     textAlign: 'center',
     color: '#888888',
   },
+
+  // Progress 루틴 초과 모달
+  overText: {
+    fontSize: 20,
+    fontFamily: 'Pretendard-Bold',
+    color: '#232323',
+    bottom: 13,
+  },
+  overSubText: {
+    fontSize: 12,
+    fontFamily: 'Pretendard-Medium',
+    color: '#888888',
+    bottom: 3,
+  },
+  bntStyle: {
+    top: 33,
+    borderTopWidth: 1,
+    borderTopColor: '#EBEBEB',
+    width: '120%',
+  },
+  btnText: {
+    top: 13,
+    fontSize: 16,
+    color: '#232323',
+    fontFamily: 'Pretendard-Medium',
+    textAlign: 'center',
+  },
 });
 
 export default modalInnerStyles;

@@ -3342,10 +3342,10 @@
   "resolved" "https://registry.npmjs.org/depd/-/depd-2.0.0.tgz"
   "version" "2.0.0"
 
-"deprecated-react-native-prop-types@^2.2.0":
-  "integrity" "sha512-SiessglRbgelU8sHCrGRImdlNKfVGSp0n6+K304d0rCdHGU8wladJkPmufxE2AkjN2jy71sgekNd9IvdZp9jZg=="
-  "resolved" "https://registry.npmjs.org/deprecated-react-native-prop-types/-/deprecated-react-native-prop-types-2.2.0.tgz"
-  "version" "2.2.0"
+"deprecated-react-native-prop-types@^2.2.0", "deprecated-react-native-prop-types@^2.3.0":
+  "integrity" "sha512-pWD0voFtNYxrVqvBMYf5gq3NA2GCpfodS1yNynTPc93AYA/KEMGeWDqqeUB6R2Z9ZofVhks2aeJXiuQqKNpesA=="
+  "resolved" "https://registry.npmjs.org/deprecated-react-native-prop-types/-/deprecated-react-native-prop-types-2.3.0.tgz"
+  "version" "2.3.0"
   dependencies:
     "@react-native/normalize-color" "*"
     "invariant" "*"
@@ -7005,7 +7005,7 @@
     "kleur" "^3.0.3"
     "sisteransi" "^1.0.5"
 
-"prop-types@*", "prop-types@^15.5.10", "prop-types@^15.6.2", "prop-types@^15.7.2", "prop-types@^15.8.1":
+"prop-types@*", "prop-types@^15.5.10", "prop-types@^15.6.0", "prop-types@^15.6.2", "prop-types@^15.7.2", "prop-types@^15.8.1":
   "integrity" "sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg=="
   "resolved" "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   "version" "15.8.1"
@@ -7175,6 +7175,14 @@
   dependencies:
     "prop-types" "^15.8.1"
 
+"react-native-easy-toast@^2.3.0":
+  "integrity" "sha512-+tn+6HyxudUtm+KPMidtHnheewDMS7i12HIKiRptk4M7R10jCvR4Tb6cVL8dYDA5ldWS97/kweSlLimPAb3Zyg=="
+  "resolved" "https://registry.npmjs.org/react-native-easy-toast/-/react-native-easy-toast-2.3.0.tgz"
+  "version" "2.3.0"
+  dependencies:
+    "deprecated-react-native-prop-types" "^2.3.0"
+    "prop-types" "^15.6.0"
+
 "react-native-fast-image@^8.6.3":
   "integrity" "sha512-Sdw4ESidXCXOmQ9EcYguNY2swyoWmx53kym2zRsvi+VeFCHEdkO+WG1DK+6W81juot40bbfLNhkc63QnWtesNg=="
   "resolved" "https://registry.npmjs.org/react-native-fast-image/-/react-native-fast-image-8.6.3.tgz"
@@ -7299,7 +7307,12 @@
   dependencies:
     "use-latest-callback" "^0.1.5"
 
-"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.71 || 1000.0.0", "react-native@>= 0.30.0", "react-native@>= 0.62", "react-native@>=0.33", "react-native@>=0.57", "react-native@>=0.57.0", "react-native@>=0.58.4", "react-native@>=0.59.0", "react-native@>=0.60.0", "react-native@0.70.4":
+"react-native-toast-message@^2.1.5":
+  "integrity" "sha512-mk3rELtBEhrhWBCN6CTaw0gypgL9ZNauX3xx1LUs4uee9vc0pVsghrKxO57vroUCcNL2hDeZSLJWdQNMCkGeaQ=="
+  "resolved" "https://registry.npmjs.org/react-native-toast-message/-/react-native-toast-message-2.1.5.tgz"
+  "version" "2.1.5"
+
+"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.71 || 1000.0.0", "react-native@>= 0.30.0", "react-native@>= 0.62", "react-native@>=0.20.0", "react-native@>=0.33", "react-native@>=0.57", "react-native@>=0.57.0", "react-native@>=0.58.4", "react-native@>=0.59.0", "react-native@>=0.60.0", "react-native@0.70.4":
   "integrity" "sha512-1e4jWotS20AJ/4lGVkZQs2wE0PvCpIRmPQEQ1FyH7wdyuewFFIxbUHqy6vAj1JWVFfAzbDakOQofrIkkHWLqNA=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.70.4.tgz"
   "version" "0.70.4"

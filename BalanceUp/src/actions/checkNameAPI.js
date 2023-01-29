@@ -1,11 +1,14 @@
 import axios from 'axios';
 import {api} from '../utils/Api';
+import axiosInstance from '../utils/Client';
 
 const duplicationCheckAPI = async userName => {
   let return_value;
   await axios
-    .post(api + '/user/nickname', {
-      nickname: userName,
+    .get(api + '/nicknames', {
+      params: {
+        nickname: userName,
+      },
     })
     .then(response => {
       console.log(response.data);
@@ -19,20 +22,12 @@ const duplicationCheckAPI = async userName => {
   return return_value;
 };
 
-const ChangeNameAPI = async (userName, token) => {
+const ChangeNameAPI = async userName => {
   let return_value;
-  await axios
-    .put(
-      api + '/user/nickname',
-      {
-        nickname: userName,
-      },
-      {
-        headers: {
-          Authorization: token,
-        },
-      },
-    )
+  await axiosInstance
+    .put('/user/nickname', {
+      nickname: userName,
+    })
     .then(response => {
       console.log(response.data);
       return_value = true;

@@ -19,13 +19,12 @@ import {useRecoilState} from 'recoil';
 import {validateText} from '../../utils/regex';
 import {ChangeNameAPI} from '../../actions/checkNameAPI';
 import {MyBottomTab} from '../../screens/BottomTab/index';
-import {jwtState, nickNameState} from '../../recoil/atom';
+import {nickNameState} from '../../recoil/atom';
 
 import MoreInfoArrow from '../../resource/image/Agree/moreInfoArrow.svg';
 import modalInnerStyles from '../../css/modalStyles';
 import ErrorSvg from '../../resource/image/Name/name_error.svg';
 import NewNotice from '../../resource/image/Common/noti_new.svg';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MyPage = ({navigation: {navigate}}) => {
   const [userName, setUserName] = useState('');
@@ -34,7 +33,6 @@ const MyPage = ({navigation: {navigate}}) => {
   const [checkTextPass, setCheckTextPass] = useState('');
   const [checkDisabled, setCheckDisabled] = useState(true);
   const [disabled, setDisabled] = useState(true);
-  const [token, setToken] = useState(jwtState);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
 
@@ -142,18 +140,8 @@ const MyPage = ({navigation: {navigate}}) => {
     }
   };
 
-  // 닉네임 변경 구현
-  // AsyncStorage.getItem('nickName', (err, nameResult) => {
-  // console.log(nameResult);
-  //   setNickName(JSON.parse(nameResult));
-  // });
-
-  AsyncStorage.getItem('jwt', (err, result) => {
-    setToken(JSON.parse(result));
-  });
-
   const handleChangeName = () => {
-    ChangeNameAPI(userName, token).then(response => {
+    ChangeNameAPI(userName).then(response => {
       if (response === true) {
         setCheckTextPass('사용 가능한 닉네임이에요!');
       } else if (response === false) {
@@ -211,7 +199,7 @@ const MyPage = ({navigation: {navigate}}) => {
       <View style={styles.container}>
         <View style={styles.innerContainer}>
           <View style={styles.topSheet}>
-            <Text style={styles.topTitle}>{nickName}</Text>
+            <Text style={styles.topTitle}>{nickName}님</Text>
             <TouchableOpacity
               onPress={() => navigate('Withdrawal')}
               activeOpacity={1.0}>
@@ -406,11 +394,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
     marginTop: 40,
     marginLeft: 20,
-    marginBottom: 30,
+    marginBottom: 25,
     color: '#000',
   },
   withdrawalText: {
-    top: 43,
+    top: 45,
     right: 20,
     fontSize: 12,
     borderBottomWidth: 1,
@@ -445,7 +433,7 @@ const styles = StyleSheet.create({
   verText: {
     color: '#888888',
     fontSize: 12,
-    fontFamily: 'Pretendard-Regular',
+    fontFamily: 'Pretendard-Light',
     marginLeft: 330,
     marginTop: 20,
   },

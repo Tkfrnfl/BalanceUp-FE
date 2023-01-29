@@ -14,9 +14,15 @@ const commonStyles = StyleSheet.create({
     flexDirection: 'row',
   },
   boldText: {
-    fontSize: 20,
+    fontSize: 14,
     fontFamily: 'Pretendard-Bold',
-    color: 'black',
+    color: '#232323',
+  },
+  lightText: {
+    fontSize: 14,
+    fontFamily: 'Pretendard-Light',
+    marginTop: 3,
+    color: '#232323',
   },
   imgView: {
     flexDirection: 'row',

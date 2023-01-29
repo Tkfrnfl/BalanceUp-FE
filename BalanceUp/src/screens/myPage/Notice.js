@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   infoText: {
     color: '#888888',
     fontSize: 12,
-    fontFamily: 'Pretendard-Regular',
+    fontFamily: 'Pretendard-Light',
     marginLeft: 30,
     marginTop: 10,
   },

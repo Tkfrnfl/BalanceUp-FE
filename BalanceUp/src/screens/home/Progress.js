@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
-import axios from 'axios';
+import axios from '../../utils/Client';
 import {
   StyleSheet,
   Text,
@@ -14,7 +14,7 @@ import {
   Pressable,
   ScrollView,
 } from 'react-native';
-import {useIsFocused} from '@react-navigation/native';
+import {useIsFocused, useRoute} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import commonStyles from '../../css/commonStyles';
 import modalInnerStyles from '../../css/modalStyles';
@@ -31,28 +31,21 @@ import oneDay from '../../resource/image/Modal/Crystal.png';
 import twoWeeks from '../../resource/image/Modal/10routine.png';
 import edit from '../../resource/image/Main/edit.png';
 import delete2 from '../../resource/image/Main/delete.png';
-import {api} from '../../utils/Api';
-import {jwtState} from '../../recoil/atom';
+import OverSvg from '../../resource/image/Common/overRoutine.svg';
 import {useRecoilState} from 'recoil';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {deleteRoutine} from '../../actions/routineAPI';
-import {
-  routineState,
-  routineStateComplete,
-  routineStateDays,
-} from '../../recoil/userState';
+import {routineStateDays} from '../../recoil/userState';
 import {dateState} from '../../recoil/appState';
 
 const Progress = () => {
+  const route = useRoute();
   const [routines, setRoutines] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [token, setToken] = useState(jwtState);
   const [routineId, setRoutineId] = useState();
   const [routineCategory, setroutineCategory] = useState();
   const [todoDays, setTodoDays] = useRecoilState(routineStateDays);
   const [dateSelected, setDateState] = useRecoilState(dateState);
   const [todoList, setTodoList] = useState([]);
-
   const [todoTmp, setTodoTmp] = useState([
     {
       id: '1',
@@ -75,30 +68,30 @@ const Progress = () => {
   const [completeDay, setCompleteDayModalVisible] = useState(0);
   const [completeChangeModalVisible, setCompleteChangeModalVisible] =
     useState(false);
+  const [overRoutineModalVisible, setOverRoutineModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const isFocused = useIsFocused();
   const navigation = useNavigation();
 
-  // const fetchRoutineData = async () => {
-  //   await axios
-  //     .get(api + '/routines', {
-  //       headers: {
-  //         Authorization: token,
-  //       },
-  //     })
-  //     .then(response => {
-  //       setRoutines(response.data.body);
-  //       setLoading(false);
-  //       console.log(response.data.body);
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error.response.data);
-  //     });
-  // };
+  const fetchRoutineData = async () => {
+    const request = await axios.get('/routines').catch(function (error) {
+      console.log(error.response.data);
+    });
+    setRoutines(request.data.body);
+    setLoading(false);
+    console.log(JSON.stringify(request.data.body));
+  };
 
   useEffect(() => {
-    // if (isFocused) fetchRoutineData();
+    if (isFocused) fetchRoutineData();
   }, [isFocused, loading]);
+
+  useEffect(() => {
+    if (route.params != null) {
+      setOverRoutineModalVisible(!overRoutineModalVisible);
+      route.params = null;
+    }
+  }, [route]);
 
   useEffect(() => {
     let tmpList = [];
@@ -193,17 +186,24 @@ const Progress = () => {
     closeBottomSheet.start(() => setCompleteModalVisible(false));
     closeBottomSheet.start(() => setCompleteChangeModalVisible(false));
     closeBottomSheet.start(() => setDeleteModalVisible(false));
+    closeBottomSheet.start(() => setOverRoutineModalVisible(false));
   };
 
   useEffect(() => {
     if (
       completeModalVisible ||
       completeChangeModalVisible ||
-      deleteModalVisible
+      deleteModalVisible ||
+      overRoutineModalVisible
     ) {
       resetBottomSheet.start();
     }
-  }, [completeModalVisible, completeChangeModalVisible, deleteModalVisible]);
+  }, [
+    completeModalVisible,
+    completeChangeModalVisible,
+    deleteModalVisible,
+    overRoutineModalVisible,
+  ]);
 
   const checkComplete = index => {
     if (todoComplete[index] === 1) {
@@ -265,12 +265,21 @@ const Progress = () => {
   };
 
   // 수정 기능 구현
-  const handleEdit = (routineId, routineCategory) => {
+  const handleEdit = (
+    routineId,
+    routineCategory,
+    routineTitle,
+    alarm,
+    days,
+  ) => {
     setRoutineId(routineId);
     setroutineCategory(routineCategory);
     navigation.navigate('Plan', {
       routineId: routineId,
       planText: routineCategory,
+      routineTitle: routineTitle,
+      days: days,
+      alarm: alarm,
     });
   };
 
@@ -283,7 +292,7 @@ const Progress = () => {
 
   return (
     <View>
-      {todoList.map((data, index) => (
+      {routines.map((data, index) => (
         <ScrollView
           key={data.routineId}
           horizontal={true}
@@ -296,8 +305,8 @@ const Progress = () => {
           /> */}
           <View style={aimText1(data.completed).bar}>
             <Text style={commonStyles.boldText}>{data.routineTitle}</Text>
-            <Text>
-              {data.routineCategory} | {data.days} {data.alarm}
+            <Text style={commonStyles.lightText}>
+              {data.routineCategory} | {data.days} {data.alarmTime}
             </Text>
           </View>
           <TouchableWithoutFeedback onPress={() => checkComplete(index)}>
@@ -321,7 +330,15 @@ const Progress = () => {
             </Svg>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
-            onPress={() => handleEdit(data.routineId, data.routineCategory)}>
+            onPress={() =>
+              handleEdit(
+                data.routineId,
+                data.routineCategory,
+                data.routineTitle,
+                data.alarmTime,
+                data.days,
+              )
+            }>
             <Image source={edit} />
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
@@ -438,9 +455,50 @@ const Progress = () => {
               </TouchableWithoutFeedback>
             </Pressable>
           </Modal>
+
+          {/* 4개 루틴 생성 초과 모달 */}
+          <Modal
+            visible={overRoutineModalVisible}
+            animationType={'fade'}
+            transparent={true}
+            statusBarTranslucent={true}>
+            <Pressable style={modalInnerStyles.complteModalOverlay}>
+              <TouchableWithoutFeedback>
+                <Animated.View
+                  style={[
+                    {
+                      ...modalInnerStyles.centerSheetContainer,
+                    },
+                    {height: 270},
+                  ]}>
+                  <View style={{alignItems: 'center'}}>
+                    <OverSvg style={{bottom: 30}} />
+                    <Text style={modalInnerStyles.overText}>
+                      아쉽지만 진행 중인 루틴이
+                    </Text>
+                    <Text style={modalInnerStyles.overText}>
+                      4개를 초과할 수 없어요!
+                    </Text>
+                    <Text style={modalInnerStyles.overSubText}>
+                      많은 루틴보단 현재의 루틴에 집중해서
+                    </Text>
+                    <Text style={[modalInnerStyles.overSubText, {top: -2}]}>
+                      나만의 루틴을 만들어가는 건 어떨까요?
+                    </Text>
+                    <TouchableOpacity
+                      activeOpacity={1.0}
+                      style={modalInnerStyles.bntStyle}
+                      onPress={() => setOverRoutineModalVisible(false)}>
+                      <Text style={modalInnerStyles.btnText}>확인</Text>
+                    </TouchableOpacity>
+                  </View>
+                </Animated.View>
+              </TouchableWithoutFeedback>
+            </Pressable>
+          </Modal>
         </ScrollView>
       ))}
-      <View style={commonStyles.spacing2} />
+
       {/* 삭제 모달 구현 코드 */}
       <Modal
         visible={deleteModalVisible}
@@ -481,7 +539,7 @@ const Progress = () => {
                   style={modalInnerStyles.yesBtn}
                   activeOpacity={1.0}
                   onPress={() =>
-                    deleteRoutine(token, routineId).then(
+                    deleteRoutine(routineId).then(
                       setDeleteModalVisible(!deleteModalVisible),
                       setLoading(true),
                       console.log(routineId),

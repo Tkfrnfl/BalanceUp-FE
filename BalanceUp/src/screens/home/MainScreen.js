@@ -8,6 +8,7 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
+import axios from '../../utils/Client';
 import commonStyles from '../../css/commonStyles';
 // import WeekCalendar from '../../components/WeekCalendar';
 // import WeekCalendar from 'react-native-calendars';
@@ -34,16 +35,11 @@ import {
 import {Shadow} from 'react-native-shadow-2';
 import {HomeBottomTab} from '../BottomTab';
 import {Progress as ProgressComponent} from './Progress';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useRecoilState} from 'recoil';
 import {nickNameState} from '../../recoil/atom';
 import {jwtState} from '../../recoil/atom';
 import {dateState} from '../../recoil/appState';
-import {
-  routineState,
-  routineStateComplete,
-  routineStateDays,
-} from '../../recoil/userState';
+import {routineStateDays} from '../../recoil/userState';
 
 import {getAllRoutine} from '../../actions/routineAPI';
 
@@ -94,7 +90,6 @@ const MainScreen = ({navigation: {navigate}}) => {
   const todoTmpSub = ['itemSub1', 'itemSub2', 'itemSub3'];
   const todoComplete = [0.5, 1, 0.5, 1];
   const [nickName, setNickName] = useRecoilState(nickNameState);
-  const [token, setToken] = useState(jwtState);
   const [tmpRoutine, setTmpRoutine] = useState();
   const [tmp, setTmp] = useState(0);
   const [todoTotal, setTodoTotal] = useState([0, 0, 0, 0]);
@@ -209,9 +204,9 @@ const MainScreen = ({navigation: {navigate}}) => {
   };
 
   const saveRoutineDays = async (category, days, title, routineDays, alarm) => {
-    const tmp = [44]
-    console.log('??')
-    console.log(todoDays)
+    const tmp = [44];
+    console.log('??');
+    console.log(todoDays);
     // console.log(category);
     // console.log(routineDays);
     for (var i = 0; i < routineDays.length; i++) {
@@ -225,18 +220,16 @@ const MainScreen = ({navigation: {navigate}}) => {
         alarm: alarm,
       };
       //tmp.push(todo);
- 
     }
-    await setTodoDays([33],...todoDays)
-     //setTodoDays(tmp, ...todoDays);
+    await setTodoDays([33], ...todoDays);
+    //setTodoDays(tmp, ...todoDays);
     // console.log(todoDays);
   };
 
   const asyncGetAll = async () => {
-    const tok = JSON.parse(await AsyncStorage.getItem('jwt'));
     let res;
 
-    res = await getAllRoutine(tok);
+    res = await getAllRoutine();
     res = res.body;
 
     for (var i = 0; i < res.length; i++) {
@@ -362,6 +355,16 @@ const MainScreen = ({navigation: {navigate}}) => {
     // 루틴 날짜별 정리
   };
 
+  const fetchUserData = async () => {
+    const request = await axios.get('/user');
+    setNickName(request.data.body.nickname);
+    // rp 받아오기 ()
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
   useEffect(() => {
     asyncGetAll();
     setTimeout(() => {
@@ -375,15 +378,16 @@ const MainScreen = ({navigation: {navigate}}) => {
     }
     setCheckedDate(tmpToday);
   }, [todoDays]);
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollview}>
         <View style={styles.titleWrapper}>
           <View style={commonStyles.spacing2} />
-          <Text style={styles.mainText}>??님은</Text>
+          <Text style={styles.mainText}>{nickName}님은</Text>
           <View style={commonStyles.row}>
-            <Text style={styles.mainText6}>?</Text>
-            <Text style={styles.mainText}>만큼 성장했어요</Text>
+            <Text style={styles.mainText6}>레벨 ?</Text>
+            <Text style={styles.mainText}> 만큼 성장했어요</Text>
           </View>
           <Text style={styles.mainText7}>?RP 달성시, LV.? 레벨 업!</Text>
 
@@ -621,12 +625,12 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   mainText: {
-    fontSize: 25,
+    fontSize: 22,
     color: '#232323',
     fontFamily: 'Pretendard-Bold',
   },
   mainText6: {
-    fontSize: 25,
+    fontSize: 22,
     color: '#585FFF',
     fontFamily: 'Pretendard-Bold',
   },
@@ -634,7 +638,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#232323',
     fontFamily: 'Pretendard-Medium',
-    marginTop: 10,
+    marginTop: 8,
   },
   mainText8: {
     fontSize: 12,
