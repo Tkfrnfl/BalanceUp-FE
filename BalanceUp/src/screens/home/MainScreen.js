@@ -378,6 +378,7 @@ const MainScreen = ({navigation: {navigate}}) => {
     }
     setCheckedDate(tmpToday);
   }, [todoDays]);
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollview}>
