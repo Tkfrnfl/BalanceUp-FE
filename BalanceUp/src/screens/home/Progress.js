@@ -103,7 +103,7 @@ const Progress = () => {
 
   useEffect(() => {
     let tmpList = [];
-    console.log(selectTodo);
+    //console.log(selectTodo);
     // for (var i = 0; i < todoDays.length; i++) {
     //   if (dateSelected === todoDays[i].date) {
     //     //console.log(todoDays);

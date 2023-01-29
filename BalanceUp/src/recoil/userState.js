@@ -43,8 +43,6 @@ let routineStateDaysSet = selectorFamily({
     let res = await getAllRoutine(token).then(res => {
       return res;
     });
-    console.log(res);
-    console.log('??');
     res = res.body;
     let routineList = [];
     for (var i = 0; i < res.length; i++) {

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -15,6 +15,16 @@ import moment from 'moment';
 import {WithLocalSvg} from 'react-native-svg';
 import {format} from 'date-fns';
 import commonStyles from '../../css/commonStyles';
+
+import {useRecoilState, useRecoilValue} from 'recoil';
+import {jwtState} from '../../recoil/atom';
+import {dateState} from '../../recoil/appState';
+import {
+  routineState,
+  routineStateComplete,
+  routineStateDays,
+  routineStateDaysSet,
+} from '../../recoil/userState';
 // import * as Progress from 'react-native-progress';
 import Svg, {
   Circle,
@@ -119,32 +129,99 @@ const LookAll = ({navigation: {navigate}}) => {
   ]);
 
   const [selectedDate, setSelectedDate] = useState();
+  const [token, setToken] = useRecoilState(jwtState);
+  const selectTodo = useRecoilValue(routineStateDaysSet(token));
+  const [checkedDateColor, setCheckedDateColor] = useState('#FFFFFF');
+  const [checkedDate, setCheckedDate] = useState();
+  const [routineDays, setRoutineDays] = useState({});
+  const [dateSelected, setDateState] = useRecoilState(dateState);
   // format(new Date(), 'yyyy-MM-dd'),
-  const posts = [
-    {
-      id: 1,
-      title: '제목입니다.',
-      contents: '내용입니다.',
-      date: '2023-01-14',
-    },
-  ];
-  const markedDates = posts.reduce((acc, current) => {
-    const formattedDate = format(new Date(current.date), 'yyyy-MM-dd');
-    acc[selectedDate] = {marked: true};
-    return acc;
-  }, {});
-  const markedSelectedDates = {
-    // ...markedDates,
-    [selectedDate]: {
-      selected: true,
-      // marked: markedDates[selectedDate]?.marked,
-    },
+  // const posts = [
+  //   {
+  //     id: 1,
+  //     title: '제목입니다.',
+  //     contents: '내용입니다.',
+  //     date: '2023-01-14',
+  //   },
+  // ];
+  // const markedDates = posts.reduce((acc, current) => {
+  //   const formattedDate = format(new Date(current.date), 'yyyy-MM-dd');
+  //   acc[selectedDate] = {marked: true};
+  //   return acc;
+  // }, {});
+  // const markedSelectedDates = {
+  //   // ...markedDates,
+  //   [selectedDate]: {
+  //     selected: true,
+  //     // marked: markedDates[selectedDate]?.marked,
+  //   },
+  // };
+
+  // 루틴 날짜 객체 생성
+  let tmpObj = {};
+  let tmpMonth = ('0' + month).slice(-2); // 오늘 제외
+  let tmpDate = ('0' + date).slice(-2);
+  let tmpToday = year + '-' + tmpMonth + '-' + tmpDate;
+
+  const setCheckValue = () => {
+    for (var i = 0; i < selectTodo.length; i++) {
+      if (selectTodo[i].day != tmpToday) {
+        tmpObj[selectTodo[i].day] = {
+          selected: true,
+          selectedColor: '#F4F7FF',
+          selectedTextColor: '#000000',
+        };
+      } else if (selectTodo[i].day === tmpToday) {
+        setCheckedDateColor('#F4F7FF');
+        tmpObj[selectTodo[i].day] = {
+          selected: true,
+          selectedColor: '#585FFF',
+          selectedTextColor: '#FFFFFF',
+        };
+      }
+    }
+
+    setRoutineDays(tmpObj);
   };
+  // 날짜 누를시 선택날짜 색변화
+  const checkSelectedDate = date => {
+    setDateState(date);
+    tmpObj = JSON.parse(JSON.stringify(routineDays));
+    let tmpColor;
+    if (tmpObj[date] === undefined) {
+      tmpColor = '#FFFFFF';
+
+      tmpObj[date] = {
+        selected: true,
+        selectedColor: '#585FFF',
+        selectedTextColor: '#FFFFFF',
+      };
+    } else {
+      tmpColor = tmpObj[date].selectedColor;
+    }
+
+    tmpObj[date].selected = true;
+    tmpObj[date].selectedColor = '#585FFF';
+    tmpObj[date].selectedTextColor = '#FFFFFF';
+
+    tmpObj[checkedDate].selected = true;
+    tmpObj[checkedDate].selectedColor = checkedDateColor;
+    tmpObj[checkedDate].selectedTextColor = '#000000';
+
+    setRoutineDays(tmpObj);
+    setCheckedDate(date);
+    setCheckedDateColor(tmpColor);
+  };
+
+  useEffect(() => {
+    setCheckValue();
+
+    setCheckedDate(tmpToday);
+  }, []);
+
   const fomatToday =
     year.toString() + '-' + month.toString() + '-' + date.toString();
-  const onclick = () => {
-    console.log(markedDates);
-  };
+  const onclick = () => {};
 
   return (
     <SafeAreaView style={styles.container}>
@@ -164,7 +241,7 @@ const LookAll = ({navigation: {navigate}}) => {
               }}
               style={styles.calView}
               allowShadow={false}
-              markedDates={markedSelectedDates}
+              markedDates={routineDays}
               theme={{
                 agendaTodayColor: '#FF7391',
                 arrowColor: 'black',
@@ -185,7 +262,7 @@ const LookAll = ({navigation: {navigate}}) => {
               }}
               onDayPress={day => {
                 setSelectedDate(day.dateString);
-                onclick();
+                checkSelectedDate(day.dateString);
               }}
               // onDayPress={day => this.setState({selected_date: day.dateString})}
             />

@@ -35,7 +35,7 @@ import {Shadow} from 'react-native-shadow-2';
 import {HomeBottomTab} from '../BottomTab';
 import {Progress as ProgressComponent} from './Progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useRecoilState} from 'recoil';
+import {useRecoilState,useRecoilValue} from 'recoil';
 import {nickNameState} from '../../recoil/atom';
 import {jwtState} from '../../recoil/atom';
 import {dateState} from '../../recoil/appState';
@@ -43,6 +43,7 @@ import {
   routineState,
   routineStateComplete,
   routineStateDays,
+  routineStateDaysSet
 } from '../../recoil/userState';
 
 import {getAllRoutine} from '../../actions/routineAPI';
@@ -94,16 +95,16 @@ const MainScreen = ({navigation: {navigate}}) => {
   const todoTmpSub = ['itemSub1', 'itemSub2', 'itemSub3'];
   const todoComplete = [0.5, 1, 0.5, 1];
   const [nickName, setNickName] = useRecoilState(nickNameState);
-  const [token, setToken] = useState(jwtState);
-  const [tmpRoutine, setTmpRoutine] = useState();
+  const [token, setToken] = useRecoilState(jwtState);
   const [tmp, setTmp] = useState(0);
   const [todoTotal, setTodoTotal] = useState([0, 0, 0, 0]);
   const [todoCompleted, setTodoCompleted] = useState([0, 0, 0, 0]);
-  const [todoDays, setTodoDays] = useRecoilState(routineStateDays);
   const [dateSelected, setDateState] = useRecoilState(dateState);
   const [routineDays, setRoutineDays] = useState({});
   const [checkedDateColor, setCheckedDateColor] = useState('#FFFFFF');
   const [checkedDate, setCheckedDate] = useState();
+  const selectTodo = useRecoilValue(routineStateDaysSet(token));
+
   const fomatToday =
     year.toString() + '-' + month.toString() + '-' + date.toString();
 
@@ -116,20 +117,6 @@ const MainScreen = ({navigation: {navigate}}) => {
     useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
-  const posts = [
-    {
-      id: 1,
-      title: '제목입니다.',
-      contents: '내용입니다.',
-      date: '2022-02-26',
-    },
-    {
-      id: 2,
-      title: '제목입니다.',
-      contents: '내용입니다.',
-      date: '2022-02-27',
-    },
-  ];
   // const markedDates = posts.reduce((acc, current) => {
   //   const formattedDate = format(new Date(current.date), 'yyyy-MM-dd');
   //   acc[formattedDate] = {marked: true};
@@ -150,16 +137,16 @@ const MainScreen = ({navigation: {navigate}}) => {
   let tmpToday = year + '-' + tmpMonth + '-' + tmpDate;
 
   const setCheckValue = () => {
-    for (var i = 0; i < todoDays.length; i++) {
-      if (todoDays[i].date != tmpToday) {
-        tmpObj[todoDays[i].date] = {
+    for (var i = 0; i < selectTodo.length; i++) {
+      if (selectTodo[i].day != tmpToday) {
+        tmpObj[selectTodo[i].day] = {
           selected: true,
           selectedColor: '#F4F7FF',
           selectedTextColor: '#000000',
         };
-      } else if (todoDays[i].date === tmpToday) {
+      } else if (selectTodo[i].day === tmpToday) {
         setCheckedDateColor('#F4F7FF');
-        tmpObj[todoDays[i].date] = {
+        tmpObj[selectTodo[i].day] = {
           selected: true,
           selectedColor: '#585FFF',
           selectedTextColor: '#FFFFFF',
@@ -208,27 +195,6 @@ const MainScreen = ({navigation: {navigate}}) => {
     }
   };
 
-  const saveRoutineDays = async (category, days, title, routineDays, alarm) => {
-
-
-    // for (var i = 0; i < routineDays.length; i++) {
-    //   const todo = {
-    //     category: category,
-    //     days: days,
-    //     title: title,
-    //     id: routineDays[i].id,
-    //     date: routineDays[i].day,
-    //     completed: routineDays[i].completed,
-    //     alarm: alarm,
-    //   };
-    //   //tmp.push(todo);
- 
-    // }
-
-     //setTodoDays(tmp, ...todoDays);
-
-  };
-
   const asyncGetAll = async () => {
     const tok = JSON.parse(await AsyncStorage.getItem('jwt'));
     let res;
@@ -247,25 +213,11 @@ const MainScreen = ({navigation: {navigate}}) => {
           totalTmp[0] += 1;
           setTodoCompleted(completedTmp);
           setTodoTotal(totalTmp);
-          saveRoutineDays(
-            '일상',
-            res[i].days,
-            res[i].routineTitle,
-            res[i].routineDays,
-            res[i].alarmTime,
-          );
         } else {
           let totalTmp;
           totalTmp = todoTotal;
           totalTmp[0] += 1;
           setTodoTotal(totalTmp);
-          saveRoutineDays(
-            '일상',
-            res[i].days,
-            res[i].routineTitle,
-            res[i].routineDays,
-            res[i].alarmTime,
-          );
         }
       } else if (res[i].routineCategory === '학습') {
         if (res[i].completed === true) {
@@ -276,25 +228,11 @@ const MainScreen = ({navigation: {navigate}}) => {
           totalTmp[1] += 1;
           setTodoCompleted(completedTmp);
           setTodoTotal(totalTmp);
-          saveRoutineDays(
-            '학습',
-            res[i].days,
-            res[i].routineTitle,
-            res[i].routineDays,
-            res[i].alarmTime,
-          );
         } else {
           let totalTmp;
           totalTmp = todoTotal;
           totalTmp[1] += 1;
           setTodoTotal(totalTmp);
-          saveRoutineDays(
-            '학습',
-            res[i].days,
-            res[i].routineTitle,
-            res[i].routineDays,
-            res[i].alarmTime,
-          );
         }
       } else if (res[i].routineCategory === '마음관리') {
         if (res[i].completed === true) {
@@ -305,25 +243,11 @@ const MainScreen = ({navigation: {navigate}}) => {
           totalTmp[2] += 1;
           setTodoCompleted(completedTmp);
           setTodoTotal(totalTmp);
-          saveRoutineDays(
-            '마음관리',
-            res[i].days,
-            res[i].routineTitle,
-            res[i].routineDays,
-            res[i].alarmTime,
-          );
         } else {
           let totalTmp;
           totalTmp = todoTotal;
           totalTmp[2] += 1;
           setTodoTotal(totalTmp);
-          saveRoutineDays(
-            '마음관리',
-            res[i].days,
-            res[i].routineTitle,
-            res[i].routineDays,
-            res[i].alarmTime,
-          );
         }
       } else if (res[i].routineCategory === '운동') {
         if (res[i].completed === true) {
@@ -334,25 +258,11 @@ const MainScreen = ({navigation: {navigate}}) => {
           totalTmp[3] += 1;
           setTodoCompleted(completedTmp);
           setTodoTotal(totalTmp);
-          saveRoutineDays(
-            '운동',
-            res[i].days,
-            res[i].routineTitle,
-            res[i].routineDays,
-            res[i].alarmTime,
-          );
         } else {
           let totalTmp;
           totalTmp = todoTotal;
           totalTmp[3] += 1;
           setTodoTotal(totalTmp);
-          saveRoutineDays(
-            '운동',
-            res[i].days,
-            res[i].routineTitle,
-            res[i].routineDays,
-            res[i].alarmTime,
-          );
         }
       }
     }
@@ -361,17 +271,13 @@ const MainScreen = ({navigation: {navigate}}) => {
 
   useEffect(() => {
     asyncGetAll();
+    setCheckValue();
     setTimeout(() => {
       setTmp(5);
     }, 1000);
+    setCheckedDate(tmpToday);
   }, []);
 
-  useEffect(() => {
-    if (todoDays != []) {
-      setCheckValue();
-    }
-    setCheckedDate(tmpToday);
-  }, [todoDays]);
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollview}>
