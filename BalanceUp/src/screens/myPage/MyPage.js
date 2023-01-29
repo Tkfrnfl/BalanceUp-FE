@@ -19,13 +19,12 @@ import {useRecoilState} from 'recoil';
 import {validateText} from '../../utils/regex';
 import {ChangeNameAPI} from '../../actions/checkNameAPI';
 import {MyBottomTab} from '../../screens/BottomTab/index';
-import {jwtState, nickNameState} from '../../recoil/atom';
+import {nickNameState} from '../../recoil/atom';
 
 import MoreInfoArrow from '../../resource/image/Agree/moreInfoArrow.svg';
 import modalInnerStyles from '../../css/modalStyles';
 import ErrorSvg from '../../resource/image/Name/name_error.svg';
 import NewNotice from '../../resource/image/Common/noti_new.svg';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MyPage = ({navigation: {navigate}}) => {
   const [userName, setUserName] = useState('');
@@ -34,7 +33,6 @@ const MyPage = ({navigation: {navigate}}) => {
   const [checkTextPass, setCheckTextPass] = useState('');
   const [checkDisabled, setCheckDisabled] = useState(true);
   const [disabled, setDisabled] = useState(true);
-  const [token, setToken] = useState(jwtState);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
 
@@ -142,18 +140,8 @@ const MyPage = ({navigation: {navigate}}) => {
     }
   };
 
-  // 닉네임 변경 구현
-  // AsyncStorage.getItem('nickName', (err, nameResult) => {
-  // console.log(nameResult);
-  //   setNickName(JSON.parse(nameResult));
-  // });
-
-  AsyncStorage.getItem('jwt', (err, result) => {
-    setToken(JSON.parse(result));
-  });
-
   const handleChangeName = () => {
-    ChangeNameAPI(userName, token).then(response => {
+    ChangeNameAPI(userName).then(response => {
       if (response === true) {
         setCheckTextPass('사용 가능한 닉네임이에요!');
       } else if (response === false) {
