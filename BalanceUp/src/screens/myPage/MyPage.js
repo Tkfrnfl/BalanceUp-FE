@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 import {useRecoilState} from 'recoil';
 import {validateText} from '../../utils/regex';
-import {ChangeNameAPI} from '../../actions/checkNameAPI';
+import {ChangeNameAPI, duplicationCheckAPI} from '../../actions/checkNameAPI';
 import {MyBottomTab} from '../../screens/BottomTab/index';
 import {nickNameState} from '../../recoil/atom';
 
@@ -140,8 +140,8 @@ const MyPage = ({navigation: {navigate}}) => {
     }
   };
 
-  const handleChangeName = () => {
-    ChangeNameAPI(userName).then(response => {
+  const duplicationCheckName = () => {
+    duplicationCheckAPI(userName).then(response => {
       if (response === true) {
         setCheckTextPass('사용 가능한 닉네임이에요!');
       } else if (response === false) {
@@ -150,13 +150,15 @@ const MyPage = ({navigation: {navigate}}) => {
     });
   };
 
-  const goChange = () => {
-    setNickName(userName);
-    console.log(nickName);
-    setUserName('');
-    setCheckTextError('');
-    setCheckTextPass('');
-    setIsModalVisible(!isModalVisible);
+  const handleChangeName = () => {
+    ChangeNameAPI(userName).then(
+      setNickName(userName),
+      console.log(nickName),
+      setUserName(''),
+      setCheckTextError(''),
+      setCheckTextPass(''),
+      setIsModalVisible(!isModalVisible),
+    );
   };
 
   // 네이게이션 구현
@@ -293,7 +295,7 @@ const MyPage = ({navigation: {navigate}}) => {
                         {borderColor: checkTextPass ? '#CED6FF' : '#585FFF'},
                       ]}
                       activeOpacity={1.0}
-                      onPress={handleChangeName}
+                      onPress={duplicationCheckName}
                       disabled={checkDisabled}>
                       <Text
                         style={[
@@ -317,7 +319,7 @@ const MyPage = ({navigation: {navigate}}) => {
                     <TouchableOpacity
                       disabled={disabled}
                       activeOpacity={1.0}
-                      onPress={goChange}
+                      onPress={handleChangeName}
                       style={[
                         modalInnerStyles.saveBtn,
                         {backgroundColor: disabled ? '#CED6FF' : '#585FFF'},
