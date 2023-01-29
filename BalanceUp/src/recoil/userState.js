@@ -52,7 +52,7 @@ let routineStateDaysSet = selectorFamily({
           title: res[i].routineTitle,
           category: res[i].routineCategory,
           days: res[i].days,
-          alarm: res[i].alarm,
+          alarm: res[i].alarmTime,
           day: res[i].routineDays[j].day,
           completed: res[i].routineDays[j].completed,
         };

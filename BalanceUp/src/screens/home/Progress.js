@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
-import axios from 'axios';
+import axios from '../../utils/Client';
 import {
   StyleSheet,
   Text,
@@ -14,7 +14,7 @@ import {
   Pressable,
   ScrollView,
 } from 'react-native';
-import {useIsFocused} from '@react-navigation/native';
+import {useIsFocused, useRoute} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import commonStyles from '../../css/commonStyles';
 import modalInnerStyles from '../../css/modalStyles';
@@ -42,9 +42,11 @@ import {
   routineStateDays,
   routineStateDaysSet,
 } from '../../recoil/userState';
+import OverSvg from '../../resource/image/Common/overRoutine.svg';
 import {dateState} from '../../recoil/appState';
 
 const Progress = () => {
+  const route = useRoute();
   const [routines, setRoutines] = useState([]);
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useRecoilState(jwtState);
@@ -54,107 +56,84 @@ const Progress = () => {
   const [dateSelected, setDateState] = useRecoilState(dateState);
   const [todoList, setTodoList] = useState([]);
   const selectTodo = useRecoilValue(routineStateDaysSet(token));
-  const [todoTmp, setTodoTmp] = useState([
-    {
-      id: '1',
-      title: '운동하기',
-      completed: false,
-    },
-    {
-      id: '2',
-      title: '청소하기',
-      completed: false,
-    },
-    {
-      id: '3',
-      title: '공부하기',
-      completed: false,
-    },
-  ]);
+
   // const [nowdata, setNowdata] = useState();
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
   const [completeDay, setCompleteDayModalVisible] = useState(0);
   const [completeChangeModalVisible, setCompleteChangeModalVisible] =
     useState(false);
+  const [overRoutineModalVisible, setOverRoutineModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const isFocused = useIsFocused();
   const navigation = useNavigation();
 
-  // const fetchRoutineData = async () => {
-  //   await axios
-  //     .get(api + '/routines', {
-  //       headers: {
-  //         Authorization: token,
-  //       },
-  //     })
-  //     .then(response => {
-  //       setRoutines(response.data.body);
-  //       setLoading(false);
-  //       console.log(response.data.body);
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error.response.data);
-  //     });
-  // };
+  //날짜 선택시 루틴리스트 생성
+  const setRoutinesByDate = () => {
+    let tmp = [];
+    for (var i = 0; i < selectTodo.length; i++) {
+      if (selectTodo[i].day === dateSelected) {
+        let tmpSelected = JSON.parse(JSON.stringify(selectTodo[i]));
+        if (
+          selectTodo[i].category == '일상' &&
+          selectTodo[i].completed == true
+        ) {
+          tmpSelected.categoryImg = lifeGray;
+        } else if (
+          selectTodo[i].category == '일상' &&
+          selectTodo[i].completed == false
+        ) {
+          tmpSelected.categoryImg = life;
+        } else if (
+          selectTodo[i].category == '학습' &&
+          selectTodo[i].completed == true
+        ) {
+          tmpSelected.categoryImg = educationGray;
+        } else if (
+          selectTodo[i].category == '학습' &&
+          selectTodo[i].completed == false
+        ) {
+          tmpSelected.categoryImg = education;
+        } else if (
+          selectTodo[i].category == '마음관리' &&
+          selectTodo[i].completed == true
+        ) {
+          tmpSelected.categoryImg = mentalGray;
+        } else if (
+          selectTodo[i].category == '마음관리' &&
+          selectTodo[i].completed == false
+        ) {
+          tmpSelected.categoryImg = mental;
+        } else if (
+          selectTodo[i].category == '운동' &&
+          selectTodo[i].completed == true
+        ) {
+          tmpSelected.categoryImg = healthGray;
+        } else if (
+          selectTodo[i].category == '운동' &&
+          selectTodo[i].completed == false
+        ) {
+          tmpSelected.categoryImg = health;
+        }
+        tmp.push(tmpSelected);
+      }
+    }
+    setRoutines(tmp);
+  };
+  useEffect(() => {
+    setRoutinesByDate();
+  }, []);
 
   useEffect(() => {
-    // if (isFocused) fetchRoutineData();
-  }, [isFocused, loading]);
+    if (route.params != null) {
+      setOverRoutineModalVisible(!overRoutineModalVisible);
+      route.params = null;
+    }
+  }, [route]);
 
   useEffect(() => {
-    let tmpList = [];
-    //console.log(selectTodo);
-    // for (var i = 0; i < todoDays.length; i++) {
-    //   if (dateSelected === todoDays[i].date) {
-    //     //console.log(todoDays);
-    //     // tmpList = JSON.parse(JSON.stringify(todoList));
-    //     let tmpCategory;
-
-    //     // todolist에 따라 리스트 생성
-    //     if (todoDays[i].category == '일상') {
-    //       if (todoDays[i].completed) {
-    //         tmpCategory = lifeGray;
-    //       } else {
-    //         tmpCategory = life;
-    //       }
-    //     } else if (todoDays[i].category == '학습') {
-    //       if (todoDays[i].completed) {
-    //         tmpCategory = educationGray;
-    //       } else {
-    //         tmpCategory = education;
-    //       }
-    //     } else if (todoDays[i].category == '마음관리') {
-    //       if (todoDays[i].completed) {
-    //         tmpCategory = mentalGray;
-    //       } else {
-    //         tmpCategory = mental;
-    //       }
-    //     } else if (todoDays[i].category == '운동') {
-    //       if (todoDays[i].completed) {
-    //         tmpCategory = healthGray;
-    //       } else {
-    //         tmpCategory = health;
-    //       }
-    //     }
-
-    //     let tmpObj = {
-    //       category: tmpCategory,
-    //       routineCategory: todoDays[i].category,
-    //       complete: todoDays[i].completed,
-    //       date: todoDays[i].date,
-    //       days: todoDays[i].days,
-    //       id: todoDays[i].id,
-    //       title: todoDays[i].title,
-    //       alarm: todoDays[i].alarm,
-    //     };
-    //     tmpList.push(tmpObj);
-    //   }
-    // }
-    // console.log(tmpList);
-    setTodoList(tmpList);
+    setRoutinesByDate();
   }, [dateSelected]);
 
-  const setRoutinesByDate = () => {};
   const [completeChangeIndex, setCompleteChangeIndex] = useState(0);
   const [todoComplete, setTodoComplete] = useState([0.5, 1, 0.5, 1]);
   // 모달 기능 구현
@@ -195,18 +174,32 @@ const Progress = () => {
     closeBottomSheet.start(() => setCompleteModalVisible(false));
     closeBottomSheet.start(() => setCompleteChangeModalVisible(false));
     closeBottomSheet.start(() => setDeleteModalVisible(false));
+    closeBottomSheet.start(() => setOverRoutineModalVisible(false));
   };
 
   useEffect(() => {
     if (
       completeModalVisible ||
       completeChangeModalVisible ||
-      deleteModalVisible
+      deleteModalVisible ||
+      overRoutineModalVisible
     ) {
       resetBottomSheet.start();
     }
-  }, [completeModalVisible, completeChangeModalVisible, deleteModalVisible]);
+  }, [
+    completeModalVisible,
+    completeChangeModalVisible,
+    deleteModalVisible,
+    overRoutineModalVisible,
+  ]);
 
+  const setOpacity = value => {
+    if (value) {
+      return 1;
+    } else {
+      return 0.5;
+    }
+  };
   const checkComplete = index => {
     if (todoComplete[index] === 1) {
       setCompleteModalVisible(true);
@@ -267,12 +260,21 @@ const Progress = () => {
   };
 
   // 수정 기능 구현
-  const handleEdit = (routineId, routineCategory) => {
+  const handleEdit = (
+    routineId,
+    routineCategory,
+    routineTitle,
+    alarm,
+    days,
+  ) => {
     setRoutineId(routineId);
     setroutineCategory(routineCategory);
     navigation.navigate('Plan', {
       routineId: routineId,
       planText: routineCategory,
+      routineTitle: routineTitle,
+      days: days,
+      alarm: alarm,
     });
   };
 
@@ -285,25 +287,21 @@ const Progress = () => {
 
   return (
     <View>
-      {todoList.map((data, index) => (
+      {routines.map((data, index) => (
         <ScrollView
           key={data.routineId}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           style={styles.view2}>
-          <Image source={data.category} style={styles.img2_gray} />
-          {/* <Image
-            source={todoImg[index]}
-            style={img2(todoComplete[index]).bar}
-          /> */}
-          <View style={aimText1(data.completed).bar}>
-            <Text style={commonStyles.boldText}>{data.routineTitle}</Text>
-            <Text>
-              {data.routineCategory} | {data.days} {data.alarm}
+          <Image source={data.categoryImg} style={styles.img2_gray} />
+          <View style={aimText1(setOpacity(data.completed)).bar}>
+            <Text style={commonStyles.boldText}>{data.title}</Text>
+            <Text style={commonStyles.lightText}>
+              {data.category} | {data.days} {data.alarm}
             </Text>
           </View>
           <TouchableWithoutFeedback onPress={() => checkComplete(index)}>
-            <Svg height={80} style={svg2(todoComplete[index]).bar}>
+            <Svg height={80} style={svg2(setOpacity(data.completed)).bar}>
               <Rect
                 x={20}
                 y={20}
@@ -323,7 +321,15 @@ const Progress = () => {
             </Svg>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
-            onPress={() => handleEdit(data.routineId, data.routineCategory)}>
+            onPress={() =>
+              handleEdit(
+                data.routineId,
+                data.routineCategory,
+                data.routineTitle,
+                data.alarmTime,
+                data.days,
+              )
+            }>
             <Image source={edit} />
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
@@ -440,9 +446,50 @@ const Progress = () => {
               </TouchableWithoutFeedback>
             </Pressable>
           </Modal>
+
+          {/* 4개 루틴 생성 초과 모달 */}
+          <Modal
+            visible={overRoutineModalVisible}
+            animationType={'fade'}
+            transparent={true}
+            statusBarTranslucent={true}>
+            <Pressable style={modalInnerStyles.complteModalOverlay}>
+              <TouchableWithoutFeedback>
+                <Animated.View
+                  style={[
+                    {
+                      ...modalInnerStyles.centerSheetContainer,
+                    },
+                    {height: 270},
+                  ]}>
+                  <View style={{alignItems: 'center'}}>
+                    <OverSvg style={{bottom: 30}} />
+                    <Text style={modalInnerStyles.overText}>
+                      아쉽지만 진행 중인 루틴이
+                    </Text>
+                    <Text style={modalInnerStyles.overText}>
+                      4개를 초과할 수 없어요!
+                    </Text>
+                    <Text style={modalInnerStyles.overSubText}>
+                      많은 루틴보단 현재의 루틴에 집중해서
+                    </Text>
+                    <Text style={[modalInnerStyles.overSubText, {top: -2}]}>
+                      나만의 루틴을 만들어가는 건 어떨까요?
+                    </Text>
+                    <TouchableOpacity
+                      activeOpacity={1.0}
+                      style={modalInnerStyles.bntStyle}
+                      onPress={() => setOverRoutineModalVisible(false)}>
+                      <Text style={modalInnerStyles.btnText}>확인</Text>
+                    </TouchableOpacity>
+                  </View>
+                </Animated.View>
+              </TouchableWithoutFeedback>
+            </Pressable>
+          </Modal>
         </ScrollView>
       ))}
-      <View style={commonStyles.spacing2} />
+
       {/* 삭제 모달 구현 코드 */}
       <Modal
         visible={deleteModalVisible}
@@ -483,7 +530,7 @@ const Progress = () => {
                   style={modalInnerStyles.yesBtn}
                   activeOpacity={1.0}
                   onPress={() =>
-                    deleteRoutine(token, routineId).then(
+                    deleteRoutine(routineId).then(
                       setDeleteModalVisible(!deleteModalVisible),
                       setLoading(true),
                       console.log(routineId),
@@ -515,6 +562,7 @@ const aimText1 = x =>
       paddingRight: 100,
       paddingTop: 10,
       opacity: 0.5,
+      width:200
     },
   });
 
@@ -524,6 +572,7 @@ const svg2 = x =>
       width: 150,
       zIndex: 10,
       opacity: x,
+      marginLeft:-40
     },
   });
 
@@ -580,7 +629,6 @@ const styles = StyleSheet.create({
     height: 70,
     width: 70,
     tintColor: 'gray',
-    position: 'absolute',
   },
 });
 

@@ -1,50 +1,32 @@
-import axios from 'axios';
-import {api} from '../utils/Api';
+import axios from '../utils/Client';
 
-const createRoutine = async (
-  token,
-  todoText,
-  planText,
-  dayText,
-  alertHour,
-  alertMin,
-) => {
+const createRoutine = async (todoText, planText, dayText, time) => {
   let res;
   await axios
-    .post(
-      api + '/routine',
-      {
-        routineTitle: todoText,
-        routineCategory: planText,
-        days: dayText.join(''),
-        alarmTime: `${alertHour}:${alertMin}`,
-      },
-      {
-        headers: {
-          Authorization: token,
-        },
-      },
-    )
+    .post('/routine', {
+      routineTitle: todoText,
+      routineCategory: planText,
+      days: dayText.join(''),
+      alarmTime: time,
+    })
     .then(response => {
       console.log(response.data);
       res = response.data;
     })
     .catch(function (error) {
       console.log(error.response.data);
+      res = error.response.data.message;
     });
   return res;
 };
 
-const deleteRoutine = async (token, routineId) => {
+const deleteRoutine = async routineId => {
   let res;
   await axios
-    .delete(api + '/routine', {
+    .delete('/routine', {
       data: {
         routineId: routineId,
       },
-      headers: {
-        Authorization: token,
-      },
     })
     .then(response => {
       console.log(response.data);
@@ -56,30 +38,15 @@ const deleteRoutine = async (token, routineId) => {
   return res;
 };
 
-const modifyRoutine = async (
-  token,
-  routineId,
-  todoText,
-  dayText,
-  alertHour,
-  alertMin,
-) => {
+const modifyRoutine = async (routineId, todoText, days, time) => {
   let res;
   await axios
-    .put(
-      api + '/routine',
-      {
-        routineId: routineId,
-        routineTitle: todoText,
-        days: dayText.join(''),
-        alarmTime: `${alertHour}:${alertMin}`,
-      },
-      {
-        headers: {
-          Authorization: token,
-        },
-      },
-    )
+    .put('/routine', {
+      routineId: routineId,
+      routineTitle: todoText,
+      days: days,
+      alarmTime: time,
+    })
     .then(response => {
       console.log(response.data);
       res = response.data;
@@ -89,22 +56,19 @@ const modifyRoutine = async (
     });
   return res;
 };
-const getAllRoutine = async token => {
+
+const getAllRoutine = async () => {
   let res;
-  console.log(token);
   await axios
-    .get(api + '/routines', {
-      headers: {
-        Authorization: token,
-      },
-    })
+    .get('/routines')
     .then(response => {
       console.log(response.data);
       res = response.data;
     })
     .catch(function (error) {
-      console.log(error);
+      console.log(error.response.data);
     });
   return res;
 };
+
 export {createRoutine, deleteRoutine, modifyRoutine, getAllRoutine};

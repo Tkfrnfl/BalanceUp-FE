@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   },
   agreeText: {
     fontSize: 14,
-    fontFamily: 'Pretendard-Regular',
+    fontFamily: 'Pretendard-Light',
     color: '#232323',
   },
   sheet: {
