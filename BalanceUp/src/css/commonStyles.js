@@ -18,6 +18,11 @@ const commonStyles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
     color: '#232323',
   },
+  boldText_: {
+    fontSize: 20,
+    fontFamily: 'Pretendard-Bold',
+    color: '#232323',
+  },
   lightText: {
     fontSize: 14,
     fontFamily: 'Pretendard-Light',

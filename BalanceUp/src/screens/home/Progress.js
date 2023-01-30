@@ -1,5 +1,4 @@
 import React, {useState, useRef, useEffect} from 'react';
-import axios from '../../utils/Client';
 import {
   StyleSheet,
   Text,
@@ -14,7 +13,7 @@ import {
   Pressable,
   ScrollView,
 } from 'react-native';
-import {useIsFocused, useRoute} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import commonStyles from '../../css/commonStyles';
 import modalInnerStyles from '../../css/modalStyles';
@@ -31,10 +30,7 @@ import oneDay from '../../resource/image/Modal/Crystal.png';
 import twoWeeks from '../../resource/image/Modal/10routine.png';
 import edit from '../../resource/image/Main/edit.png';
 import delete2 from '../../resource/image/Main/delete.png';
-import {api} from '../../utils/Api';
-import {jwtState} from '../../recoil/atom';
 import {useRecoilState, useRecoilValue} from 'recoil';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {deleteRoutine} from '../../actions/routineAPI';
 import {
   routineState,
@@ -49,13 +45,12 @@ const Progress = () => {
   const route = useRoute();
   const [routines, setRoutines] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [token, setToken] = useRecoilState(jwtState);
   const [routineId, setRoutineId] = useState();
   const [routineCategory, setroutineCategory] = useState();
   const [todoDays, setTodoDays] = useRecoilState(routineStateDays);
   const [dateSelected, setDateState] = useRecoilState(dateState);
   const [todoList, setTodoList] = useState([]);
-  const selectTodo = useRecoilValue(routineStateDaysSet(token));
+  const selectTodo = useRecoilValue(routineStateDaysSet());
 
   // const [nowdata, setNowdata] = useState();
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
@@ -64,7 +59,6 @@ const Progress = () => {
     useState(false);
   const [overRoutineModalVisible, setOverRoutineModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const isFocused = useIsFocused();
   const navigation = useNavigation();
 
   //날짜 선택시 루틴리스트 생성
@@ -119,8 +113,10 @@ const Progress = () => {
     }
     setRoutines(tmp);
   };
+
   useEffect(() => {
     setRoutinesByDate();
+    console.log(routines);
   }, []);
 
   useEffect(() => {
@@ -136,6 +132,7 @@ const Progress = () => {
 
   const [completeChangeIndex, setCompleteChangeIndex] = useState(0);
   const [todoComplete, setTodoComplete] = useState([0.5, 1, 0.5, 1]);
+
   // 모달 기능 구현
   const screenHeight = Dimensions.get('screen').height;
 
@@ -295,9 +292,9 @@ const Progress = () => {
           style={styles.view2}>
           <Image source={data.categoryImg} style={styles.img2_gray} />
           <View style={aimText1(setOpacity(data.completed)).bar}>
-            <Text style={commonStyles.boldText}>{data.title}</Text>
+            <Text style={commonStyles.boldText}>{data.routineTitle}</Text>
             <Text style={commonStyles.lightText}>
-              {data.category} | {data.days} {data.alarm}
+              {data.routineCategory} | {data.days} {data.alarmTime}
             </Text>
           </View>
           <TouchableWithoutFeedback onPress={() => checkComplete(index)}>
@@ -562,7 +559,7 @@ const aimText1 = x =>
       paddingRight: 100,
       paddingTop: 10,
       opacity: 0.5,
-      width:200
+      width: 200,
     },
   });
 
@@ -572,7 +569,7 @@ const svg2 = x =>
       width: 150,
       zIndex: 10,
       opacity: x,
-      marginLeft:-40
+      marginLeft: -40,
     },
   });
 

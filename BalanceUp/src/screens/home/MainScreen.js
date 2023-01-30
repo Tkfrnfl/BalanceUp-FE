@@ -35,18 +35,10 @@ import {
 import {Shadow} from 'react-native-shadow-2';
 import {HomeBottomTab} from '../BottomTab';
 import {Progress as ProgressComponent} from './Progress';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useRecoilState, useRecoilValue} from 'recoil';
-import {nickNameState} from '../../recoil/atom';
-import {jwtState} from '../../recoil/atom';
+import {nickNameState, userRpState} from '../../recoil/atom';
 import {dateState} from '../../recoil/appState';
-import {
-  routineState,
-  routineStateComplete,
-  routineStateDays,
-  routineStateDaysSet,
-} from '../../recoil/userState';
-
+import {routineStateDaysSet} from '../../recoil/userState';
 import {getAllRoutine} from '../../actions/routineAPI';
 
 LocaleConfig.locales.fr = {
@@ -92,11 +84,12 @@ const MainScreen = ({navigation: {navigate}}) => {
   const todo = ['일상', '학습', '마음관리', '운동'];
   const todoImg = [life, education, mental, health];
   const todoImgGray = [lifeGray, educationGray, mentalGray, healthGray];
-  const todoTmp = ['item1', 'item2', 'item3'];
-  const todoTmpSub = ['itemSub1', 'itemSub2', 'itemSub3'];
   const todoComplete = [0.5, 1, 0.5, 1];
   const [nickName, setNickName] = useRecoilState(nickNameState);
-  const [token, setToken] = useRecoilState(jwtState);
+  const [userRp, setUserRp] = useRecoilState(userRpState);
+  const [userLevel, setUserLevel] = useState('');
+  const [upRp, setUpRp] = useState('');
+  const [nextLevel, setNextLevel] = useState('');
   const [tmpRoutine, setTmpRoutine] = useState();
   const [tmp, setTmp] = useState(0);
   const [todoTotal, setTodoTotal] = useState([0, 0, 0, 0]);
@@ -105,7 +98,7 @@ const MainScreen = ({navigation: {navigate}}) => {
   const [routineDays, setRoutineDays] = useState({});
   const [checkedDateColor, setCheckedDateColor] = useState('#FFFFFF');
   const [checkedDate, setCheckedDate] = useState();
-  const selectTodo = useRecoilValue(routineStateDaysSet(token));
+  const selectTodo = useRecoilValue(routineStateDaysSet());
 
   const fomatToday =
     year.toString() + '-' + month.toString() + '-' + date.toString();
@@ -117,7 +110,53 @@ const MainScreen = ({navigation: {navigate}}) => {
   const [completeDay, setCompleteDayModalVisible] = useState(0);
   const [completeChangeModalVisible, setCompleteChangeModalVisible] =
     useState(false);
-  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+
+  const fetchUserData = async () => {
+    const request = await axios.get('/user');
+    setNickName(request.data.body.nickname);
+    setUserRp(request.data.body.rp);
+  };
+
+  useEffect(() => {
+    fetchUserData();
+    if (userRp === null || userRp <= 19) {
+      setUserLevel('레벨 1');
+      setUpRp('20RP');
+      setNextLevel('Lv.2');
+    } else if (userRp >= 20 && userRp <= 39) {
+      setUserLevel('레벨 2');
+    }
+    // 임시
+    // } else if (userRp >= 20 && userRp <= 39) {
+    //   setUserLevel('레벨 3');
+    // } else if (userRp >= 20 && userRp <= 39) {
+    //   setUserLevel('레벨 4');
+    // } else if (userRp >= 20 && userRp <= 39) {
+    //   setUserLevel('레벨 5');
+    // } else if (userRp >= 20 && userRp <= 39) {
+    //   setUserLevel('레벨 6');
+    // } else if (userRp >= 20 && userRp <= 39) {
+    //   setUserLevel('레벨 7');
+    // } else if (userRp >= 20 && userRp <= 39) {
+    //   setUserLevel('레벨 8');
+    // } else if (userRp >= 20 && userRp <= 39) {
+    //   setUserLevel('레벨 9');
+    // } else if (userRp >= 20 && userRp <= 39) {
+    //   setUserLevel('레벨 10');
+    // } else if (userRp >= 20 && userRp <= 39) {
+    //   setUserLevel('레벨 11');
+    // } else if (userRp >= 20 && userRp <= 39) {
+    //   setUserLevel('레벨 12');
+    // } else if (userRp >= 20 && userRp <= 39) {
+    //   setUserLevel('레벨 13');
+    // } else if (userRp >= 20 && userRp <= 39) {
+    //   setUserLevel('레벨 14');
+    // } else if (userRp >= 20 && userRp <= 39) {
+    //   setUserLevel('레벨 15');
+    // } else if (userRp >= 20 && userRp <= 39) {
+    //   setUserLevel('레벨 16');
+    // }
+  }, []);
 
   // const markedDates = posts.reduce((acc, current) => {
   //   const formattedDate = format(new Date(current.date), 'yyyy-MM-dd');
@@ -270,16 +309,6 @@ const MainScreen = ({navigation: {navigate}}) => {
     // 루틴 날짜별 정리
   };
 
-  const fetchUserData = async () => {
-    const request = await axios.get('/user');
-    setNickName(request.data.body.nickname);
-    // rp 받아오기 ()
-  };
-
-  useEffect(() => {
-    fetchUserData();
-  }, []);
-
   useEffect(() => {
     asyncGetAll();
     setCheckValue();
@@ -294,23 +323,25 @@ const MainScreen = ({navigation: {navigate}}) => {
       <ScrollView style={styles.scrollview}>
         <View style={styles.titleWrapper}>
           <View style={commonStyles.spacing2} />
-          <Text style={styles.mainText}>{nickName}님은</Text>
+          <Text style={styles.nameText}>{nickName}님은</Text>
           <View style={commonStyles.row}>
-            <Text style={styles.mainText6}>레벨 ?</Text>
-            <Text style={styles.mainText}> 만큼 성장했어요</Text>
+            <Text style={styles.nextLevelText}>{userLevel}</Text>
+            <Text style={styles.nameText}> 만큼 성장했어요</Text>
           </View>
-          <Text style={styles.mainText7}>?RP 달성시, LV.? 레벨 업!</Text>
+          <Text style={styles.upText}>
+            {upRp} 달성시, {nextLevel} 레벨 업!
+          </Text>
 
-          <Image source={lv1} style={styles.img3} />
+          <Image source={lv1} style={styles.gifImg} />
           <TouchableOpacity
             activeOpacity={1.0}
             onPress={() => {
               navigate('Guide');
             }}>
-            <Text style={styles.mainText8}>키움 성장 가이드</Text>
+            <Text style={styles.guideText}>키움 성장 가이드</Text>
           </TouchableOpacity>
 
-          <Shadow distance={10} startColor={'#F1F1F1'}>
+          <Shadow distance={5} startColor={'#f4f4f4'}>
             <Svg height={100} width={350} styles={[]}>
               <Rect
                 x={0}
@@ -361,7 +392,6 @@ const MainScreen = ({navigation: {navigate}}) => {
                 fontWeight={600}>
                 20
               </SvgText>
-
               <Progress.Bar
                 progress={0.3}
                 width={300}
@@ -382,12 +412,12 @@ const MainScreen = ({navigation: {navigate}}) => {
         </View>
         <View style={commonStyles.spacing2} />
         <View>
-          <Text style={[commonStyles.boldText, styles.centering]}>
+          <Text style={[commonStyles.boldText_, styles.centering]}>
             완료하지 않은 루틴이 있어요!
           </Text>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {todo.map((value, index) => (
-              <View key={value.id}>
+            {todo.map(index => (
+              <View key={index}>
                 <View style={styles.view1}>
                   {todoCompleted[index] === todoTotal[index] ? (
                     <View>
@@ -421,13 +451,18 @@ const MainScreen = ({navigation: {navigate}}) => {
         <View style={commonStyles.spacing2} />
         <View style={[commonStyles.row]}>
           <Text
-            style={[commonStyles.boldText, styles.centering, styles.mainText4]}>
+            style={[
+              commonStyles.boldText_,
+              styles.centering,
+              styles.mainText4,
+            ]}>
             이번 주 루틴 기록이에요
           </Text>
           <TouchableOpacity
-            style={styles.button2}
+            style={styles.showAllBtn}
+            activeOpacity={1.0}
             onPress={() => navigate('LookAll')}>
-            <Text> &nbsp; 전체보기 &nbsp;</Text>
+            <Text style={styles.btnText}> &nbsp; 전체보기 &nbsp;</Text>
           </TouchableOpacity>
         </View>
         <CalendarProvider date={fomatToday}>
@@ -495,36 +530,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#FAFBFF',
   },
-  title2: {
-    fontSize: 40,
-  },
-  guideText: {
-    width: 81,
-    fontSize: 12,
-    color: '#888888',
-    marginLeft: 295,
-    borderBottomWidth: 1,
-    borderBottomColor: '#888888',
-    fontFamily: 'Pretendard-Medium',
-  },
-
-  button: {
-    width: '70%',
-    height: 50,
-    alignItems: 'center',
-    borderRadius: 15,
-    borderWidth: 2,
-    padding: 10,
-  },
-  button2: {
-    paddingTop: 5,
+  showAllBtn: {
+    left: 35,
+    width: 65,
+    paddingTop: 3,
     borderColor: '#EBEBEB',
     borderWidth: 1,
     borderRadius: 5,
-    height: 30,
+    height: 25,
   },
-  buttonText: {
-    fontSize: 25,
+  btnText: {
+    fontSize: 12,
+    textAlign: 'center',
+    color: '#888888',
+    fontFamily: 'Pretendard-Medium',
   },
   scrollview: {
     width: '100%',
@@ -534,23 +553,23 @@ const styles = StyleSheet.create({
     paddingRight: 100,
     paddingTop: 10,
   },
-  mainText: {
+  nameText: {
     fontSize: 22,
     color: '#232323',
     fontFamily: 'Pretendard-Bold',
   },
-  mainText6: {
+  nextLevelText: {
     fontSize: 22,
     color: '#585FFF',
     fontFamily: 'Pretendard-Bold',
   },
-  mainText7: {
+  upText: {
     fontSize: 12,
     color: '#232323',
     fontFamily: 'Pretendard-Medium',
     marginTop: 8,
   },
-  mainText8: {
+  guideText: {
     fontSize: 12,
     color: '#888888',
     fontFamily: 'Pretendard-Medium',
@@ -559,23 +578,10 @@ const styles = StyleSheet.create({
     marginRight: -170,
     marginBottom: 20,
   },
-  mainText2: {
-    fontSize: 20,
-    color: 'black',
-    zIndex: 30,
-  },
-  mainText3: {
-    paddingLeft: 80,
-    paddingTop: 5,
-  },
   mainText4: {
     paddingRight: 60,
   },
   mainText9: {
-    color: 'white',
-    fontWeight: '600',
-  },
-  mainText12: {
     color: 'white',
     fontWeight: '600',
   },
@@ -608,40 +614,16 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     color: '#232323',
   },
-  img1: {
+  gifImg: {
+    marginTop: -25,
     marginBottom: -30,
-    paddingLeft: 15,
-    zIndex: 10,
-  },
-  img2_gray: {
     resizeMode: 'stretch',
-    height: 70,
-    width: 70,
-    tintColor: 'gray',
-    position: 'absolute',
-  },
-  img3: {
-    resizeMode: 'stretch',
-    height: 350,
+    height: 360,
     width: 350,
-  },
-  svg1: {
-    width: 100,
-  },
-  svg2: {
-    width: 150,
-    zIndex: 10,
-  },
-  svg3: {
-    marginLeft: 50,
   },
   bar1: {
     marginTop: 50,
     marginLeft: 25,
-  },
-  bar2: {
-    marginLeft: 25,
-    marginTop: -10,
   },
   img4: {
     width: 90,

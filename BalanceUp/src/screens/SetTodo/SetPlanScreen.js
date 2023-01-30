@@ -68,7 +68,6 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const [dayText, setDayText] = useState('');
   const dayBy = ['월', '화', '수', '목', '금', '토', '일'];
 
-  const [toast, setToast] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [clearModalVisible, setClearModalVisible] = useState(false);
 
@@ -258,8 +257,8 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
       res =>
         res === '루틴 갯수는 4개를 초과할 수 없습니다.'
           ? (setClearModalVisible(false),
-            navigate('LookAll', {overRoutine: 'over'}))
-          : (setClearModalVisible(false), navigate('LookAll')),
+            navigate('Main', {overRoutine: 'over'}))
+          : (setClearModalVisible(false), navigate('Main')),
       //notify()
     );
   };
@@ -268,7 +267,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const handleEdit = () => {
     modifyRoutine(routineId, todoText, days, time).then(
       setClearModalVisible(false),
-      navigate('LookAll'),
+      navigate('Main'),
     );
     // notify();
   };
@@ -309,7 +308,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
         {isEditing ? (
           <TouchableOpacity
             activeOpacity={1.0}
-            onPress={() => navigate('LookAll')}>
+            onPress={() => navigate('Main')}>
             <BackArrow style={styles.arrowBtn} />
           </TouchableOpacity>
         ) : (
