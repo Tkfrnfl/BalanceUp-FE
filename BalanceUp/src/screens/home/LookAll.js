@@ -1,62 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  ScrollView,
-  useWindowDimensions,
-  Image,
-} from 'react-native';
+import {StyleSheet, Text, View, SafeAreaView, ScrollView} from 'react-native';
 // import WeekCalendar from '../../components/WeekCalendar';
 // import WeekCalendar from 'react-native-calendars';
-import {MarkingProps} from '../../utils/MarkingProps';
-import moment from 'moment';
-import {WithLocalSvg} from 'react-native-svg';
-import {format} from 'date-fns';
 import commonStyles from '../../css/commonStyles';
 
 import {useRecoilState, useRecoilValue} from 'recoil';
-import {jwtState} from '../../recoil/atom';
 import {dateState} from '../../recoil/appState';
-import {
-  routineState,
-  routineStateComplete,
-  routineStateDays,
-  routineStateDaysSet,
-} from '../../recoil/userState';
-// import * as Progress from 'react-native-progress';
-import Svg, {
-  Circle,
-  Ellipse,
-  G,
-  TSpan,
-  TextPath,
-  Path,
-  Polygon,
-  Polyline,
-  Line,
-  Text as SvgText,
-  Rect,
-  Use,
-  Symbol,
-  Defs,
-  LinearGradient,
-  RadialGradient,
-  Stop,
-  ClipPath,
-  Pattern,
-  Mask,
-} from 'react-native-svg';
-import {
-  Calendar,
-  CalendarList,
-  Agenda,
-  LocaleConfig,
-  ExpandableCalendar,
-  CalendarProvider,
-} from 'react-native-calendars';
-
+import {routineStateDaysSet} from '../../recoil/userState';
+import Svg, {Text as SvgText} from 'react-native-svg';
+import {Calendar, LocaleConfig} from 'react-native-calendars';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import {Progress} from './Progress';
 import Complete from './Complete';
@@ -64,8 +16,8 @@ import {CheckBottomTab} from '../BottomTab';
 import {Shadow} from 'react-native-shadow-2';
 import * as ProgressLib from 'react-native-progress';
 
-import arrow2 from '../../resource/image/Main/arrow2.png';
-import arrow3 from '../../resource/image/Main/arrow3.png';
+import LettArrow from '../../resource/image/Main/left.svg';
+import RightArrow from '../../resource/image/Main/right.svg';
 
 LocaleConfig.locales.fr = {
   monthNames: [
@@ -118,9 +70,10 @@ const LookAll = ({navigation: {navigate}}) => {
     {key: 'second', title: '통계'},
   ]);
 
+  const selectTodo = useRecoilValue(routineStateDaysSet());
   const [selectedDate, setSelectedDate] = useState();
-  const [token, setToken] = useRecoilState(jwtState);
-  const selectTodo = useRecoilValue(routineStateDaysSet(token));
+  const [completeLength, setCompleteLength] = useState([]);
+  const [routineProgress, setRoutineProgress] = useState(0.3);
   const [checkedDateColor, setCheckedDateColor] = useState('#FFFFFF');
   const [checkedDate, setCheckedDate] = useState();
   const [routineDays, setRoutineDays] = useState({});
@@ -162,9 +115,9 @@ const LookAll = ({navigation: {navigate}}) => {
         };
       }
     }
-
     setRoutineDays(tmpObj);
   };
+
   // 날짜 누를시 선택날짜 색변화
   const checkSelectedDate = date => {
     setDateState(date);
@@ -197,13 +150,18 @@ const LookAll = ({navigation: {navigate}}) => {
 
   useEffect(() => {
     setCheckValue();
-
     setCheckedDate(tmpToday);
-  }, []);
 
-  const fomatToday =
-    year.toString() + '-' + month.toString() + '-' + date.toString();
-  const onclick = () => {};
+    // 루틴 진행률 구현
+    let completeArr = [];
+    for (let i = 0; i < selectTodo.length; i++) {
+      completeArr.push(selectTodo[i].completed);
+    }
+    console.log('완료 횟수: ', completeLength);
+    console.log('루틴 전체 갯수 : ', completeArr.length);
+    setCompleteLength(completeArr.filter(prev => prev === true).length);
+    setRoutineProgress((completeLength / completeArr.length).toFixed(2));
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -216,9 +174,9 @@ const LookAll = ({navigation: {navigate}}) => {
               monthFormat={'MM월'}
               renderArrow={direction => {
                 if (direction === 'left') {
-                  return <Image source={arrow2} />;
+                  return <LettArrow style={{right: 25}} />;
                 } else {
-                  return <Image source={arrow3} />;
+                  return <RightArrow style={{left: 25}} />;
                 }
               }}
               style={styles.calView}
@@ -226,11 +184,15 @@ const LookAll = ({navigation: {navigate}}) => {
               markedDates={routineDays}
               theme={{
                 agendaTodayColor: '#FF7391',
-                arrowColor: 'black',
                 textMonthFontWeight: '800',
                 selectedDayBackgroundColor: '#585FFF',
-                // dotColor: '#585FFF',
                 todayTextColor: '#009688',
+                textMonthFontFamily: 'Pretendard-Bold',
+                textDayFontFamily: 'Pretendard-Medium',
+                textDayHeaderFontFamily: 'Pretendard-Medium',
+                textDayHeaderFontSize: 14,
+                textDayFontSize: 14,
+                textMonthFontSize: 16,
                 'stylesheet.calendar.header': {
                   header: {
                     flexDirection: 'row',
@@ -262,17 +224,17 @@ const LookAll = ({navigation: {navigate}}) => {
               </SvgText>
               <SvgText
                 x="295"
-                y="30"
+                y="28"
                 text-anchor="middle"
                 fill="#585FFF"
                 style={styles.percentageText}>
-                50%
+                {`${Math.floor(routineProgress * 100)}%`}
               </SvgText>
               <View style={styles.progressBar}>
                 <ProgressLib.Bar
-                  progress={0.5}
+                  progress={routineProgress.toString()}
                   // 진행 루틴 Null = 0% 표시
-                  // 루틴 완료 횟수 총합 / 전체 루틴 갯수의 진행 총합 * 100
+                  // completed true 총합 / selectTodo.length = 결과값.toFixed(2)
                   width={300}
                   height={12}
                   color="#585FFF"
