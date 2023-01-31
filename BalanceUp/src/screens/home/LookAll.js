@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View, SafeAreaView, ScrollView} from 'react-native';
+import {StyleSheet, View, SafeAreaView, ScrollView} from 'react-native';
 // import WeekCalendar from '../../components/WeekCalendar';
 // import WeekCalendar from 'react-native-calendars';
 import commonStyles from '../../css/commonStyles';
@@ -65,6 +65,7 @@ const renderScene = SceneMap({
 
 const LookAll = ({navigation: {navigate}}) => {
   const [index, setIndex] = React.useState(0);
+  console.log(index);
   const [routes] = React.useState([
     {key: 'first', title: '루틴'},
     {key: 'second', title: '통계'},
@@ -72,7 +73,6 @@ const LookAll = ({navigation: {navigate}}) => {
 
   const selectTodo = useRecoilValue(routineStateDaysSet());
   const [selectedDate, setSelectedDate] = useState();
-  const [completeLength, setCompleteLength] = useState([]);
   const [routineProgress, setRoutineProgress] = useState(0.3);
   const [checkedDateColor, setCheckedDateColor] = useState('#FFFFFF');
   const [checkedDate, setCheckedDate] = useState();
@@ -157,10 +157,16 @@ const LookAll = ({navigation: {navigate}}) => {
     for (let i = 0; i < selectTodo.length; i++) {
       completeArr.push(selectTodo[i].completed);
     }
-    console.log('완료 횟수: ', completeLength);
+    console.log(
+      '완료 횟수: ',
+      completeArr.filter(prev => prev === true).length,
+    );
     console.log('루틴 전체 갯수 : ', completeArr.length);
-    setCompleteLength(completeArr.filter(prev => prev === true).length);
-    setRoutineProgress((completeLength / completeArr.length).toFixed(2));
+    setRoutineProgress(
+      (
+        completeArr.filter(prev => prev === true).length / completeArr.length
+      ).toFixed(2),
+    );
   }, []);
 
   return (
@@ -232,7 +238,7 @@ const LookAll = ({navigation: {navigate}}) => {
               </SvgText>
               <View style={styles.progressBar}>
                 <ProgressLib.Bar
-                  progress={routineProgress.toString()}
+                  progress={parseInt(routineProgress)}
                   // 진행 루틴 Null = 0% 표시
                   // completed true 총합 / selectTodo.length = 결과값.toFixed(2)
                   width={300}
@@ -306,6 +312,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   tabview: {
+    backgroundColor: '#ffffff',
     height: 570,
     width: '100%',
   },
@@ -313,18 +320,25 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
     fontSize: 16,
     top: 18,
+    left: 3,
   },
   indicatorStyle: {
     borderColor: '#585FFF',
     width: 160,
     alignItems: 'center',
+    marginVertical: -3,
     marginHorizontal: 20,
     borderWidth: 1.5,
+    zIndex: 10,
   },
   tabBar: {
     backgroundColor: '#ffffff',
     shadowColor: 'transparent',
+    borderBottomColor: '#F8F8F9',
+    borderBottomWidth: 3,
+    zIndex: 1,
     shadowOpacity: 0,
+    marginBottom: 10,
   },
   calView: {
     width: 350,

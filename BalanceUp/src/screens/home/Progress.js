@@ -68,42 +68,42 @@ const Progress = () => {
       if (selectTodo[i].day === dateSelected) {
         let tmpSelected = JSON.parse(JSON.stringify(selectTodo[i]));
         if (
-          selectTodo[i].category == '일상' &&
+          selectTodo[i].routineCategory == '일상' &&
           selectTodo[i].completed == true
         ) {
           tmpSelected.categoryImg = lifeGray;
         } else if (
-          selectTodo[i].category == '일상' &&
+          selectTodo[i].routineCategory == '일상' &&
           selectTodo[i].completed == false
         ) {
           tmpSelected.categoryImg = life;
         } else if (
-          selectTodo[i].category == '학습' &&
+          selectTodo[i].routineCategory == '학습' &&
           selectTodo[i].completed == true
         ) {
           tmpSelected.categoryImg = educationGray;
         } else if (
-          selectTodo[i].category == '학습' &&
+          selectTodo[i].routineCategory == '학습' &&
           selectTodo[i].completed == false
         ) {
           tmpSelected.categoryImg = education;
         } else if (
-          selectTodo[i].category == '마음관리' &&
+          selectTodo[i].routineCategory == '마음관리' &&
           selectTodo[i].completed == true
         ) {
           tmpSelected.categoryImg = mentalGray;
         } else if (
-          selectTodo[i].category == '마음관리' &&
+          selectTodo[i].routineCategory == '마음관리' &&
           selectTodo[i].completed == false
         ) {
           tmpSelected.categoryImg = mental;
         } else if (
-          selectTodo[i].category == '운동' &&
+          selectTodo[i].routineCategory == '운동' &&
           selectTodo[i].completed == true
         ) {
           tmpSelected.categoryImg = healthGray;
         } else if (
-          selectTodo[i].category == '운동' &&
+          selectTodo[i].routineCategory == '운동' &&
           selectTodo[i].completed == false
         ) {
           tmpSelected.categoryImg = health;
@@ -289,7 +289,7 @@ const Progress = () => {
           key={data.routineId}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          style={styles.view2}>
+          style={styles.routineSheet}>
           <Image source={data.categoryImg} style={styles.img2_gray} />
           <View style={aimText1(setOpacity(data.completed)).bar}>
             <Text style={commonStyles.boldText}>{data.routineTitle}</Text>
@@ -307,12 +307,7 @@ const Progress = () => {
                 rx="18"
                 fill="#585FFF"
               />
-              <SvgText
-                x={37}
-                y={40}
-                style={styles.mainText12}
-                fill="white"
-                fontWeight={600}>
+              <SvgText x={38} y={42} style={styles.completeText} fill="white">
                 완료
               </SvgText>
             </Svg>
@@ -555,9 +550,8 @@ const img2 = x =>
 const aimText1 = x =>
   StyleSheet.create({
     bar: {
-      paddingLeft: 20,
-      paddingRight: 100,
-      paddingTop: 10,
+      paddingLeft: 10,
+      paddingTop: 16,
       opacity: 0.5,
       width: 200,
     },
@@ -566,8 +560,8 @@ const aimText1 = x =>
 const svg2 = x =>
   StyleSheet.create({
     bar: {
-      width: 150,
-      zIndex: 10,
+      width: 120,
+      height: 200,
       opacity: x,
       marginLeft: -40,
     },
@@ -600,6 +594,10 @@ const styles = StyleSheet.create({
     paddingLeft: 50,
     paddingRight: 100,
   },
+  completeText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 13,
+  },
   progressBar: {
     paddingLeft: 50,
     paddingTop: 35,
@@ -608,24 +606,21 @@ const styles = StyleSheet.create({
     width: 170,
     height: 110,
   },
-  view2: {
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 20},
-    shadowOpacity: 0.5,
-    shadowRadius: 30,
-    elevation: 7, // changed to a greater value
-    borderColor: 'black',
-    zIndex: 99, // added zIndex
-    backgroundColor: 'white', // added a background color
+  routineSheet: {
+    width: 353,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#c5c5c5',
+    elevation: 15,
+    borderRadius: 5,
     marginTop: 20,
-    paddingTop: 10,
-    marginLeft: 15,
+    marginLeft: 20,
   },
   img2_gray: {
     resizeMode: 'stretch',
+    tintColor: 'gray',
+    marginLeft: 10,
     height: 70,
     width: 70,
-    tintColor: 'gray',
   },
 });
 
