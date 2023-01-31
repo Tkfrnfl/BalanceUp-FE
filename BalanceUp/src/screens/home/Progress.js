@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useCallback} from 'react';
 import axios from '../../utils/Client';
 import {
   StyleSheet,
@@ -13,6 +13,7 @@ import {
   Modal,
   Pressable,
   ScrollView,
+  Alert,
 } from 'react-native';
 import {useIsFocused, useRoute} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
@@ -33,17 +34,24 @@ import edit from '../../resource/image/Main/edit.png';
 import delete2 from '../../resource/image/Main/delete.png';
 import {api} from '../../utils/Api';
 import {jwtState} from '../../recoil/atom';
-import {useRecoilState, useRecoilValue} from 'recoil';
+import {useRecoilState, useRecoilValue, useRecoilCallback} from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {deleteRoutine} from '../../actions/routineAPI';
+import Toast from 'react-native-easy-toast';
+import {
+  deleteRoutine,
+  progressOneRoutine,
+  progressAllRoutine,
+  cancelOneRoutine,
+} from '../../actions/routineAPI';
 import {
   routineState,
   routineStateComplete,
   routineStateDays,
   routineStateDaysSet,
+  useRefreshRoutine,
 } from '../../recoil/userState';
 import OverSvg from '../../resource/image/Common/overRoutine.svg';
-import {dateState} from '../../recoil/appState';
+import {dateState, routineStateNum} from '../../recoil/appState';
 
 const Progress = () => {
   const route = useRoute();
@@ -55,11 +63,12 @@ const Progress = () => {
   const [todoDays, setTodoDays] = useRecoilState(routineStateDays);
   const [dateSelected, setDateState] = useRecoilState(dateState);
   const [todoList, setTodoList] = useState([]);
-  const selectTodo = useRecoilValue(routineStateDaysSet(token));
+  const selectTodo = useRecoilValue(routineStateDaysSet(token, 0));
+  const [routineRefresh, setRoutineStateNum] = useRecoilState(routineStateNum);
 
   // const [nowdata, setNowdata] = useState();
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
-  const [completeDay, setCompleteDayModalVisible] = useState(0);
+  const [completeDay, setCompleteDayNum] = useState(0);
   const [completeChangeModalVisible, setCompleteChangeModalVisible] =
     useState(false);
   const [overRoutineModalVisible, setOverRoutineModalVisible] = useState(false);
@@ -67,7 +76,15 @@ const Progress = () => {
   const isFocused = useIsFocused();
   const navigation = useNavigation();
 
-  //날짜 선택시 루틴리스트 생성
+  let today = new Date();
+  let year = today.getFullYear(); // 년도
+  let month = today.getMonth() + 1; // 월
+  let date = today.getDate(); // 날짜
+  let tmpMonth = ('0' + month).slice(-2); // 오늘 제외
+  let tmpDate = ('0' + date).slice(-2);
+  let tmpToday = year + '-' + tmpMonth + '-' + tmpDate;
+
+  // 날짜 선택시 루틴리스트 생성
   const setRoutinesByDate = () => {
     let tmp = [];
     for (var i = 0; i < selectTodo.length; i++) {
@@ -132,9 +149,10 @@ const Progress = () => {
 
   useEffect(() => {
     setRoutinesByDate();
-  }, [dateSelected]);
+    console.log(selectTodo);
+  }, [dateSelected, selectTodo]);
 
-  const [completeChangeIndex, setCompleteChangeIndex] = useState(0);
+  const [chosenIndex, setChosenIndex] = useState(0);
   const [todoComplete, setTodoComplete] = useState([0.5, 1, 0.5, 1]);
   // 모달 기능 구현
   const screenHeight = Dimensions.get('screen').height;
@@ -195,70 +213,89 @@ const Progress = () => {
 
   const setOpacity = value => {
     if (value) {
-      return 1;
-    } else {
       return 0.5;
-    }
-  };
-  const checkComplete = index => {
-    if (todoComplete[index] === 1) {
-      setCompleteModalVisible(true);
-      let tmp = todoComplete;
-      tmp[index] = 0.5;
-      console.log(tmp);
-      setTodoComplete(tmp);
-      setCompleteDayModalVisible(2); // 1일시 하루, 아닐시 2주 모달 띄움
     } else {
-      setCompleteChangeModalVisible(true);
-      setCompleteChangeIndex(index);
+      return 1;
     }
   };
 
-  // 완료 체크 기능 구현
-  // const handleComplete = id => {
-  //   todoTmp.map(data => {
-  //     if (data.id === id && data.completed === false) {
-  //       let copy = [...todoTmp];
-  //       copy[parseInt(data.id) - 1] = {
-  //         id: data.id,
-  //         title: data.title,
-  //         completed: !data.completed,
-  //       };
-  //       setTodoTmp(copy);
-  //       setCompleteModalVisible(!completeModalVisible);
-  //     } else if (data.id === id && data.completed === true) {
-  //       setNowdata(data);
-  //       setCompleteChangeModalVisible(!completeChangeModalVisible);
-  //     }
-  //     return data;
-  //   });
-  // };
+  // const toastRef = useRef(null); // toast ref 생성
 
-  // 완료 체크 취소 기능 구현(미완성)
-  const handleCompleteChange = index => {
-    // console.log(nowdata);
-    // todoTmp.map(data => {
-    //   if (data.id === id) {
-    //     let copy = [...todoTmp];
-    //     copy[parseInt(nowdata.id) - 1] = {
-    //       id: nowdata.id,
-    //       title: nowdata.title,
-    //       completed: !nowdata.completed,
-    //     };
-    //     setTodoTmp(copy);
-    //     setCompleteChangeModalVisible(!completeChangeModalVisible);
-    //   }
-    //   return data;
-    // });
-    if (todoComplete[index] === 0.5) {
-      let tmp = todoComplete;
-      tmp[index] = 1;
-      setCompleteChangeModalVisible(false);
-      setTodoComplete(tmp);
+  // const showCopyToast = useCallback(() => {
+  //   toastRef.current.state.text='test';
+  //   toastRef.current.state.isShow=true;
+  //   toastRef.current.memoizedState.isShow=true;
+  // }, []);
+
+  // const reFresh=useRecoilCallback(({set})=>{
+  //   set(useRefreshRoutine)
+  // })
+
+  const checkComplete = async index => {
+    setChosenIndex(index);
+    if (dateSelected == tmpToday) {
+      // 오늘날짜인지 체크
+      if (routines[index].completed) {
+        // 완료된 루틴 클릭시 완료 취소
+        setCompleteChangeModalVisible(true);
+      } else {
+        // 아닐시 완료
+        // 2주 루틴, 하루루틴 구별
+        let checkEveyday = 0;
+
+        for (var i = 0; i < selectTodo.length; i++) {
+          if (
+            selectTodo[i].id === routines[index].id &&
+            selectTodo[i].completed == false
+          ) {
+            checkEveyday += 1;
+          }
+        }
+        if (checkEveyday === 1) {
+          // 하루만 체크 안된거므로 오늘하면 2주
+          let res = await progressAllRoutine(routines[index].id);
+
+          // seloctor 업데이트를 위해+1
+          let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
+          setRoutineStateNum(tmpNum + 1);
+          setCompleteModalVisible(true);
+          setCompleteDayNum(2);
+        } else {
+          // 아닌경우 하루
+          let res = await progressOneRoutine(routines[index].id);
+
+          // seloctor 업데이트를 위해+1
+          let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
+          setRoutineStateNum(tmpNum + 1);
+          setCompleteModalVisible(true);
+          setCompleteDayNum(1);
+        }
+      }
     } else {
+      Alert.alert('', '루틴은 당일완료만 가능해요!');
     }
   };
 
+
+  // 완료 체크 취소 기능
+  const handleCompleteChange = async index => {
+    let res = await cancelOneRoutine(routines[index].id, routines[index].day);
+
+    // seloctor 업데이트를 위해+1
+    let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
+    setRoutineStateNum(tmpNum + 1);
+    setCompleteChangeModalVisible(false);
+  };
+  // 삭제 기능
+  const handleDelete = async () => {
+    await deleteRoutine(routines[chosenIndex].id).then(
+      setDeleteModalVisible(!deleteModalVisible),
+      setLoading(true),
+    );
+    // seloctor 업데이트를 위해+1
+    let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
+    setRoutineStateNum(tmpNum + 1);
+  };
   // 수정 기능 구현
   const handleEdit = (
     routineId,
@@ -279,10 +316,11 @@ const Progress = () => {
   };
 
   // 삭제 기능 구현
-  const handleRemove = routineId => {
+  const handleRemove = index => {
     setDeleteModalVisible(!deleteModalVisible);
-    setRoutineId(routineId);
-    console.log(routineId);
+    setChosenIndex(index);
+    // setRoutineId(routineId);
+    // console.log(routineId);
   };
 
   return (
@@ -332,11 +370,9 @@ const Progress = () => {
             }>
             <Image source={edit} />
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback
-            onPress={() => handleRemove(data.routineId)}>
+          <TouchableWithoutFeedback onPress={() => handleRemove(index)}>
             <Image source={delete2} />
           </TouchableWithoutFeedback>
-
           {/* 완료 모달 구현 코드 (one Day)*/}
           <Modal
             visible={completeModalVisible}
@@ -360,7 +396,10 @@ const Progress = () => {
                       오늘의 루틴을 완료했습니다!
                     </Text>
                     <View style={modalInnerStyles.completeImg1}>
-                      <Image source={oneDay} />
+                      <Image
+                        source={oneDay}
+                        style={modalInnerStyles.completeImg1_1}
+                      />
                     </View>
                   </Animated.View>
                 </TouchableWithoutFeedback>
@@ -436,7 +475,7 @@ const Progress = () => {
                       style={modalInnerStyles.yesBtn}
                       activeOpacity={1.0}
                       onPress={() => {
-                        handleCompleteChange(completeChangeIndex);
+                        handleCompleteChange(chosenIndex);
                         // console.log('complete change id : ', data.id);
                       }}>
                       <Text style={modalInnerStyles.nextText}>취소할래요!</Text>
@@ -529,13 +568,7 @@ const Progress = () => {
                 <TouchableOpacity
                   style={modalInnerStyles.yesBtn}
                   activeOpacity={1.0}
-                  onPress={() =>
-                    deleteRoutine(routineId).then(
-                      setDeleteModalVisible(!deleteModalVisible),
-                      setLoading(true),
-                      console.log(routineId),
-                    )
-                  }>
+                  onPress={() => handleDelete()}>
                   <Text style={modalInnerStyles.nextText}>삭제할래요!</Text>
                 </TouchableOpacity>
               </View>
@@ -561,8 +594,8 @@ const aimText1 = x =>
       paddingLeft: 20,
       paddingRight: 100,
       paddingTop: 10,
-      opacity: 0.5,
-      width:200
+      opacity: x,
+      width: 200,
     },
   });
 
@@ -572,7 +605,7 @@ const svg2 = x =>
       width: 150,
       zIndex: 10,
       opacity: x,
-      marginLeft:-40
+      marginLeft: -40,
     },
   });
 
@@ -628,7 +661,7 @@ const styles = StyleSheet.create({
     resizeMode: 'stretch',
     height: 70,
     width: 70,
-    tintColor: 'gray',
+    // tintColor: 'gray',
   },
 });
 

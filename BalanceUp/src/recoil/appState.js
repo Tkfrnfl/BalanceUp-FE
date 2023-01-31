@@ -1,4 +1,4 @@
-import {atom} from 'recoil';
+import {atom,atomFamily} from 'recoil';
 
 let today = new Date();
 let year = today.getFullYear(); // 년도
@@ -12,4 +12,9 @@ let dateState = atom({
   key: 'dateState',
   default: tmpToday,
 });
-export {dateState};
+// 루틴 seloctor 업데이트 용
+let routineStateNum = atom({
+  key: 'routineStateNum',
+  default: 0,
+});
+export {dateState, routineStateNum};

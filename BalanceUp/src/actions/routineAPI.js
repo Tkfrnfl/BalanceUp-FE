@@ -71,4 +71,62 @@ const getAllRoutine = async () => {
   return res;
 };
 
-export {createRoutine, deleteRoutine, modifyRoutine, getAllRoutine};
+const progressOneRoutine = async routineId => {
+  let res;
+  await axios
+    .put('/progress/routine', {
+      routineId: routineId,
+    })
+    .then(response => {
+      console.log(response.data);
+      res = response.data;
+    })
+    .catch(function (error) {
+      console.log(error.response.data);
+    });
+  return res;
+};
+
+const progressAllRoutine = async routineId => {
+  let res;
+  await axios
+    .put('/progress/routines', {
+      routineId: routineId,
+    })
+    .then(response => {
+      console.log(response.data);
+      res = response.data;
+    })
+    .catch(function (error) {
+      console.log(error.response.data);
+    });
+  return res;
+};
+
+const cancelOneRoutine = async (routineId, day) => {
+  let res;
+  console.log('??')
+  await axios
+    .put('/cancel', {
+      routineId: routineId,
+      day: day,
+    })
+    .then(response => {
+      console.log(response.data);
+      res = response.data;
+    })
+    .catch(function (error) {
+      console.log(error.response.data);
+    });
+  return res;
+};
+
+export {
+  createRoutine,
+  deleteRoutine,
+  modifyRoutine,
+  getAllRoutine,
+  progressOneRoutine,
+  progressAllRoutine,
+  cancelOneRoutine,
+};

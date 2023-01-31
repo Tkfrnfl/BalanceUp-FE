@@ -12,7 +12,7 @@ const modalInnerStyles = StyleSheet.create({
     color: '#000',
   },
   noBtn: {
-    width: 170,
+    width: 160,
     padding: 8,
     backgroundColor: '#fff',
     borderRadius: 5,
@@ -102,12 +102,13 @@ const modalInnerStyles = StyleSheet.create({
     marginTop: 5,
   },
   yesBtn: {
-    width: 170,
+    width: 160,
     padding: 8,
     backgroundColor: '#585FFF',
     borderRadius: 5,
     marginTop: 30,
     marginBottom: 30,
+    zIndex:30
   },
 
   // MyPage 닉네임 변경 모달 style
@@ -200,6 +201,10 @@ const modalInnerStyles = StyleSheet.create({
     textAlign: 'center',
     alignItems: 'center',
     color: '#888888',
+  },
+  completeImg1_1:{
+    width:100,
+    height:100
   },
   complteBottomSheetContainer: {
     height: 240,

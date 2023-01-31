@@ -22,6 +22,15 @@ import PushNotification from 'react-native-push-notification';
 import moment from 'moment';
 import BackArrow from '../../resource/image/Common/backArrow.svg';
 import {createRoutine, modifyRoutine} from '../../actions/routineAPI';
+import {jwtState} from '../../recoil/atom';
+import {dateState, routineStateNum} from '../../recoil/appState';
+import {
+  routineState,
+  routineStateComplete,
+  routineStateDays,
+  routineStateDaysSet,
+} from '../../recoil/userState';
+import {useRecoilState, useRecoilValue} from 'recoil';
 
 const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const {planText} = route.params;
@@ -81,6 +90,10 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const [open, setOpen] = useState(false);
   const [shouldShow, setShouldShow] = useState(true);
   const [disabled, setDisabled] = useState(false);
+  const [token, setToken] = useRecoilState(jwtState);
+
+  //const selectTodo = useRecoilValue(routineStateDaysSet(token,0));
+  //const [routineRefresh, setRoutineStateNum] = useRecoilState(routineStateNum);
 
   // 모달 기능 구현
   const screenHeight = Dimensions.get('screen').height;
@@ -253,7 +266,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
     );
   };
 
-  const handleCreate = () => {
+  const handleCreate = async() => {
     createRoutine(todoText, planText, dayText, time).then(
       res =>
         res === '루틴 갯수는 4개를 초과할 수 없습니다.'
@@ -262,6 +275,9 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
           : (setClearModalVisible(false), navigate('LookAll')),
       //notify()
     );
+    // let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
+    // setRoutineStateNum(tmpNum + 1);
+    // await routineStateDaysSet(token, routineRefresh);
   };
 
   // 루틴 수정

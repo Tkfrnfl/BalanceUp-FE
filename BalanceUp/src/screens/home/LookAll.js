@@ -15,10 +15,11 @@ import moment from 'moment';
 import {WithLocalSvg} from 'react-native-svg';
 import {format} from 'date-fns';
 import commonStyles from '../../css/commonStyles';
+import {useIsFocused, useRoute} from '@react-navigation/native';
 
 import {useRecoilState, useRecoilValue} from 'recoil';
 import {jwtState} from '../../recoil/atom';
-import {dateState} from '../../recoil/appState';
+import {dateState, routineStateNum} from '../../recoil/appState';
 import {
   routineState,
   routineStateComplete,
@@ -120,11 +121,12 @@ const LookAll = ({navigation: {navigate}}) => {
 
   const [selectedDate, setSelectedDate] = useState();
   const [token, setToken] = useRecoilState(jwtState);
-  const selectTodo = useRecoilValue(routineStateDaysSet(token));
+  const selectTodo = useRecoilValue(routineStateDaysSet(token, 0));
   const [checkedDateColor, setCheckedDateColor] = useState('#FFFFFF');
   const [checkedDate, setCheckedDate] = useState();
   const [routineDays, setRoutineDays] = useState({});
   const [dateSelected, setDateState] = useRecoilState(dateState);
+  const [routineRefresh, setRoutineStateNum] = useRecoilState(routineStateNum);
 
   // const markedDates = posts.reduce((acc, current) => {
   //   const formattedDate = format(new Date(current.date), 'yyyy-MM-dd');
@@ -199,7 +201,13 @@ const LookAll = ({navigation: {navigate}}) => {
     setCheckValue();
 
     setCheckedDate(tmpToday);
-  }, []);
+  }, [selectTodo, token]);
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    // seloctor 업데이트를 위해+1
+    let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
+    setRoutineStateNum(tmpNum + 1);
+  }, [isFocused]);
 
   const fomatToday =
     year.toString() + '-' + month.toString() + '-' + date.toString();

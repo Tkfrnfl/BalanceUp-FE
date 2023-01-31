@@ -39,7 +39,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useRecoilState, useRecoilValue} from 'recoil';
 import {nickNameState} from '../../recoil/atom';
 import {jwtState} from '../../recoil/atom';
-import {dateState} from '../../recoil/appState';
+import {dateState, routineStateNum} from '../../recoil/appState';
+
 import {
   routineState,
   routineStateComplete,
@@ -102,10 +103,11 @@ const MainScreen = ({navigation: {navigate}}) => {
   const [todoTotal, setTodoTotal] = useState([0, 0, 0, 0]);
   const [todoCompleted, setTodoCompleted] = useState([0, 0, 0, 0]);
   const [dateSelected, setDateState] = useRecoilState(dateState);
+  //const [routineRefresh, setRoutineStateNum] = useRecoilState(routineStateNum);
   const [routineDays, setRoutineDays] = useState({});
   const [checkedDateColor, setCheckedDateColor] = useState('#FFFFFF');
   const [checkedDate, setCheckedDate] = useState();
-  const selectTodo = useRecoilValue(routineStateDaysSet(token));
+  const selectTodo = useRecoilValue(routineStateDaysSet(token, 0));
 
   const fomatToday =
     year.toString() + '-' + month.toString() + '-' + date.toString();
