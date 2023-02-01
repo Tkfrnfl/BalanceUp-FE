@@ -14,7 +14,8 @@ import commonStyles from '../../css/commonStyles';
 // import WeekCalendar from 'react-native-calendars';
 import {format} from 'date-fns';
 import * as Progress from 'react-native-progress';
-import arrow from '../../resource/image/Main/arrow.png';
+import LevelArrow from '../../resource/image/Main/levelArrow.svg';
+import LevelBox from '../../resource/image/Main/levelBox.svg';
 import arrow2 from '../../resource/image/Main/arrow2.png';
 import arrow3 from '../../resource/image/Main/arrow3.png';
 import life from '../../resource/image/SetTodo/life.png';
@@ -26,7 +27,6 @@ import educationGray from '../../resource/image/SetTodo/education_gray.png';
 import mentalGray from '../../resource/image/SetTodo/mental_gray.png';
 import healthGray from '../../resource/image/SetTodo/health_gray.png';
 import lv1 from '../../resource/image/Main/1lv.gif';
-import Svg, {Text as SvgText, Rect} from 'react-native-svg';
 import {
   LocaleConfig,
   ExpandableCalendar,
@@ -87,9 +87,9 @@ const MainScreen = ({navigation: {navigate}}) => {
   const todoComplete = [0.5, 1, 0.5, 1];
   const [nickName, setNickName] = useRecoilState(nickNameState);
   const [userRp, setUserRp] = useRecoilState(userRpState);
-  const [userLevel, setUserLevel] = useState('');
-  const [upRp, setUpRp] = useState('');
-  const [nextLevel, setNextLevel] = useState('');
+  const [userLevel, setUserLevel] = useState(1);
+  const [upRp, setUpRp] = useState(20);
+  const [nextLevel, setNextLevel] = useState(2);
   const [tmpRoutine, setTmpRoutine] = useState();
   const [tmp, setTmp] = useState(0);
   const [todoTotal, setTodoTotal] = useState([0, 0, 0, 0]);
@@ -99,6 +99,13 @@ const MainScreen = ({navigation: {navigate}}) => {
   const [checkedDateColor, setCheckedDateColor] = useState('#FFFFFF');
   const [checkedDate, setCheckedDate] = useState();
   const selectTodo = useRecoilValue(routineStateDaysSet());
+  const upRpState = [
+    40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300,
+  ];
+  const levelRpState = [
+    20, 39, 59, 79, 99, 119, 139, 159, 179, 199, 219, 239, 259, 279, 299,
+  ];
+  const levelState = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
   const fomatToday =
     year.toString() + '-' + month.toString() + '-' + date.toString();
@@ -106,6 +113,7 @@ const MainScreen = ({navigation: {navigate}}) => {
   const [selectedDate, setSelectedDate] = useState(
     format(new Date(), 'yyyy-MM-dd'),
   );
+  console.log(levelRpState.length, levelState.length, upRpState.length);
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
   const [completeDay, setCompleteDayModalVisible] = useState(0);
   const [completeChangeModalVisible, setCompleteChangeModalVisible] =
@@ -119,44 +127,26 @@ const MainScreen = ({navigation: {navigate}}) => {
 
   useEffect(() => {
     fetchUserData();
-    if (userRp === null || userRp <= 19) {
-      setUserLevel('레벨 1');
-      setUpRp('20RP');
-      setNextLevel('Lv.2');
-    } else if (userRp >= 20 && userRp <= 39) {
-      setUserLevel('레벨 2');
+    // setUserRp(370);
+    console.log('user RP : ', userRp);
+
+    for (let i = 0; i < 14; i++) {
+      setUserLevel(1);
+      setUpRp(20);
+      setNextLevel(2);
+      if (userRp >= levelRpState[i] && userRp <= levelRpState[i + 1]) {
+        setUserLevel(levelState[i]);
+        setNextLevel(levelState[i + 1]);
+        setUpRp(upRpState[i]);
+        break;
+      }
     }
-    // 임시
-    // } else if (userRp >= 20 && userRp <= 39) {
-    //   setUserLevel('레벨 3');
-    // } else if (userRp >= 20 && userRp <= 39) {
-    //   setUserLevel('레벨 4');
-    // } else if (userRp >= 20 && userRp <= 39) {
-    //   setUserLevel('레벨 5');
-    // } else if (userRp >= 20 && userRp <= 39) {
-    //   setUserLevel('레벨 6');
-    // } else if (userRp >= 20 && userRp <= 39) {
-    //   setUserLevel('레벨 7');
-    // } else if (userRp >= 20 && userRp <= 39) {
-    //   setUserLevel('레벨 8');
-    // } else if (userRp >= 20 && userRp <= 39) {
-    //   setUserLevel('레벨 9');
-    // } else if (userRp >= 20 && userRp <= 39) {
-    //   setUserLevel('레벨 10');
-    // } else if (userRp >= 20 && userRp <= 39) {
-    //   setUserLevel('레벨 11');
-    // } else if (userRp >= 20 && userRp <= 39) {
-    //   setUserLevel('레벨 12');
-    // } else if (userRp >= 20 && userRp <= 39) {
-    //   setUserLevel('레벨 13');
-    // } else if (userRp >= 20 && userRp <= 39) {
-    //   setUserLevel('레벨 14');
-    // } else if (userRp >= 20 && userRp <= 39) {
-    //   setUserLevel('레벨 15');
-    // } else if (userRp >= 20 && userRp <= 39) {
-    //   setUserLevel('레벨 16');
-    // }
-  }, []);
+
+    // 만렙 처리
+    if (userRp >= 300) {
+      setUserLevel(16);
+    }
+  }, [userRp]);
 
   // const markedDates = posts.reduce((acc, current) => {
   //   const formattedDate = format(new Date(current.date), 'yyyy-MM-dd');
@@ -194,9 +184,9 @@ const MainScreen = ({navigation: {navigate}}) => {
         };
       }
     }
-
     setRoutineDays(tmpObj);
   };
+
   // 날짜 누를시 선택날짜 색변화
   const checkSelectedDate = date => {
     setDateState(date);
@@ -324,88 +314,149 @@ const MainScreen = ({navigation: {navigate}}) => {
         <View style={styles.titleWrapper}>
           <View style={commonStyles.spacing2} />
           <Text style={styles.nameText}>{nickName}님은</Text>
-          <View style={commonStyles.row}>
-            <Text style={styles.nextLevelText}>{userLevel}</Text>
-            <Text style={styles.nameText}> 만큼 성장했어요</Text>
-          </View>
-          <Text style={styles.upText}>
-            {upRp} 달성시, {nextLevel} 레벨 업!
-          </Text>
+          {userRp >= 300 ? (
+            <Text style={styles.nameText}> 최종 레벨입니다!</Text>
+          ) : (
+            <View style={commonStyles.row}>
+              <Text style={styles.nextLevelText}>레벨 {userLevel}</Text>
+              <Text style={styles.nameText}> 만큼 성장했어요</Text>
+            </View>
+          )}
+          {userRp >= 300 ? (
+            <Text style={styles.upText}>만렙입니다!</Text>
+          ) : (
+            <Text style={styles.upText}>
+              {upRp}RP 달성시, Lv.{nextLevel} 레벨 업!
+            </Text>
+          )}
 
           <Image source={lv1} style={styles.gifImg} />
           <TouchableOpacity
             activeOpacity={1.0}
             onPress={() => {
-              navigate('Guide');
+              // navigate('Guide');
+              setUserRp(userRp + 8);
             }}>
             <Text style={styles.guideText}>키움 성장 가이드</Text>
           </TouchableOpacity>
 
+          {/* 레벨 progressBar */}
           <Shadow distance={5} startColor={'#f4f4f4'}>
-            <Svg height={100} width={350} styles={[]}>
-              <Rect
-                x={0}
-                y={0}
-                width={350}
-                height={100}
-                style={[]}
-                strokeWidth="0"
-                fill="#FFFFFF"
-              />
-              <Rect
-                x={25}
-                y={20}
-                width="36"
-                height="18"
-                rx="9"
-                fill="#585FFF"
-              />
-              <SvgText
-                x={33}
-                y={33}
-                style={styles.mainText9}
-                fill="white"
-                fontWeight={600}>
-                Lv.
-              </SvgText>
-              <SvgText
-                x={285}
-                y={33}
-                style={styles.mainText9}
-                fill="gray"
-                fontWeight={600}>
-                ?/? RP
-              </SvgText>
-              <SvgText
-                x={30}
-                y={83}
-                style={styles.mainText9}
-                fill="#BCBCBC"
-                fontWeight={600}>
-                0
-              </SvgText>
-              <SvgText
-                x={305}
-                y={83}
-                style={styles.mainText9}
-                fill="#BCBCBC"
-                fontWeight={600}>
-                20
-              </SvgText>
-              <Progress.Bar
-                progress={0.3}
-                width={300}
-                height={8}
-                color={'#585FFF'}
-                borderColor={'#FFFFFF'}
-                unfilledColor={'#CED6FF'}
-                style={styles.bar1}
-              />
-              <Image source={arrow} style={dstyle(0.3 * 300).bar} />
-              <View style={dstyleText(0.3 * 300).bar}>
-                <Text style={styles.mainText9}>10</Text>
+            <View style={styles.levelContainer}>
+              <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <View style={styles.levelSheet}>
+                  <Text
+                    style={[
+                      styles.progressLevelText,
+                      {fontSize: userLevel > 10 ? 11 : 12},
+                    ]}>
+                    Lv.{userLevel}
+                  </Text>
+                </View>
+                {userRp >= 300 ? (
+                  <Text
+                    style={[
+                      styles.progressLevelText,
+                      {color: '#888888', top: 5, marginRight: 18},
+                    ]}>
+                    {userRp} RP
+                  </Text>
+                ) : (
+                  <Text
+                    style={[
+                      styles.progressLevelText,
+                      {color: '#888888', top: 5, marginRight: 18},
+                    ]}>
+                    {userRp}/{upRp} RP
+                  </Text>
+                )}
               </View>
-            </Svg>
+              {userRp >= 300 ? (
+                <View>
+                  <Progress.Bar
+                    progress={1.0}
+                    width={300}
+                    height={7}
+                    color={'#585FFF'}
+                    borderColor={'#FFFFFF'}
+                    unfilledColor={'#CED6FF'}
+                    style={[styles.progress, {bottom: 30}]}
+                  />
+                  <LevelArrow
+                    style={[
+                      dstyleText(1 * 300).bar,
+                      {bottom: 28, left: userRp === 0 ? 7 : null},
+                    ]}
+                  />
+                  <View style={{left: userRp === 0 ? 7 : null}}>
+                    <LevelBox
+                      style={[dstyleText(1 * 300).bar, {bottom: 1, left: -7}]}
+                    />
+                    <Text
+                      style={[
+                        styles.progressRpText,
+                        dstyleText(1 * 300).bar,
+                        {left: -3.5, bottom: 1, fontSize: 11},
+                        ,
+                      ]}>
+                      {userRp}
+                    </Text>
+                  </View>
+                </View>
+              ) : (
+                <View>
+                  <Progress.Bar
+                    progress={userRp / upRp}
+                    width={300}
+                    height={7}
+                    color={'#585FFF'}
+                    borderColor={'#FFFFFF'}
+                    unfilledColor={'#CED6FF'}
+                    style={[styles.progress, {bottom: 30}]}
+                  />
+                  <LevelArrow
+                    style={[
+                      dstyleText((userRp / upRp) * 300).bar,
+                      {bottom: 28, left: userRp === 0 ? 7 : null},
+                    ]}
+                  />
+                  <View style={{left: userRp === 0 ? 7 : null}}>
+                    <LevelBox
+                      style={[
+                        dstyleText((userRp / upRp) * 300).bar,
+                        {bottom: 1, left: -7},
+                      ]}
+                    />
+                    {userRp < 10 ? (
+                      <Text
+                        style={[
+                          styles.progressRpText,
+                          dstyleText((userRp / upRp) * 300).bar,
+                          {
+                            left: 3,
+                          },
+                          ,
+                        ]}>
+                        {userRp}
+                      </Text>
+                    ) : (
+                      <Text
+                        style={[
+                          styles.progressRpText,
+                          dstyleText((userRp / upRp) * 300).bar,
+                          {
+                            left: userRp > 100 ? -3 : 0,
+                          },
+                          ,
+                        ]}>
+                        {userRp}
+                      </Text>
+                    )}
+                  </View>
+                </View>
+              )}
+            </View>
           </Shadow>
 
           <View style={commonStyles.spacing2} />
@@ -558,6 +609,39 @@ const styles = StyleSheet.create({
     color: '#232323',
     fontFamily: 'Pretendard-Bold',
   },
+  levelContainer: {
+    width: 340,
+    height: 110,
+    paddingTop: 15,
+    borderRadius: 5,
+    backgroundColor: '#FFFFFF',
+  },
+  levelSheet: {
+    width: 36,
+    height: 18,
+    top: 5,
+    marginLeft: 25,
+    backgroundColor: '#585FFF',
+    borderRadius: 30,
+    alignItems: 'center',
+  },
+  progressLevelText: {
+    fontSize: 12,
+    fontFamily: 'Pretendard-Bold',
+    color: '#FFFFFF',
+  },
+  progressRpText: {
+    color: '#FFFFFF',
+    bottom: 0.5,
+    fontSize: 12,
+    fontFamily: 'Pretendard-Bold',
+  },
+  progresPointText: {
+    fontSize: 12,
+    top: 5,
+    color: '#BCBCBC',
+    fontFamily: 'Pretendard-Medium',
+  },
   nextLevelText: {
     fontSize: 22,
     color: '#585FFF',
@@ -580,10 +664,6 @@ const styles = StyleSheet.create({
   },
   mainText4: {
     paddingRight: 60,
-  },
-  mainText9: {
-    color: 'white',
-    fontWeight: '600',
   },
   mainText10: {
     marginTop: 10,
@@ -621,9 +701,10 @@ const styles = StyleSheet.create({
     height: 360,
     width: 350,
   },
-  bar1: {
+  progress: {
     marginTop: 50,
     marginLeft: 25,
+    borderRadius: 10,
   },
   img4: {
     width: 90,

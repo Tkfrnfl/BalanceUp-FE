@@ -23,7 +23,7 @@ let jwtRefreshState = atom({
 
 let userRpState = atom({
   key: 'userRp',
-  default: '',
+  default: 0,
 });
 
 export {userRpState, nickNameState, userNameState, jwtState, jwtRefreshState};
