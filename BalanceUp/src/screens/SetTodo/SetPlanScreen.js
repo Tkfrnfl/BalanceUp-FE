@@ -13,6 +13,8 @@ import {
   Keyboard,
   Switch,
   FlatList,
+  // Platform,
+  // PermissionsAndroid,
 } from 'react-native';
 import Toast from 'react-native-easy-toast';
 import DatePicker from 'react-native-date-picker';
@@ -22,6 +24,8 @@ import PushNotification from 'react-native-push-notification';
 import moment from 'moment';
 import BackArrow from '../../resource/image/Common/backArrow.svg';
 import {createRoutine, modifyRoutine} from '../../actions/routineAPI';
+import {useRecoilState} from 'recoil';
+import {nickNameState} from '../../recoil/atom';
 
 const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const {planText} = route.params;
@@ -30,6 +34,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const {days} = route.params;
   const {alarm} = route.params;
 
+  const [nickName, setNickName] = useRecoilState(nickNameState);
   const [isEditing, setIsEditing] = useState(false);
   const [selected, setSelected] = useState(new Map());
   const [lengthTodo, setLengthTodo] = useState(0);
@@ -71,14 +76,14 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [clearModalVisible, setClearModalVisible] = useState(false);
 
-  const [isEnabled, setIsEnabled] = useState(true);
+  const [isEnabled, setIsEnabled] = useState(false);
 
   const [alertHour, setAlertHour] = useState('');
   const [alertMin, setAlertMin] = useState('');
   const [time, setTime] = useState('09:00');
   const [date, setDate] = useState(new Date());
-  const [open, setOpen] = useState(false);
-  const [shouldShow, setShouldShow] = useState(true);
+  const [open, setOpen] = useState(false); // 알림 기본 설정 = false
+  const [shouldShow, setShouldShow] = useState(false); // 알림 기본 설정 = false
   const [disabled, setDisabled] = useState(false);
 
   // 모달 기능 구현
@@ -136,30 +141,18 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   useEffect(() => {
     if (routineId != null)
       setIsEditing(true), setTodoText(routineTitle), setTime(alarm);
-  }, []);
-
-  useEffect(() => {
-    if (time === null) {
+    if (alarm === null) {
       setIsEnabled(false);
       setShouldShow(false);
+    } else if (alarm != null) {
+      setIsEnabled(true);
+      setShouldShow(true);
     }
-  });
-
-  // useEffect(() => {
-  //   setTime(`${alertHour}:${alertMin}`);
-  // }, [alertHour, alertMin]);
+  }, []);
 
   // 팝업 알림 설정 구현
   const notify = () => {
-    let activeDays = [
-      sunActive,
-      monActive,
-      tueActive,
-      wenActive,
-      thurActive,
-      friActive,
-      satActive,
-    ];
+    let activeDays = [dayText];
 
     activeDays.map((day, index) => {
       if (day === 1) {
@@ -178,13 +171,14 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
         PushNotification.localNotificationSchedule({
           channelId: `${todoText}${index}`,
           title: todoText,
-          message: '김루틴님, 오늘의 루틴을 완료해보세요!',
+          message: `${nickName}님, 오늘의 루틴을 완료해보세요!`,
           date: calculateDateByDay(index),
           repeatType: 'week',
         });
       }
     });
   };
+
   // 팝업 알람 날짜 계산
   const calculateDateByDay = index => {
     let now = new Date();
@@ -259,7 +253,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
           ? (setClearModalVisible(false),
             navigate('Main', {overRoutine: 'over'}))
           : (setClearModalVisible(false), navigate('Main')),
-      //notify()
+      notify(),
     );
   };
 
@@ -269,7 +263,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
       setClearModalVisible(false),
       navigate('Main'),
     );
-    // notify();
+    notify();
   };
 
   // 토스트 메세지
@@ -292,6 +286,32 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
       </TouchableOpacity>
     );
   };
+
+  // 알림 권한 확인 => 안드로이드 13버전부터 가능, 우리 코드는 안드로이드 12버전 <확인 필요>
+  // useEffect(() => {
+  //   if (Platform.OS === 'android') {
+  //     const requestCameraPermission = async () => {
+  //       try {
+  //         const granted = await PermissionsAndroid.request(
+  //           PermissionsAndroid.PERMISSIONS.CAMERA,
+  //           {
+  //             title: 'Camera Permission',
+  //             message: 'App needs permission for camera access',
+  //             buttonPositive: 'OK',
+  //           },
+  //         );
+  //         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+  //           console.log('success');
+  //         } else {
+  //           console.log('Please camera permission');
+  //         }
+  //       } catch (err) {
+  //         console.log('Camera permission err');
+  //       }
+  //     };
+  //     requestCameraPermission();
+  //   }
+  // }, []);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -367,6 +387,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
             extraData={selected}
           />
         </View>
+
         <View style={styles.alertView}>
           <Text style={styles.alertText}>루틴 알림</Text>
           <Switch
@@ -381,6 +402,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
             ]}
           />
         </View>
+
         {/* 시간 설정 모달 코드 */}
         <View>
           {shouldShow ? (
