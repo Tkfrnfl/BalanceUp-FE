@@ -209,36 +209,37 @@ const MyPage = ({navigation: {navigate}}) => {
             </TouchableOpacity>
           </View>
           {sheetData.map(data => (
-            <View key={data.id} style={styles.menuSheet}>
-              <Text style={styles.menuText}>{data.title}</Text>
-              {data.id === 2 ? <NewNotice style={styles.newSvg} /> : null}
-              <TouchableOpacity
-                onPress={() => {
-                  onClick(data.id, data.func);
-                }}
-                activeOpacity={1.0}>
+            <TouchableOpacity
+              key={data.id}
+              onPress={() => {
+                onClick(data.id, data.func);
+              }}
+              activeOpacity={1.0}>
+              <View style={styles.menuSheet}>
+                <Text style={styles.menuText}>{data.title}</Text>
+                {data.id === 2 ? <NewNotice style={styles.newSvg} /> : null}
                 <MoreInfoArrow style={[styles.arrowBtnStyle, {left: 272}]} />
-              </TouchableOpacity>
-            </View>
+              </View>
+            </TouchableOpacity>
           ))}
           {sheetData_.map(data => (
-            <View
+            <TouchableOpacity
               key={data.id}
-              style={[styles.menuSheet, {marginTop: data.id === 1 ? 15 : 2}]}>
-              <Text style={styles.menuText}>{data.title}</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  onClick_(data.id);
-                }}
-                activeOpacity={1.0}>
+              onPress={() => {
+                onClick_(data.id);
+              }}
+              activeOpacity={1.0}>
+              <View
+                style={[styles.menuSheet, {marginTop: data.id === 1 ? 15 : 2}]}>
+                <Text style={styles.menuText}>{data.title}</Text>
                 <MoreInfoArrow
                   style={[
                     styles.arrowBtnStyle,
                     {left: data.id === 1 ? 227 : 244.5},
                   ]}
                 />
-              </TouchableOpacity>
-            </View>
+              </View>
+            </TouchableOpacity>
           ))}
           <TouchableOpacity
             onPress={() => setLogoutModalVisible(!logoutModalVisible)}
