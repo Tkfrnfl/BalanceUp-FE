@@ -4,6 +4,7 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import CheckOn from '../../resource/image/Agree/check_on.svg';
 import CheckOff from '../../resource/image/Agree/check_off.svg';
 import BackArrow from '../../resource/image/Common/backArrow.svg';
+import axios from '../../utils/Client';
 
 const Withdrawal = ({navigation: {navigate}}) => {
   const [useCheck, setUseCheck] = useState(false);
@@ -20,6 +21,18 @@ const Withdrawal = ({navigation: {navigate}}) => {
   useEffect(() => {
     setDisabled(!useCheck);
   }, [useCheck]);
+
+  // 회원 탈퇴 임시 API (아직 백엔드에서 확실한 구현 X)
+  // const userWithdraw = async () => {
+  //   await axios
+  //     .delete()
+  //     .then(response => {
+  //       console.log(response);
+  //     })
+  //     .catch(function (error) {
+  //       console.log(error);
+  //     });
+  // };
 
   return (
     <View style={styles.container}>
