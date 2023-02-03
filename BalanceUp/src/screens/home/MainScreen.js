@@ -16,8 +16,8 @@ import {format} from 'date-fns';
 import * as Progress from 'react-native-progress';
 import LevelArrow from '../../resource/image/Main/levelArrow.svg';
 import LevelBox from '../../resource/image/Main/levelBox.svg';
-import arrow2 from '../../resource/image/Main/arrow2.png';
-import arrow3 from '../../resource/image/Main/arrow3.png';
+import LeftArrow from '../../resource/image/Main/left.svg';
+import RightArrow from '../../resource/image/Main/right.svg';
 import life from '../../resource/image/SetTodo/life.png';
 import education from '../../resource/image/SetTodo/education.png';
 import mental from '../../resource/image/SetTodo/mental.png';
@@ -113,7 +113,6 @@ const MainScreen = ({navigation: {navigate}}) => {
   const [selectedDate, setSelectedDate] = useState(
     format(new Date(), 'yyyy-MM-dd'),
   );
-  console.log(levelRpState.length, levelState.length, upRpState.length);
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
   const [completeDay, setCompleteDayModalVisible] = useState(0);
   const [completeChangeModalVisible, setCompleteChangeModalVisible] =
@@ -127,7 +126,7 @@ const MainScreen = ({navigation: {navigate}}) => {
 
   useEffect(() => {
     fetchUserData();
-    // setUserRp(370);
+    // setUserRp(50);
     console.log('user RP : ', userRp);
 
     for (let i = 0; i < 14; i++) {
@@ -315,7 +314,7 @@ const MainScreen = ({navigation: {navigate}}) => {
           <View style={commonStyles.spacing2} />
           <Text style={styles.nameText}>{nickName}님은</Text>
           {userRp >= 300 ? (
-            <Text style={styles.nameText}> 최종 레벨입니다!</Text>
+            <Text style={styles.nameText}>성장을 완료 했어요</Text>
           ) : (
             <View style={commonStyles.row}>
               <Text style={styles.nextLevelText}>레벨 {userLevel}</Text>
@@ -323,7 +322,7 @@ const MainScreen = ({navigation: {navigate}}) => {
             </View>
           )}
           {userRp >= 300 ? (
-            <Text style={styles.upText}>만렙입니다!</Text>
+            <Text style={styles.upText}>만렙 성공!</Text>
           ) : (
             <Text style={styles.upText}>
               {upRp}RP 달성시, Lv.{nextLevel} 레벨 업!
@@ -375,7 +374,7 @@ const MainScreen = ({navigation: {navigate}}) => {
               {userRp >= 300 ? (
                 <View>
                   <Progress.Bar
-                    progress={1.0}
+                    progress={userRp / 999}
                     width={300}
                     height={7}
                     color={'#585FFF'}
@@ -385,23 +384,50 @@ const MainScreen = ({navigation: {navigate}}) => {
                   />
                   <LevelArrow
                     style={[
-                      dstyleText(1 * 300).bar,
+                      userRp > 999
+                        ? dstyleText(1.0 * 300).bar
+                        : dstyleText((userRp / 999) * 300).bar,
                       {bottom: 28, left: userRp === 0 ? 7 : null},
                     ]}
                   />
                   <View style={{left: userRp === 0 ? 7 : null}}>
                     <LevelBox
-                      style={[dstyleText(1 * 300).bar, {bottom: 1, left: -7}]}
-                    />
-                    <Text
                       style={[
-                        styles.progressRpText,
-                        dstyleText(1 * 300).bar,
-                        {left: -3.5, bottom: 1, fontSize: 11},
-                        ,
-                      ]}>
-                      {userRp}
-                    </Text>
+                        userRp > 999
+                          ? dstyleText(1.0 * 300).bar
+                          : dstyleText((userRp / 999) * 300).bar,
+                        {bottom: 1, left: -7},
+                      ]}
+                    />
+                    {userRp > 999 ? (
+                      <Text
+                        style={[
+                          styles.progressRpText,
+                          dstyleText(1.0 * 300).bar,
+                          {
+                            left: -3.5,
+                            bottom: 3,
+                            fontSize: 8.5,
+                          },
+                          ,
+                        ]}>
+                        999+
+                      </Text>
+                    ) : (
+                      <Text
+                        style={[
+                          styles.progressRpText,
+                          dstyleText((userRp / 999) * 300).bar,
+                          {
+                            left: -3.5,
+                            bottom: 1,
+                            fontSize: userRp > 999 ? 8.5 : 11,
+                          },
+                          ,
+                        ]}>
+                        {userRp}
+                      </Text>
+                    )}
                   </View>
                 </View>
               ) : (
@@ -519,16 +545,26 @@ const MainScreen = ({navigation: {navigate}}) => {
         <CalendarProvider date={fomatToday}>
           <ExpandableCalendar
             monthFormat={'MM월'}
-            leftArrowImageSource={arrow2}
-            rightArrowImageSource={arrow3}
+            renderArrow={direction => {
+              if (direction === 'left') {
+                return <LeftArrow style={{right: 25}} />;
+              } else {
+                return <RightArrow style={{left: 25}} />;
+              }
+            }}
             allowShadow={false}
             markedDates={routineDays}
             theme={{
-              arrowColor: 'black',
               textMonthFontWeight: '800',
               selectedDayBackgroundColor: '#585FFF',
               dotColor: '#585FFF',
               todayTextColor: '#009688',
+              textMonthFontFamily: 'Pretendard-Bold',
+              textDayFontFamily: 'Pretendard-Medium',
+              textDayHeaderFontFamily: 'Pretendard-Medium',
+              textDayHeaderFontSize: 14,
+              textDayFontSize: 14,
+              textMonthFontSize: 16,
               'stylesheet.calendar.header': {
                 header: {
                   flexDirection: 'row',
@@ -548,6 +584,7 @@ const MainScreen = ({navigation: {navigate}}) => {
           />
         </CalendarProvider>
         <ProgressComponent />
+        <View style={commonStyles.spacing2} />
       </ScrollView>
       <HomeBottomTab navigate={navigate} />
     </SafeAreaView>
