@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import {responsiveHeight} from 'react-native-responsive-dimensions';
 
 const modalInnerStyles = StyleSheet.create({
   modalFlex: {
@@ -12,7 +13,7 @@ const modalInnerStyles = StyleSheet.create({
     color: '#000',
   },
   noBtn: {
-    width: 170,
+    width: '50%',
     padding: 8,
     backgroundColor: '#fff',
     borderRadius: 5,
@@ -55,7 +56,7 @@ const modalInnerStyles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   }, // 모달이 띄워졌을 때 화면을 어둡게 하기 위한 오버레이
 
   // SetPlanScreen 완료 모달 style
@@ -102,7 +103,7 @@ const modalInnerStyles = StyleSheet.create({
     marginTop: 5,
   },
   yesBtn: {
-    width: 170,
+    width: '50%',
     padding: 8,
     backgroundColor: '#585FFF',
     borderRadius: 5,
@@ -113,7 +114,7 @@ const modalInnerStyles = StyleSheet.create({
   // MyPage 닉네임 변경 모달 style
   nameSheetContainer: {
     bottom: -25,
-    height: 280,
+    height: responsiveHeight(40),
     backgroundColor: '#fff',
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,

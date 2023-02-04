@@ -9,11 +9,12 @@ import OnCheck from '../../resource/image/BottomTab/checkTodo_on.svg';
 import OffCheck from '../../resource/image/BottomTab/checkTodo_off.svg';
 import OnMy from '../../resource/image/BottomTab/my_on.svg';
 import OffMy from '../../resource/image/BottomTab/my_off.svg';
+import {responsiveScreenWidth} from 'react-native-responsive-dimensions';
 
 const bottomData = [
   {
     id: 1,
-    title: '      홈',
+    title: '홈',
     go: 'Main',
     onImg: OnHome,
     offImg: OffHome,
@@ -34,7 +35,7 @@ const bottomData = [
   },
   {
     id: 4,
-    title: '    MY',
+    title: 'MY',
     go: 'MyPage',
     onImg: OnMy,
     offImg: OffMy,
@@ -52,7 +53,9 @@ function HomeBottomTab({navigate}) {
           <Text
             style={[
               commonStyles.commonText,
-              {color: data.id === 1 ? '#585FFF' : null},
+              {color: data.id === 1 ? '#585FFF' : '#888888'},
+              {left: data.id === 1 ? responsiveScreenWidth(3) : null},
+              {right: data.id === 4 ? responsiveScreenWidth(-1.9) : 2},
             ]}>
             {data.title}
           </Text>
@@ -73,7 +76,9 @@ function SetBottomTab({navigate}) {
           <Text
             style={[
               commonStyles.commonText,
-              {color: data.id === 2 ? '#585FFF' : null},
+              {color: data.id === 2 ? '#585FFF' : '#888888'},
+              {left: data.id === 1 ? responsiveScreenWidth(3) : null},
+              {right: data.id === 4 ? responsiveScreenWidth(-1.9) : 3},
             ]}>
             {data.title}
           </Text>
@@ -95,9 +100,9 @@ function CheckBottomTab({navigate}) {
           <Text
             style={[
               commonStyles.commonText,
-              {color: data.id === 3 ? '#585FFF' : null},
-
-              ,
+              {color: data.id === 3 ? '#585FFF' : '#888888'},
+              {left: data.id === 1 ? responsiveScreenWidth(3) : null},
+              {right: data.id === 4 ? responsiveScreenWidth(-1.9) : 3},
             ]}>
             {data.title}
           </Text>
@@ -119,7 +124,9 @@ function MyBottomTab({navigate}) {
           <Text
             style={[
               commonStyles.commonText,
-              {color: data.id === 4 ? '#585FFF' : null},
+              {color: data.id === 4 ? '#585FFF' : '#888888'},
+              {left: data.id === 1 ? responsiveScreenWidth(3) : null},
+              {right: data.id === 4 ? responsiveScreenWidth(-1.9) : 3},
             ]}>
             {data.title}
           </Text>

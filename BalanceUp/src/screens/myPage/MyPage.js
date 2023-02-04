@@ -9,7 +9,6 @@ import {
   Keyboard,
   Dimensions,
   Animated,
-  PanResponder,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   TouchableOpacity,
@@ -25,6 +24,10 @@ import MoreInfoArrow from '../../resource/image/Agree/moreInfoArrow.svg';
 import modalInnerStyles from '../../css/modalStyles';
 import ErrorSvg from '../../resource/image/Name/name_error.svg';
 import NewNotice from '../../resource/image/Common/noti_new.svg';
+import {
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
 
 const MyPage = ({navigation: {navigate}}) => {
   const [userName, setUserName] = useState('');
@@ -63,42 +66,11 @@ const MyPage = ({navigation: {navigate}}) => {
 
   const panY = useRef(new Animated.Value(screenHeight)).current;
 
-  const translateY = panY.interpolate({
-    inputRange: [-1, 0, 1],
-    outputRange: [-1, 0, 1],
-  });
-
   const resetBottomSheet = Animated.timing(panY, {
     toValue: 0,
     duration: 10,
     useNativeDriver: true,
   });
-
-  const closeBottomSheet = Animated.timing(panY, {
-    toValue: screenHeight,
-    duration: 300,
-    useNativeDriver: true,
-  });
-
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: gestureState => panY.setValue(gestureState.dy),
-      onPanResponderRelease: gestureState => {
-        if (gestureState.dy > 0 && gestureState.vy > 1.5) {
-          closeModal();
-        } else {
-          resetBottomSheet.start();
-        }
-      },
-    }),
-  ).current;
-
-  const closeModal = () => {
-    closeBottomSheet.start(() => setIsModalVisible(false));
-    closeBottomSheet.start(() => setLogoutModalVisible(false));
-  };
 
   useEffect(() => {
     if (isModalVisible) {
@@ -218,7 +190,9 @@ const MyPage = ({navigation: {navigate}}) => {
               <View style={styles.menuSheet}>
                 <Text style={styles.menuText}>{data.title}</Text>
                 {data.id === 2 ? <NewNotice style={styles.newSvg} /> : null}
-                <MoreInfoArrow style={[styles.arrowBtnStyle, {left: 272}]} />
+                <MoreInfoArrow
+                  style={[styles.arrowBtnStyle, {left: responsiveWidth(69)}]}
+                />
               </View>
             </TouchableOpacity>
           ))}
@@ -235,7 +209,12 @@ const MyPage = ({navigation: {navigate}}) => {
                 <MoreInfoArrow
                   style={[
                     styles.arrowBtnStyle,
-                    {left: data.id === 1 ? 227 : 244.5},
+                    {
+                      left:
+                        data.id === 1
+                          ? responsiveWidth(57.8)
+                          : responsiveWidth(62.3),
+                    },
                   ]}
                 />
               </View>
@@ -268,9 +247,7 @@ const MyPage = ({navigation: {navigate}}) => {
                 <Animated.View
                   style={{
                     ...modalInnerStyles.nameSheetContainer,
-                    transform: [{translateY: translateY}],
-                  }}
-                  {...panResponder.panHandlers}>
+                  }}>
                   <Text style={modalInnerStyles.modalTitle}>
                     닉네임을 설정해 주세요
                   </Text>
@@ -347,9 +324,7 @@ const MyPage = ({navigation: {navigate}}) => {
               <Animated.View
                 style={{
                   ...modalInnerStyles.bottomSheetContainer,
-                  transform: [{translateY: translateY}],
-                }}
-                {...panResponder.panHandlers}>
+                }}>
                 <Text style={modalInnerStyles.modalTitle}>로그아웃</Text>
                 <Text style={modalInnerStyles.logoutModalText}>
                   로그아웃 하시겠습니까?
@@ -395,14 +370,14 @@ const styles = StyleSheet.create({
   topTitle: {
     fontSize: 22,
     fontFamily: 'Pretendard-Bold',
-    marginTop: 40,
+    marginTop: responsiveHeight(5.3),
     marginLeft: 20,
     marginBottom: 25,
     color: '#000',
   },
   withdrawalText: {
-    top: 45,
-    right: 20,
+    top: responsiveHeight(6),
+    right: responsiveWidth(5),
     fontSize: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#888888',
@@ -437,7 +412,7 @@ const styles = StyleSheet.create({
     color: '#888888',
     fontSize: 12,
     fontFamily: 'Pretendard-Light',
-    marginLeft: 330,
+    marginLeft: responsiveWidth(85),
     marginTop: 20,
   },
   inputWrapper: {
@@ -449,9 +424,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textInput: {
-    width: 235,
-    height: 48,
+    width: responsiveWidth(62),
+    height: responsiveHeight(7),
     marginLeft: -8,
+    color: '#232323',
     borderWidth: 1,
     borderColor: '#AFAFAF',
     borderRadius: 5,
@@ -459,19 +435,19 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
   },
   duplicationBtn: {
-    width: 93,
-    height: 48,
+    width: responsiveWidth(23.5),
+    height: responsiveHeight(7),
     borderWidth: 1,
     borderColor: '#585FFF',
     borderRadius: 5,
-    marginLeft: 20,
+    marginLeft: 13,
   },
   duplicationText: {
     color: '#585FFF',
     fontFamily: 'Pretendard-Medium',
     textAlign: 'center',
     fontSize: 16,
-    marginTop: 11,
+    marginTop: responsiveHeight(1.8),
   },
   inputText: {
     color: '#AFAFAF',
@@ -498,12 +474,12 @@ const styles = StyleSheet.create({
     width: 18,
     height: 18,
     position: 'absolute',
-    left: 180,
-    top: 15,
+    left: responsiveWidth(50),
+    top: 17,
   },
   newSvg: {
-    top: 18,
-    left: 12,
+    top: responsiveHeight(2.5),
+    left: responsiveWidth(3),
   },
 });
 

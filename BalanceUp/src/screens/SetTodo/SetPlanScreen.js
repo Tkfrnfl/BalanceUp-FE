@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Dimensions,
   Animated,
-  PanResponder,
   TouchableWithoutFeedback,
   TextInput,
   Keyboard,
@@ -73,7 +72,6 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const [dayText, setDayText] = useState('');
   const dayBy = ['월', '화', '수', '목', '금', '토', '일'];
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [clearModalVisible, setClearModalVisible] = useState(false);
 
   const [isEnabled, setIsEnabled] = useState(false);
@@ -91,52 +89,21 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
 
   const panY = useRef(new Animated.Value(screenHeight)).current;
 
-  const translateY = panY.interpolate({
-    inputRange: [-1, 0, 1],
-    outputRange: [-1, 0, 1],
-  });
-
   const resetBottomSheet = Animated.timing(panY, {
     toValue: 0,
     duration: 20,
     useNativeDriver: true,
   });
 
-  const closeBottomSheet = Animated.timing(panY, {
-    toValue: screenHeight,
-    duration: 300,
-    useNativeDriver: true,
-  });
-
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: gestureState => panY.setValue(gestureState.dy),
-      onPanResponderRelease: gestureState => {
-        if (gestureState.dy > 0 && gestureState.vy > 1.5) {
-          closeModal();
-        } else {
-          resetBottomSheet.start();
-        }
-      },
-    }),
-  ).current;
-
-  const closeModal = () => {
-    closeBottomSheet.start(() => setIsModalVisible(false));
-    closeBottomSheet.start(() => setClearModalVisible(false));
-  };
-
   useEffect(() => {
     PushNotification.setApplicationIconBadgeNumber(0);
   }, []);
 
   useEffect(() => {
-    if (isModalVisible || clearModalVisible) {
+    if (clearModalVisible) {
       resetBottomSheet.start();
     }
-  }, [isModalVisible, clearModalVisible]);
+  }, [clearModalVisible]);
 
   useEffect(() => {
     if (routineId != null)
@@ -251,6 +218,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
       res =>
         res === '루틴 갯수는 4개를 초과할 수 없습니다.'
           ? (setClearModalVisible(false),
+            console.log(res),
             navigate('Main', {overRoutine: 'over'}))
           : (setClearModalVisible(false), navigate('Main')),
       notify(),
@@ -361,6 +329,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
               fontSize={16}
               maxLength={20}
               autoCapitalize="none"
+              placeholderTextColor="#AFAFAF"
               placeholder="ex) 물💧 마시기!"
               onChangeText={handleTextChange}
             />
@@ -460,6 +429,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
             </TouchableOpacity>
           </View>
         )}
+
         {/* 완료 모달 구현 코드 */}
         <Modal
           visible={clearModalVisible}
@@ -473,9 +443,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
               <Animated.View
                 style={{
                   ...modalInnerStyles.clearSheetContainer,
-                  transform: [{translateY: translateY}],
-                }}
-                {...panResponder.panHandlers}>
+                }}>
                 <Text style={modalInnerStyles.clearModalTitle}>
                   설정한 루틴이 맞나요?
                 </Text>

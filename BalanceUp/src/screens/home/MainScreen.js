@@ -40,6 +40,11 @@ import {nickNameState, userRpState} from '../../recoil/atom';
 import {dateState} from '../../recoil/appState';
 import {routineStateDaysSet} from '../../recoil/userState';
 import {getAllRoutine} from '../../actions/routineAPI';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
 
 LocaleConfig.locales.fr = {
   monthNames: [
@@ -126,7 +131,7 @@ const MainScreen = ({navigation: {navigate}}) => {
 
   useEffect(() => {
     fetchUserData();
-    // setUserRp(50);
+    // setUserRp(1002);
     console.log('user RP : ', userRp);
 
     for (let i = 0; i < 14; i++) {
@@ -330,14 +335,21 @@ const MainScreen = ({navigation: {navigate}}) => {
           )}
 
           <Image source={lv1} style={styles.gifImg} />
+
+          {/* 가이드 페이지 */}
           <TouchableOpacity
-            activeOpacity={1.0}
-            onPress={() => {
-              // navigate('Guide');
-              setUserRp(userRp + 8);
-            }}>
+            onPress={() => navigate('Guide')}
+            activeOpacity={1.0}>
             <Text style={styles.guideText}>키움 성장 가이드</Text>
           </TouchableOpacity>
+
+          {/* <TouchableOpacity
+            activeOpacity={1.0}
+            onPress={() => {
+              navigate('Guide');
+            }}>
+            <Text style={styles.guideText}>키움 성장 가이드</Text>
+          </TouchableOpacity> */}
 
           {/* 레벨 progressBar */}
           <Shadow distance={5} startColor={'#f4f4f4'}>
@@ -407,7 +419,7 @@ const MainScreen = ({navigation: {navigate}}) => {
                           {
                             left: -3.5,
                             bottom: 3,
-                            fontSize: 8.5,
+                            fontSize: responsiveFontSize(1.0),
                           },
                           ,
                         ]}>
@@ -419,9 +431,10 @@ const MainScreen = ({navigation: {navigate}}) => {
                           styles.progressRpText,
                           dstyleText((userRp / 999) * 300).bar,
                           {
-                            left: -3.5,
+                            left: responsiveWidth(-0.5),
                             bottom: 1,
-                            fontSize: userRp > 999 ? 8.5 : 11,
+                            fontSize:
+                              userRp > 999 ? 8.5 : responsiveFontSize(1.2),
                           },
                           ,
                         ]}>
@@ -694,9 +707,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#888888',
     fontFamily: 'Pretendard-Medium',
-    alignSelf: 'flex-end',
     textDecorationLine: 'underline',
-    marginRight: -170,
+    marginLeft: responsiveWidth(65),
     marginBottom: 20,
   },
   mainText4: {

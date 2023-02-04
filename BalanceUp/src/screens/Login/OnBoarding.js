@@ -1,21 +1,15 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import {
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
 import Swiper from 'react-native-swiper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-  useResetRecoilState,
-} from 'recoil';
+import {useRecoilState} from 'recoil';
 import FastImage from 'react-native-fast-image';
 import {getRefreshToken} from '../../actions/memberJoinApi';
-import {
-  nickNameState,
-  userNameState,
-  jwtState,
-  jwtRefreshState,
-} from '../../recoil/atom';
+import {jwtState, jwtRefreshState} from '../../recoil/atom';
 
 import jwt_decode from 'jwt-decode';
 import KeyumTypo from '../../resource/image/KeyumLOGOTYPO.png';
@@ -28,7 +22,6 @@ import PrevBtn from '../../resource/image/Onboarding/PrevBtn.svg';
 export default function OnBoarding({navigation}) {
   const [jwt, setjwt] = useRecoilState(jwtState);
   const [jwtRefresh, setJwtRefresh] = useRecoilState(jwtRefreshState);
-
 
   React.useEffect(() => {
     checkJwt('jwt');
@@ -121,7 +114,7 @@ export default function OnBoarding({navigation}) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.imgView}>
+      <View style={styles.typoView}>
         <Image source={KeyumTypo} style={styles.typoStyle} />
       </View>
       <Swiper
@@ -157,29 +150,27 @@ export default function OnBoarding({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
   slide: {
     alignItems: 'center',
   },
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  imgView: {
+  typoView: {
     alignItems: 'center',
-    marginTop: 90,
-    marginBottom: 20,
-    backgroundColor: '#fff',
+    marginTop: responsiveHeight(13),
+    marginBottom: responsiveHeight(3),
   },
   onBoardingIMG: {
-    width: 270,
-    height: 270,
+    width: responsiveWidth(55),
+    height: responsiveHeight(36),
     marginLeft: 12,
   },
   title: {
-    width: '100%',
     color: '#232323',
     textAlign: 'center',
-    marginTop: 75,
+    marginTop: responsiveHeight(10),
     marginBottom: 5,
     fontSize: 22,
     fontFamily: 'Pretendard-Bold',
@@ -193,8 +184,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   typoStyle: {
-    width: 210,
-    height: 34,
+    width: responsiveWidth(55),
+    height: responsiveHeight(5),
     marginLeft: 4,
   },
   btnStart: {
@@ -214,7 +205,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginLeft: 4,
     marginRight: 4,
-    marginBottom: 190,
+    marginBottom: responsiveHeight(25),
   },
   activeDotStyle: {
     backgroundColor: '#232323',
@@ -223,11 +214,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginLeft: 4,
     marginRight: 4,
-    marginBottom: 190,
+    marginBottom: responsiveHeight(25),
   },
   svgStyle: {
-    width: 48,
-    height: 48,
-    marginBottom: 270,
+    width: 38,
+    height: 38,
+    marginBottom: responsiveHeight(33),
   },
 });

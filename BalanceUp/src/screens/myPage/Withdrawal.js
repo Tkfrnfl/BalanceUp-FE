@@ -5,6 +5,10 @@ import CheckOn from '../../resource/image/Agree/check_on.svg';
 import CheckOff from '../../resource/image/Agree/check_off.svg';
 import BackArrow from '../../resource/image/Common/backArrow.svg';
 import axios from '../../utils/Client';
+import {
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
 
 const Withdrawal = ({navigation: {navigate}}) => {
   const [useCheck, setUseCheck] = useState(false);
@@ -97,12 +101,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   arrowBtn: {
-    marginTop: 20,
-    marginLeft: 20,
+    top: responsiveWidth(8),
+    left: responsiveWidth(5),
   },
   topSheet: {
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: responsiveHeight(7),
   },
   topTitle: {
     color: '#000',
@@ -119,21 +123,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F8F9',
     marginTop: 25,
     marginLeft: 20,
-    width: 350,
-    height: 111,
+    width: responsiveWidth(90),
+    height: responsiveHeight(15),
   },
   infoText: {
     color: '#232323',
     fontFamily: 'Pretendard-Light',
     marginLeft: 20,
-    marginTop: 8,
+    marginTop: responsiveHeight(1.4),
     right: 10,
   },
   info_Text: {
     color: '#232323',
     fontFamily: 'Pretendard-Light',
     marginLeft: 20,
-    marginTop: 8,
+    marginTop: responsiveHeight(1.4),
   },
   agreeSheet: {
     flexDirection: 'row',
@@ -148,7 +152,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-Light',
   },
   Nextbutton: {
-    width: 400,
+    width: responsiveWidth(100),
     alignItems: 'center',
     padding: 15,
   },

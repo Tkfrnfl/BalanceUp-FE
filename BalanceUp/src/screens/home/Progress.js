@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Animated,
-  PanResponder,
   Image,
   Dimensions,
   Modal,
@@ -28,8 +27,8 @@ import mentalGray from '../../resource/image/SetTodo/mental_gray.png';
 import healthGray from '../../resource/image/SetTodo/health_gray.png';
 import oneDay from '../../resource/image/Modal/Crystal.png';
 import twoWeeks from '../../resource/image/Modal/10routine.png';
-import edit from '../../resource/image/Main/edit.png';
-import delete2 from '../../resource/image/Main/delete.png';
+import Edit from '../../resource/image/Main/edit.svg';
+import Delete from '../../resource/image/Main/delete.svg';
 import {useRecoilState, useRecoilValue} from 'recoil';
 import {deleteRoutine} from '../../actions/routineAPI';
 import {
@@ -40,6 +39,7 @@ import {
 } from '../../recoil/userState';
 import OverSvg from '../../resource/image/Common/overRoutine.svg';
 import {dateState} from '../../recoil/appState';
+import {responsiveWidth} from 'react-native-responsive-dimensions';
 
 const Progress = () => {
   const route = useRoute();
@@ -120,6 +120,7 @@ const Progress = () => {
   }, []);
 
   useEffect(() => {
+    console.log(route.params);
     if (route.params != null) {
       setOverRoutineModalVisible(!overRoutineModalVisible);
       route.params = null;
@@ -144,35 +145,8 @@ const Progress = () => {
     useNativeDriver: true,
   });
 
-  const closeBottomSheet = Animated.timing(panY, {
-    toValue: screenHeight,
-    duration: 300,
-    useNativeDriver: true,
-  });
-
   const todoImg = [life, education, mental, health];
   // const todoComplete = [0.5, 1, 0.5, 1];
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: gestureState => panY.setValue(gestureState.dy),
-      onPanResponderRelease: gestureState => {
-        if (gestureState.dy > 0 && gestureState.vy > 1.5) {
-          closeModal();
-        } else {
-          resetBottomSheet.start();
-        }
-      },
-    }),
-  ).current;
-
-  const closeModal = () => {
-    closeBottomSheet.start(() => setCompleteModalVisible(false));
-    closeBottomSheet.start(() => setCompleteChangeModalVisible(false));
-    closeBottomSheet.start(() => setDeleteModalVisible(false));
-    closeBottomSheet.start(() => setOverRoutineModalVisible(false));
-  };
 
   useEffect(() => {
     if (
@@ -322,11 +296,11 @@ const Progress = () => {
                 data.days,
               )
             }>
-            <Image source={edit} />
+            <Edit />
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
             onPress={() => handleRemove(data.routineId)}>
-            <Image source={delete2} />
+            <Delete />
           </TouchableWithoutFeedback>
 
           {/* 완료 모달 구현 코드 (one Day)*/}
@@ -343,9 +317,7 @@ const Progress = () => {
                   <Animated.View
                     style={{
                       ...modalInnerStyles.centerSheetContainer,
-                    }}
-                    // {...panResponder.panHandlers}
-                  >
+                    }}>
                     {/* 모달에 들어갈 내용을 아래에 작성 */}
                     <Text style={modalInnerStyles.completeText1}>+1 RP</Text>
                     <Text style={modalInnerStyles.completeText2}>
@@ -368,9 +340,7 @@ const Progress = () => {
                         ...modalInnerStyles.centerSheetContainer,
                       },
                       {height: 270},
-                    ]}
-                    // {...panResponder.panHandlers}
-                  >
+                    ]}>
                     <Text style={modalInnerStyles.completeText1}>+10 RP</Text>
                     <Text style={modalInnerStyles.completeText2}>
                       2주간 완벽하게 루틴을 완료했어요
@@ -405,9 +375,7 @@ const Progress = () => {
                 <Animated.View
                   style={{
                     ...modalInnerStyles.complteChangeSheetContainer,
-                  }}
-                  // {...panResponder.panHandlers}
-                >
+                  }}>
                   <Text style={modalInnerStyles.modalTitle}>
                     이미 완료한 루틴입니다!
                   </Text>
@@ -495,10 +463,7 @@ const Progress = () => {
             <Animated.View
               style={{
                 ...modalInnerStyles.deleteSheetContainer,
-                // transform: [{translateY: translateY}],
-              }}
-              // {...panResponder.panHandlers}
-            >
+              }}>
               <Text style={modalInnerStyles.modalTitle}>
                 진행중인 루틴입니다!
               </Text>
@@ -607,13 +572,13 @@ const styles = StyleSheet.create({
     height: 110,
   },
   routineSheet: {
-    width: 353,
+    width: responsiveWidth(87),
     backgroundColor: '#FFFFFF',
     shadowColor: '#c5c5c5',
     elevation: 15,
     borderRadius: 5,
     marginTop: 20,
-    marginLeft: 20,
+    marginLeft: responsiveWidth(6),
   },
   img2_gray: {
     resizeMode: 'stretch',
