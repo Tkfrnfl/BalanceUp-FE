@@ -35,7 +35,14 @@ import {
 import {Shadow} from 'react-native-shadow-2';
 import {Progress as ProgressComponent} from './Progress';
 import {useRecoilState, useRecoilValue} from 'recoil';
-import {nickNameState, userRpState} from '../../recoil/atom';
+import {
+  dailyState,
+  exerciseState,
+  learningState,
+  mindCareState,
+  nickNameState,
+  userRpState,
+} from '../../recoil/atom';
 import {dateState} from '../../recoil/appState';
 import {routineStateDaysSet} from '../../recoil/userState';
 import {getAllRoutine} from '../../actions/routineAPI';
@@ -89,6 +96,10 @@ const MainScreen = ({navigation: {navigate}}) => {
   const todoImgGray = [lifeGray, educationGray, mentalGray, healthGray];
   const todoComplete = [0.5, 1, 0.5, 1];
   const [nickName, setNickName] = useRecoilState(nickNameState);
+  const [daily, setDaily] = useRecoilState(dailyState);
+  const [exercise, setExercise] = useRecoilState(exerciseState);
+  const [learning, setLearning] = useRecoilState(learningState);
+  const [mindCare, setMindCare] = useRecoilState(mindCareState);
   const [userRp, setUserRp] = useRecoilState(userRpState);
   const [userLevel, setUserLevel] = useState(1);
   const [upRp, setUpRp] = useState(20);
@@ -125,6 +136,10 @@ const MainScreen = ({navigation: {navigate}}) => {
     const request = await axios.get('/user');
     setNickName(request.data.body.nickname);
     setUserRp(request.data.body.rp);
+    setDaily(request.data.body.daily);
+    setExercise(request.data.body.exercise);
+    setLearning(request.data.body.learning);
+    setMindCare(request.data.body.mindCare);
   };
 
   useEffect(() => {
