@@ -9,6 +9,10 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
+import {
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
 import * as Progress from 'react-native-progress';
 import {nickNameState} from '../../recoil/atom';
 import {useRecoilState} from 'recoil';
@@ -75,17 +79,16 @@ const NameScreen = ({navigation}) => {
       <SafeAreaView style={styles.container}>
         <Progress.Bar
           progress={0.5}
-          width={350}
-          height={10}
+          width={responsiveWidth(90)}
+          height={6}
           unfilledColor={'#CED6FF'}
           borderWidth={0}
           color={'#585FFF'}
           style={styles.barWrap}
         />
         <View style={styles.title}>
-          <Text style={styles.titleText}>
-            내 캐릭터의 {'\n'}닉네임을 입력해주세요
-          </Text>
+          <Text style={styles.titleText}>내 캐릭터의</Text>
+          <Text style={styles.titleText}>닉네임을 입력해주세요</Text>
         </View>
         <View style={styles.form}>
           <View style={styles.inputWrapper}>
@@ -130,6 +133,7 @@ const NameScreen = ({navigation}) => {
         <View style={styles.gifView}>
           <FastImage style={styles.onboardingImg} source={NameOnboarding} />
         </View>
+
         <TouchableOpacity
           style={[
             styles.nextButton,
@@ -148,12 +152,11 @@ const NameScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginLeft: 20,
-    marginRight: 20,
+    width: '100%',
   },
   title: {
-    width: '100%',
-    height: '15%',
+    marginTop: 40,
+    marginLeft: 20,
     justifyContent: 'center',
   },
   titleText: {
@@ -163,9 +166,10 @@ const styles = StyleSheet.create({
   },
   form: {
     flex: 4,
+    marginLeft: 20,
   },
   inputWrapper: {
-    width: '130%',
+    marginTop: 25,
     position: 'relative',
     paddingBottom: 20,
     flexDirection: 'row',
@@ -173,8 +177,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textInput: {
-    width: 238,
-    height: 48,
+    width: responsiveWidth(60),
+    height: responsiveHeight(7.5),
+    color: '#232323',
     borderWidth: 1,
     borderColor: '#AFAFAF',
     borderRadius: 5,
@@ -182,11 +187,10 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
   },
   nextButton: {
-    width: 400,
+    width: responsiveWidth(100),
     height: 58,
     alignItems: 'center',
     padding: 15,
-    marginLeft: -25,
   },
   nextButtonText: {
     top: 2,
@@ -195,25 +199,24 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   barWrap: {
-    width: '100%',
-    height: 6,
-    marginTop: 50,
+    marginLeft: 20,
+    marginTop: 70,
     marginBottom: 10,
   },
   duplicationBtn: {
-    width: 102,
-    height: 48,
+    width: responsiveWidth(26.5),
+    height: responsiveHeight(7.5),
     borderWidth: 1,
     borderColor: '#585FFF',
     borderRadius: 5,
-    marginLeft: 5,
+    marginLeft: 15,
   },
   duplicationText: {
     color: '#585FFF',
     fontFamily: 'Pretendard-Medium',
     textAlign: 'center',
     fontSize: 16,
-    marginTop: 11,
+    marginTop: responsiveHeight(2),
   },
   gifView: {
     alignItems: 'center',
@@ -239,15 +242,15 @@ const styles = StyleSheet.create({
     marginTop: -17,
   },
   onboardingImg: {
-    width: 400,
+    width: responsiveWidth(100),
     height: 269,
   },
   errorImg: {
     width: 18,
     height: 18,
     position: 'absolute',
-    left: 200,
-    top: 15,
+    left: responsiveWidth(50),
+    top: 17,
   },
 });
 

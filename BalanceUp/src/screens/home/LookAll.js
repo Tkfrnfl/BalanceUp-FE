@@ -1,19 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  ScrollView,
-  useWindowDimensions,
-  Image,
-} from 'react-native';
+import {StyleSheet, View, SafeAreaView, ScrollView} from 'react-native';
 // import WeekCalendar from '../../components/WeekCalendar';
 // import WeekCalendar from 'react-native-calendars';
-import {MarkingProps} from '../../utils/MarkingProps';
-import moment from 'moment';
-import {WithLocalSvg} from 'react-native-svg';
-import {format} from 'date-fns';
 import commonStyles from '../../css/commonStyles';
 import {useIsFocused, useRoute} from '@react-navigation/native';
 
@@ -61,12 +49,11 @@ import {
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import {Progress} from './Progress';
 import Complete from './Complete';
-import {CheckBottomTab} from '../BottomTab';
 import {Shadow} from 'react-native-shadow-2';
 import * as ProgressLib from 'react-native-progress';
 
-import arrow2 from '../../resource/image/Main/arrow2.png';
-import arrow3 from '../../resource/image/Main/arrow3.png';
+import LettArrow from '../../resource/image/Main/left.svg';
+import RightArrow from '../../resource/image/Main/right.svg';
 
 LocaleConfig.locales.fr = {
   monthNames: [
@@ -112,8 +99,9 @@ const renderScene = SceneMap({
   second: Complete,
 });
 
-const LookAll = ({navigation: {navigate}}) => {
+const LookAll = () => {
   const [index, setIndex] = React.useState(0);
+  console.log(index);
   const [routes] = React.useState([
     {key: 'first', title: '루틴'},
     {key: 'second', title: '통계'},
@@ -122,6 +110,7 @@ const LookAll = ({navigation: {navigate}}) => {
   const [selectedDate, setSelectedDate] = useState();
   const [token, setToken] = useRecoilState(jwtState);
   const selectTodo = useRecoilValue(routineStateDaysSet(token, 0));
+  const [routineProgress, setRoutineProgress] = useState(0.3);
   const [checkedDateColor, setCheckedDateColor] = useState('#FFFFFF');
   const [checkedDate, setCheckedDate] = useState();
   const [routineDays, setRoutineDays] = useState({});
@@ -164,9 +153,9 @@ const LookAll = ({navigation: {navigate}}) => {
         };
       }
     }
-
     setRoutineDays(tmpObj);
   };
+
   // 날짜 누를시 선택날짜 색변화
   const checkSelectedDate = date => {
     setDateState(date);
@@ -188,9 +177,15 @@ const LookAll = ({navigation: {navigate}}) => {
     tmpObj[date].selectedColor = '#585FFF';
     tmpObj[date].selectedTextColor = '#FFFFFF';
 
-    tmpObj[checkedDate].selected = true;
-    tmpObj[checkedDate].selectedColor = checkedDateColor;
-    tmpObj[checkedDate].selectedTextColor = '#000000';
+    tmpObj[checkedDate] = {
+      selected: true,
+      selectedColor: checkedDateColor,
+      selectedTextColor: '#000000',
+    };
+
+    // tmpObj[checkedDate].selected = true;
+    // tmpObj[checkedDate].selectedColor = checkedDateColor;
+    // tmpObj[checkedDate].selectedTextColor = '#000000';
 
     setRoutineDays(tmpObj);
     setCheckedDate(date);
@@ -199,8 +194,22 @@ const LookAll = ({navigation: {navigate}}) => {
 
   useEffect(() => {
     setCheckValue();
-
     setCheckedDate(tmpToday);
+    // 루틴 진행률 구현
+    let completeArr = [];
+    for (let i = 0; i < selectTodo.length; i++) {
+      completeArr.push(selectTodo[i].completed);
+    }
+    console.log(
+      '완료 횟수: ',
+      completeArr.filter(prev => prev === true).length,
+    );
+    console.log('루틴 전체 갯수 : ', completeArr.length);
+    setRoutineProgress(
+      (
+        completeArr.filter(prev => prev === true).length / completeArr.length
+      ).toFixed(2),
+    );
   }, [selectTodo, token]);
   const isFocused = useIsFocused();
   useEffect(() => {
@@ -208,10 +217,6 @@ const LookAll = ({navigation: {navigate}}) => {
     let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
     setRoutineStateNum(tmpNum + 1);
   }, [isFocused]);
-
-  const fomatToday =
-    year.toString() + '-' + month.toString() + '-' + date.toString();
-  const onclick = () => {};
 
   return (
     <SafeAreaView style={styles.container}>
@@ -224,9 +229,9 @@ const LookAll = ({navigation: {navigate}}) => {
               monthFormat={'MM월'}
               renderArrow={direction => {
                 if (direction === 'left') {
-                  return <Image source={arrow2} />;
+                  return <LettArrow style={{right: 25}} />;
                 } else {
-                  return <Image source={arrow3} />;
+                  return <RightArrow style={{left: 25}} />;
                 }
               }}
               style={styles.calView}
@@ -234,11 +239,15 @@ const LookAll = ({navigation: {navigate}}) => {
               markedDates={routineDays}
               theme={{
                 agendaTodayColor: '#FF7391',
-                arrowColor: 'black',
                 textMonthFontWeight: '800',
                 selectedDayBackgroundColor: '#585FFF',
-                // dotColor: '#585FFF',
                 todayTextColor: '#009688',
+                textMonthFontFamily: 'Pretendard-Bold',
+                textDayFontFamily: 'Pretendard-Medium',
+                textDayHeaderFontFamily: 'Pretendard-Medium',
+                textDayHeaderFontSize: 14,
+                textDayFontSize: 14,
+                textMonthFontSize: 16,
                 'stylesheet.calendar.header': {
                   header: {
                     flexDirection: 'row',
@@ -270,17 +279,17 @@ const LookAll = ({navigation: {navigate}}) => {
               </SvgText>
               <SvgText
                 x="295"
-                y="30"
+                y="28"
                 text-anchor="middle"
                 fill="#585FFF"
                 style={styles.percentageText}>
-                50%
+                {`${Math.floor(routineProgress * 100)}%`}
               </SvgText>
               <View style={styles.progressBar}>
                 <ProgressLib.Bar
-                  progress={0.5}
+                  progress={parseInt(routineProgress)}
                   // 진행 루틴 Null = 0% 표시
-                  // 루틴 완료 횟수 총합 / 전체 루틴 갯수의 진행 총합 * 100
+                  // completed true 총합 / selectTodo.length = 결과값.toFixed(2)
                   width={300}
                   height={12}
                   color="#585FFF"
@@ -314,7 +323,6 @@ const LookAll = ({navigation: {navigate}}) => {
           )}
         />
       </ScrollView>
-      <CheckBottomTab navigate={navigate} />
     </SafeAreaView>
   );
 };
@@ -352,6 +360,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   tabview: {
+    backgroundColor: '#ffffff',
     height: 570,
     width: '100%',
   },
@@ -359,18 +368,25 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
     fontSize: 16,
     top: 18,
+    left: 3,
   },
   indicatorStyle: {
     borderColor: '#585FFF',
     width: 160,
     alignItems: 'center',
+    marginVertical: -3,
     marginHorizontal: 20,
     borderWidth: 1.5,
+    zIndex: 10,
   },
   tabBar: {
     backgroundColor: '#ffffff',
     shadowColor: 'transparent',
+    borderBottomColor: '#F8F8F9',
+    borderBottomWidth: 3,
+    zIndex: 1,
     shadowOpacity: 0,
+    marginBottom: 10,
   },
   calView: {
     width: 350,

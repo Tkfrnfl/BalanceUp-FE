@@ -105,12 +105,24 @@ const progressAllRoutine = async routineId => {
 
 const cancelOneRoutine = async (routineId, day) => {
   let res;
-  console.log('??')
   await axios
     .put('/cancel', {
       routineId: routineId,
       day: day,
     })
+    .then(response => {
+      console.log(response.data);
+      res = response.data;
+    })
+    .catch(function (error) {
+      console.log(error.response.data);
+    });
+  return res;
+};
+const deleteExpiredRoutine = async () => {
+  let res;
+  await axios
+    .delete('/routines', {})
     .then(response => {
       console.log(response.data);
       res = response.data;
@@ -129,4 +141,5 @@ export {
   progressOneRoutine,
   progressAllRoutine,
   cancelOneRoutine,
+  deleteExpiredRoutine,
 };

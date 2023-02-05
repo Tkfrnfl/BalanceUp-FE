@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {View, Text, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
 import FastImage from 'react-native-fast-image';
 
@@ -7,7 +14,10 @@ import education from '../../resource/image/SetTodo/education.png';
 import health from '../../resource/image/SetTodo/health.png';
 import life from '../../resource/image/SetTodo/life.png';
 import mental from '../../resource/image/SetTodo/mental.png';
-import {SetBottomTab} from '../BottomTab';
+import {
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
 
 const SetTodoScreen = ({navigation: {navigate}}) => {
   const [disabled, setDisabled] = useState(true);
@@ -77,7 +87,7 @@ const SetTodoScreen = ({navigation: {navigate}}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>
         내가 키울 루틴의 {'\n'}카테고리가 무엇인가요?
       </Text>
@@ -109,8 +119,7 @@ const SetTodoScreen = ({navigation: {navigate}}) => {
           <Text style={styles.nextBtnText}>다음</Text>
         </TouchableOpacity>
       </View>
-      <SetBottomTab navigate={navigate} />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -129,13 +138,13 @@ const styles = StyleSheet.create({
   },
   btnSheet: {
     flexDirection: 'column',
-    marginLeft: 25,
-    margin: 10,
+    marginLeft: responsiveWidth(6),
+    margin: responsiveWidth(3),
   },
   todoBtn: {
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
-    width: 160,
+    width: responsiveWidth(40.5),
     height: 140,
     marginRight: -10,
     borderRadius: 5,
@@ -143,7 +152,7 @@ const styles = StyleSheet.create({
   todoText: {
     fontFamily: 'Pretendard-Bold',
     fontSize: 20,
-    color: '#000',
+    color: '#232323',
     marginTop: 5,
   },
   todoSubText: {
@@ -159,15 +168,15 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   nextBtn: {
-    width: 348,
-    height: 48,
+    width: responsiveWidth(90),
+    height: responsiveHeight(6.5),
     bottom: 30,
     alignItems: 'center',
-    padding: 15,
     borderRadius: 5,
   },
   nextBtnText: {
     fontSize: 16,
+    top: responsiveHeight(1.6),
     fontFamily: 'Pretendard-Medium',
     color: '#fff',
   },

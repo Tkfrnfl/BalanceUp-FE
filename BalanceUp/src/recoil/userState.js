@@ -64,12 +64,12 @@ let routineStateDaysSet = selectorFamily({
         // 맨끝 날짜 구해서 end date 도 넣어주기
         for (var j = 0; j < res[i].routineDays.length; j++) {
           let tmp = {
-            id: res[i].routineId,
+            routineId: res[i].routineId,
             // id: res[i].routineDays[j].id,
-            title: res[i].routineTitle,
-            category: res[i].routineCategory,
+            routineTitle: res[i].routineTitle,
+            routineCategory: res[i].routineCategory,
             days: res[i].days,
-            alarm: res[i].alarmTime,
+            alarmTime: res[i].alarmTime,
             day: res[i].routineDays[j].day,
             completed: res[i].routineDays[j].completed,
           };

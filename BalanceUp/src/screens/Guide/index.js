@@ -113,7 +113,7 @@ export default function Guide({navigation: {navigate}}) {
                 <Text style={styles.infoText__sub}>100~299RP 획득</Text>
               </View>
               <View style={{alignItems: 'center', left: 43}}>
-                <Text style={styles.infoText_}>Lv. 16 이상</Text>
+                <Text style={styles.infoText_}>Lv. 16</Text>
                 <Text style={styles.infoText__sub}>300RP 이상 획득</Text>
               </View>
             </View>
@@ -132,6 +132,9 @@ export default function Guide({navigation: {navigate}}) {
               </Text>
               <Text style={styles.infoText__sub}>
                 - RP 변화에 따라 캐릭터가 이전 모습으로 바뀔 수 있어요
+              </Text>
+              <Text style={styles.infoText__sub}>
+                - 최종레벨은 16이지만, RP는 계속 모을 수 있어요.
               </Text>
             </View>
           </View>
@@ -166,7 +169,7 @@ const styles = StyleSheet.create({
   },
   infoSheet__: {
     width: 355,
-    height: 442,
+    height: 452,
     backgroundColor: '#ffffff',
     borderRadius: 5,
     alignItems: 'center',

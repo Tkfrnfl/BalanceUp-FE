@@ -7,12 +7,13 @@ import {
   TouchableOpacity,
   Dimensions,
   Animated,
-  PanResponder,
   TouchableWithoutFeedback,
   TextInput,
   Keyboard,
   Switch,
   FlatList,
+  // Platform,
+  // PermissionsAndroid,
 } from 'react-native';
 import Toast from 'react-native-easy-toast';
 import DatePicker from 'react-native-date-picker';
@@ -31,6 +32,7 @@ import {
   routineStateDaysSet,
 } from '../../recoil/userState';
 import {useRecoilState, useRecoilValue} from 'recoil';
+import {nickNameState} from '../../recoil/atom';
 
 const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const {planText} = route.params;
@@ -39,6 +41,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const {days} = route.params;
   const {alarm} = route.params;
 
+  const [nickName, setNickName] = useRecoilState(nickNameState);
   const [isEditing, setIsEditing] = useState(false);
   const [selected, setSelected] = useState(new Map());
   const [lengthTodo, setLengthTodo] = useState(0);
@@ -77,18 +80,16 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const [dayText, setDayText] = useState('');
   const dayBy = ['월', '화', '수', '목', '금', '토', '일'];
 
-  const [toast, setToast] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [clearModalVisible, setClearModalVisible] = useState(false);
 
-  const [isEnabled, setIsEnabled] = useState(true);
+  const [isEnabled, setIsEnabled] = useState(false);
 
   const [alertHour, setAlertHour] = useState('');
   const [alertMin, setAlertMin] = useState('');
   const [time, setTime] = useState('09:00');
   const [date, setDate] = useState(new Date());
-  const [open, setOpen] = useState(false);
-  const [shouldShow, setShouldShow] = useState(true);
+  const [open, setOpen] = useState(false); // 알림 기본 설정 = false
+  const [shouldShow, setShouldShow] = useState(false); // 알림 기본 설정 = false
   const [disabled, setDisabled] = useState(false);
   const [token, setToken] = useRecoilState(jwtState);
 
@@ -100,80 +101,37 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
 
   const panY = useRef(new Animated.Value(screenHeight)).current;
 
-  const translateY = panY.interpolate({
-    inputRange: [-1, 0, 1],
-    outputRange: [-1, 0, 1],
-  });
-
   const resetBottomSheet = Animated.timing(panY, {
     toValue: 0,
     duration: 20,
     useNativeDriver: true,
   });
 
-  const closeBottomSheet = Animated.timing(panY, {
-    toValue: screenHeight,
-    duration: 300,
-    useNativeDriver: true,
-  });
-
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: gestureState => panY.setValue(gestureState.dy),
-      onPanResponderRelease: gestureState => {
-        if (gestureState.dy > 0 && gestureState.vy > 1.5) {
-          closeModal();
-        } else {
-          resetBottomSheet.start();
-        }
-      },
-    }),
-  ).current;
-
-  const closeModal = () => {
-    closeBottomSheet.start(() => setIsModalVisible(false));
-    closeBottomSheet.start(() => setClearModalVisible(false));
-  };
-
   useEffect(() => {
     PushNotification.setApplicationIconBadgeNumber(0);
   }, []);
 
   useEffect(() => {
-    if (isModalVisible || clearModalVisible) {
+    if (clearModalVisible) {
       resetBottomSheet.start();
     }
-  }, [isModalVisible, clearModalVisible]);
+  }, [clearModalVisible]);
 
   useEffect(() => {
     if (routineId != null)
       setIsEditing(true), setTodoText(routineTitle), setTime(alarm);
-  }, []);
-
-  useEffect(() => {
-    if (time === null) {
+    if (alarm === null) {
       setIsEnabled(false);
       setShouldShow(false);
+    } else if (alarm != null) {
+      setIsEnabled(true);
+      setShouldShow(true);
     }
-  });
-
-  // useEffect(() => {
-  //   setTime(`${alertHour}:${alertMin}`);
-  // }, [alertHour, alertMin]);
+  }, []);
 
   // 팝업 알림 설정 구현
   const notify = () => {
-    let activeDays = [
-      sunActive,
-      monActive,
-      tueActive,
-      wenActive,
-      thurActive,
-      friActive,
-      satActive,
-    ];
+    let activeDays = [dayText];
 
     activeDays.map((day, index) => {
       if (day === 1) {
@@ -192,13 +150,14 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
         PushNotification.localNotificationSchedule({
           channelId: `${todoText}${index}`,
           title: todoText,
-          message: '김루틴님, 오늘의 루틴을 완료해보세요!',
+          message: `${nickName}님, 오늘의 루틴을 완료해보세요!`,
           date: calculateDateByDay(index),
           repeatType: 'week',
         });
       }
     });
   };
+
   // 팝업 알람 날짜 계산
   const calculateDateByDay = index => {
     let now = new Date();
@@ -271,9 +230,10 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
       res =>
         res === '루틴 갯수는 4개를 초과할 수 없습니다.'
           ? (setClearModalVisible(false),
-            navigate('LookAll', {overRoutine: 'over'}))
-          : (setClearModalVisible(false), navigate('LookAll')),
-      //notify()
+            console.log(res),
+            navigate('Home', {overRoutine: 'over'}))
+          : (setClearModalVisible(false), navigate('Home')),
+      notify(),
     );
     // let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
     // setRoutineStateNum(tmpNum + 1);
@@ -284,9 +244,9 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const handleEdit = () => {
     modifyRoutine(routineId, todoText, days, time).then(
       setClearModalVisible(false),
-      navigate('LookAll'),
+      navigate('Home'),
     );
-    // notify();
+    notify();
   };
 
   // 토스트 메세지
@@ -310,6 +270,32 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
     );
   };
 
+  // 알림 권한 확인 => 안드로이드 13버전부터 가능, 우리 코드는 안드로이드 12버전 <확인 필요>
+  // useEffect(() => {
+  //   if (Platform.OS === 'android') {
+  //     const requestCameraPermission = async () => {
+  //       try {
+  //         const granted = await PermissionsAndroid.request(
+  //           PermissionsAndroid.PERMISSIONS.CAMERA,
+  //           {
+  //             title: 'Camera Permission',
+  //             message: 'App needs permission for camera access',
+  //             buttonPositive: 'OK',
+  //           },
+  //         );
+  //         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+  //           console.log('success');
+  //         } else {
+  //           console.log('Please camera permission');
+  //         }
+  //       } catch (err) {
+  //         console.log('Camera permission err');
+  //       }
+  //     };
+  //     requestCameraPermission();
+  //   }
+  // }, []);
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
@@ -325,7 +311,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
         {isEditing ? (
           <TouchableOpacity
             activeOpacity={1.0}
-            onPress={() => navigate('LookAll')}>
+            onPress={() => navigate('Home')}>
             <BackArrow style={styles.arrowBtn} />
           </TouchableOpacity>
         ) : (
@@ -358,6 +344,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
               fontSize={16}
               maxLength={20}
               autoCapitalize="none"
+              placeholderTextColor="#AFAFAF"
               placeholder="ex) 물💧 마시기!"
               onChangeText={handleTextChange}
             />
@@ -384,6 +371,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
             extraData={selected}
           />
         </View>
+
         <View style={styles.alertView}>
           <Text style={styles.alertText}>루틴 알림</Text>
           <Switch
@@ -398,6 +386,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
             ]}
           />
         </View>
+
         {/* 시간 설정 모달 코드 */}
         <View>
           {shouldShow ? (
@@ -455,6 +444,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
             </TouchableOpacity>
           </View>
         )}
+
         {/* 완료 모달 구현 코드 */}
         <Modal
           visible={clearModalVisible}
@@ -468,9 +458,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
               <Animated.View
                 style={{
                   ...modalInnerStyles.clearSheetContainer,
-                  transform: [{translateY: translateY}],
-                }}
-                {...panResponder.panHandlers}>
+                }}>
                 <Text style={modalInnerStyles.clearModalTitle}>
                   설정한 루틴이 맞나요?
                 </Text>
