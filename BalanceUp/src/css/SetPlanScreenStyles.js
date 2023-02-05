@@ -1,4 +1,8 @@
 import {StyleSheet} from 'react-native';
+import {
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
 
 const styles = StyleSheet.create({
   container: {
@@ -9,12 +13,12 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontFamily: 'Pretendard-Bold',
     textAlign: 'center',
-    marginTop: 30,
-    color: '#000',
+    marginTop: responsiveHeight(7),
+    color: '#232323',
   },
   arrowBtn: {
-    top: 30,
-    left: 20,
+    top: responsiveWidth(8),
+    left: responsiveWidth(5),
   },
   inputSheet: {
     marginTop: 15,
@@ -28,7 +32,9 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     width: '94.5%',
+    height: responsiveHeight(7),
     marginTop: 8,
+    color: '#232323',
     borderWidth: 1,
     borderColor: '#AFAFAF',
     fontFamily: 'Pretendard-Bold',
@@ -37,7 +43,7 @@ const styles = StyleSheet.create({
   },
   count: {
     fontSize: 12,
-    marginLeft: 325,
+    marginLeft: responsiveWidth(83),
     fontFamily: 'Pretendard-Light',
     marginTop: 5,
     bottom: 3,
@@ -64,17 +70,16 @@ const styles = StyleSheet.create({
   daySelectBtnView: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginLeft: 20,
+    marginLeft: responsiveWidth(5),
   },
   daySelectBtn: {
     width: 48,
     height: 48,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
+    padding: responsiveWidth(1),
     borderRadius: 100,
-    marginLeft: 0,
-    marginRight: 20,
+    marginRight: responsiveWidth(5),
     marginTop: 10,
   },
   btnText: {
@@ -94,7 +99,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   switchStyle: {
-    marginRight: 20,
+    marginRight: 10,
     marginTop: -5,
   },
   timeModalText: {
@@ -119,15 +124,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   nextBtn: {
-    width: 358,
-    height: 48,
+    width: responsiveWidth(91),
+    height: responsiveHeight(6.5),
     alignItems: 'center',
-    padding: 15,
     backgroundColor: '#585FFF',
     borderRadius: 5,
   },
   nextBtnText: {
     fontSize: 16,
+    top: responsiveHeight(1.7),
     fontFamily: 'Pretendard-Medium',
     color: '#fff',
   },

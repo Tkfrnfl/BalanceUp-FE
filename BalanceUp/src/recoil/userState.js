@@ -39,8 +39,8 @@ let routineStateDays = atom({
 
 let routineStateDaysSet = selectorFamily({
   key: 'routineStateDaysSet',
-  get: token => async () => {
-    let res = await getAllRoutine(token).then(res => {
+  get: () => async () => {
+    let res = await getAllRoutine().then(res => {
       return res;
     });
     res = res.body;
@@ -49,11 +49,12 @@ let routineStateDaysSet = selectorFamily({
       for (var j = 0; j < res[i].routineDays.length; j++) {
         let tmp = {
           id: res[i].routineDays[j].id,
-          title: res[i].routineTitle,
-          category: res[i].routineCategory,
+          routineTitle: res[i].routineTitle,
+          routineCategory: res[i].routineCategory,
           days: res[i].days,
-          alarm: res[i].alarmTime,
+          alarmTime: res[i].alarmTime,
           day: res[i].routineDays[j].day,
+          routineId: res[i].routineId,
           completed: res[i].routineDays[j].completed,
         };
         routineList.push(tmp);

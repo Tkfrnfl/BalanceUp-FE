@@ -1,4 +1,8 @@
 import {StyleSheet} from 'react-native';
+import {
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
 
 const commonStyles = StyleSheet.create({
   spacing: {
@@ -18,6 +22,11 @@ const commonStyles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
     color: '#232323',
   },
+  boldText_: {
+    fontSize: 20,
+    fontFamily: 'Pretendard-Bold',
+    color: '#232323',
+  },
   lightText: {
     fontSize: 14,
     fontFamily: 'Pretendard-Light',
@@ -33,7 +42,7 @@ const commonStyles = StyleSheet.create({
     width: 100,
   },
   bottomTabSheet: {
-    height: 70,
+    height: responsiveHeight(10),
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -42,10 +51,10 @@ const commonStyles = StyleSheet.create({
     borderColor: '#EEEEEE',
   },
   commonText: {
-    right: 2,
-    bottom: 3,
     fontSize: 10,
     marginBottom: 10,
+    right: responsiveWidth(0.7),
+    bottom: responsiveHeight(0.3),
     fontFamily: 'Pretendard-Bold',
   },
 });

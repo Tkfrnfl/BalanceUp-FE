@@ -1,5 +1,4 @@
 import React, {useState, useRef, useEffect} from 'react';
-import axios from '../../utils/Client';
 import {
   StyleSheet,
   Text,
@@ -7,14 +6,13 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Animated,
-  PanResponder,
   Image,
   Dimensions,
   Modal,
   Pressable,
   ScrollView,
 } from 'react-native';
-import {useIsFocused, useRoute} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import commonStyles from '../../css/commonStyles';
 import modalInnerStyles from '../../css/modalStyles';
@@ -29,12 +27,9 @@ import mentalGray from '../../resource/image/SetTodo/mental_gray.png';
 import healthGray from '../../resource/image/SetTodo/health_gray.png';
 import oneDay from '../../resource/image/Modal/Crystal.png';
 import twoWeeks from '../../resource/image/Modal/10routine.png';
-import edit from '../../resource/image/Main/edit.png';
-import delete2 from '../../resource/image/Main/delete.png';
-import {api} from '../../utils/Api';
-import {jwtState} from '../../recoil/atom';
+import Edit from '../../resource/image/Main/edit.svg';
+import Delete from '../../resource/image/Main/delete.svg';
 import {useRecoilState, useRecoilValue} from 'recoil';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {deleteRoutine} from '../../actions/routineAPI';
 import {
   routineState,
@@ -44,18 +39,18 @@ import {
 } from '../../recoil/userState';
 import OverSvg from '../../resource/image/Common/overRoutine.svg';
 import {dateState} from '../../recoil/appState';
+import {responsiveWidth} from 'react-native-responsive-dimensions';
 
 const Progress = () => {
   const route = useRoute();
   const [routines, setRoutines] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [token, setToken] = useRecoilState(jwtState);
   const [routineId, setRoutineId] = useState();
   const [routineCategory, setroutineCategory] = useState();
   const [todoDays, setTodoDays] = useRecoilState(routineStateDays);
   const [dateSelected, setDateState] = useRecoilState(dateState);
   const [todoList, setTodoList] = useState([]);
-  const selectTodo = useRecoilValue(routineStateDaysSet(token));
+  const selectTodo = useRecoilValue(routineStateDaysSet());
 
   // const [nowdata, setNowdata] = useState();
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
@@ -64,7 +59,6 @@ const Progress = () => {
     useState(false);
   const [overRoutineModalVisible, setOverRoutineModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const isFocused = useIsFocused();
   const navigation = useNavigation();
 
   //날짜 선택시 루틴리스트 생성
@@ -74,42 +68,42 @@ const Progress = () => {
       if (selectTodo[i].day === dateSelected) {
         let tmpSelected = JSON.parse(JSON.stringify(selectTodo[i]));
         if (
-          selectTodo[i].category == '일상' &&
+          selectTodo[i].routineCategory == '일상' &&
           selectTodo[i].completed == true
         ) {
           tmpSelected.categoryImg = lifeGray;
         } else if (
-          selectTodo[i].category == '일상' &&
+          selectTodo[i].routineCategory == '일상' &&
           selectTodo[i].completed == false
         ) {
           tmpSelected.categoryImg = life;
         } else if (
-          selectTodo[i].category == '학습' &&
+          selectTodo[i].routineCategory == '학습' &&
           selectTodo[i].completed == true
         ) {
           tmpSelected.categoryImg = educationGray;
         } else if (
-          selectTodo[i].category == '학습' &&
+          selectTodo[i].routineCategory == '학습' &&
           selectTodo[i].completed == false
         ) {
           tmpSelected.categoryImg = education;
         } else if (
-          selectTodo[i].category == '마음관리' &&
+          selectTodo[i].routineCategory == '마음관리' &&
           selectTodo[i].completed == true
         ) {
           tmpSelected.categoryImg = mentalGray;
         } else if (
-          selectTodo[i].category == '마음관리' &&
+          selectTodo[i].routineCategory == '마음관리' &&
           selectTodo[i].completed == false
         ) {
           tmpSelected.categoryImg = mental;
         } else if (
-          selectTodo[i].category == '운동' &&
+          selectTodo[i].routineCategory == '운동' &&
           selectTodo[i].completed == true
         ) {
           tmpSelected.categoryImg = healthGray;
         } else if (
-          selectTodo[i].category == '운동' &&
+          selectTodo[i].routineCategory == '운동' &&
           selectTodo[i].completed == false
         ) {
           tmpSelected.categoryImg = health;
@@ -119,11 +113,14 @@ const Progress = () => {
     }
     setRoutines(tmp);
   };
+
   useEffect(() => {
     setRoutinesByDate();
+    console.log(routines);
   }, []);
 
   useEffect(() => {
+    console.log(route.params);
     if (route.params != null) {
       setOverRoutineModalVisible(!overRoutineModalVisible);
       route.params = null;
@@ -136,6 +133,7 @@ const Progress = () => {
 
   const [completeChangeIndex, setCompleteChangeIndex] = useState(0);
   const [todoComplete, setTodoComplete] = useState([0.5, 1, 0.5, 1]);
+
   // 모달 기능 구현
   const screenHeight = Dimensions.get('screen').height;
 
@@ -147,35 +145,8 @@ const Progress = () => {
     useNativeDriver: true,
   });
 
-  const closeBottomSheet = Animated.timing(panY, {
-    toValue: screenHeight,
-    duration: 300,
-    useNativeDriver: true,
-  });
-
   const todoImg = [life, education, mental, health];
   // const todoComplete = [0.5, 1, 0.5, 1];
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: gestureState => panY.setValue(gestureState.dy),
-      onPanResponderRelease: gestureState => {
-        if (gestureState.dy > 0 && gestureState.vy > 1.5) {
-          closeModal();
-        } else {
-          resetBottomSheet.start();
-        }
-      },
-    }),
-  ).current;
-
-  const closeModal = () => {
-    closeBottomSheet.start(() => setCompleteModalVisible(false));
-    closeBottomSheet.start(() => setCompleteChangeModalVisible(false));
-    closeBottomSheet.start(() => setDeleteModalVisible(false));
-    closeBottomSheet.start(() => setOverRoutineModalVisible(false));
-  };
 
   useEffect(() => {
     if (
@@ -292,12 +263,12 @@ const Progress = () => {
           key={data.routineId}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          style={styles.view2}>
+          style={styles.routineSheet}>
           <Image source={data.categoryImg} style={styles.img2_gray} />
           <View style={aimText1(setOpacity(data.completed)).bar}>
-            <Text style={commonStyles.boldText}>{data.title}</Text>
+            <Text style={commonStyles.boldText}>{data.routineTitle}</Text>
             <Text style={commonStyles.lightText}>
-              {data.category} | {data.days} {data.alarm}
+              {data.routineCategory} | {data.days} {data.alarmTime}
             </Text>
           </View>
           <TouchableWithoutFeedback onPress={() => checkComplete(index)}>
@@ -310,12 +281,7 @@ const Progress = () => {
                 rx="18"
                 fill="#585FFF"
               />
-              <SvgText
-                x={37}
-                y={40}
-                style={styles.mainText12}
-                fill="white"
-                fontWeight={600}>
+              <SvgText x={38} y={42} style={styles.completeText} fill="white">
                 완료
               </SvgText>
             </Svg>
@@ -330,11 +296,11 @@ const Progress = () => {
                 data.days,
               )
             }>
-            <Image source={edit} />
+            <Edit />
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
             onPress={() => handleRemove(data.routineId)}>
-            <Image source={delete2} />
+            <Delete />
           </TouchableWithoutFeedback>
 
           {/* 완료 모달 구현 코드 (one Day)*/}
@@ -351,9 +317,7 @@ const Progress = () => {
                   <Animated.View
                     style={{
                       ...modalInnerStyles.centerSheetContainer,
-                    }}
-                    // {...panResponder.panHandlers}
-                  >
+                    }}>
                     {/* 모달에 들어갈 내용을 아래에 작성 */}
                     <Text style={modalInnerStyles.completeText1}>+1 RP</Text>
                     <Text style={modalInnerStyles.completeText2}>
@@ -376,9 +340,7 @@ const Progress = () => {
                         ...modalInnerStyles.centerSheetContainer,
                       },
                       {height: 270},
-                    ]}
-                    // {...panResponder.panHandlers}
-                  >
+                    ]}>
                     <Text style={modalInnerStyles.completeText1}>+10 RP</Text>
                     <Text style={modalInnerStyles.completeText2}>
                       2주간 완벽하게 루틴을 완료했어요
@@ -413,9 +375,7 @@ const Progress = () => {
                 <Animated.View
                   style={{
                     ...modalInnerStyles.complteChangeSheetContainer,
-                  }}
-                  // {...panResponder.panHandlers}
-                >
+                  }}>
                   <Text style={modalInnerStyles.modalTitle}>
                     이미 완료한 루틴입니다!
                   </Text>
@@ -503,10 +463,7 @@ const Progress = () => {
             <Animated.View
               style={{
                 ...modalInnerStyles.deleteSheetContainer,
-                // transform: [{translateY: translateY}],
-              }}
-              // {...panResponder.panHandlers}
-            >
+              }}>
               <Text style={modalInnerStyles.modalTitle}>
                 진행중인 루틴입니다!
               </Text>
@@ -558,21 +515,20 @@ const img2 = x =>
 const aimText1 = x =>
   StyleSheet.create({
     bar: {
-      paddingLeft: 20,
-      paddingRight: 100,
-      paddingTop: 10,
+      paddingLeft: 10,
+      paddingTop: 16,
       opacity: 0.5,
-      width:200
+      width: 200,
     },
   });
 
 const svg2 = x =>
   StyleSheet.create({
     bar: {
-      width: 150,
-      zIndex: 10,
+      width: 120,
+      height: 200,
       opacity: x,
-      marginLeft:-40
+      marginLeft: -40,
     },
   });
 
@@ -603,6 +559,10 @@ const styles = StyleSheet.create({
     paddingLeft: 50,
     paddingRight: 100,
   },
+  completeText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 13,
+  },
   progressBar: {
     paddingLeft: 50,
     paddingTop: 35,
@@ -611,24 +571,21 @@ const styles = StyleSheet.create({
     width: 170,
     height: 110,
   },
-  view2: {
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 20},
-    shadowOpacity: 0.5,
-    shadowRadius: 30,
-    elevation: 7, // changed to a greater value
-    borderColor: 'black',
-    zIndex: 99, // added zIndex
-    backgroundColor: 'white', // added a background color
+  routineSheet: {
+    width: responsiveWidth(87),
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#c5c5c5',
+    elevation: 15,
+    borderRadius: 5,
     marginTop: 20,
-    paddingTop: 10,
-    marginLeft: 15,
+    marginLeft: responsiveWidth(6),
   },
   img2_gray: {
     resizeMode: 'stretch',
+    tintColor: 'gray',
+    marginLeft: 10,
     height: 70,
     width: 70,
-    tintColor: 'gray',
   },
 });
 

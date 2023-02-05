@@ -21,4 +21,39 @@ let jwtRefreshState = atom({
   default: '',
 });
 
-export {nickNameState, userNameState, jwtState, jwtRefreshState};
+let userRpState = atom({
+  key: 'userRp',
+  default: 0,
+});
+
+let dailyState = atom({
+  key: 'daily',
+  default: 0,
+});
+
+let exerciseState = atom({
+  key: 'exercise',
+  default: 0,
+});
+
+let learningState = atom({
+  key: 'learning',
+  default: 0,
+});
+
+let mindCareState = atom({
+  key: 'mindCare',
+  default: 0,
+});
+
+export {
+  dailyState,
+  exerciseState,
+  learningState,
+  mindCareState,
+  userRpState,
+  nickNameState,
+  userNameState,
+  jwtState,
+  jwtRefreshState,
+};

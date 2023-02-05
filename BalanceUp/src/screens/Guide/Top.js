@@ -5,7 +5,7 @@ import BackArrow from '../../resource/image/Common/backArrow.svg';
 export default function Top({navigate}) {
   return (
     <View>
-      <TouchableOpacity onPress={() => navigate('Main')} activeOpacity={1.0}>
+      <TouchableOpacity onPress={() => navigate('Home')} activeOpacity={1.0}>
         <BackArrow style={styles.arrowBtn} />
       </TouchableOpacity>
       <View style={styles.topSheet}>

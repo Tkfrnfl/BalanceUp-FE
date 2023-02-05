@@ -7,14 +7,18 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import * as Progress from 'react-native-progress';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   nickNameState,
   userNameState,
   jwtState,
   jwtRefreshState,
 } from '../../recoil/atom';
+import {
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
+import * as Progress from 'react-native-progress';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useRecoilState} from 'recoil';
 import {joinKakao} from '../../actions/memberJoinApi';
 
@@ -92,8 +96,8 @@ const AgreeScreen = ({navigation}) => {
     <SafeAreaView style={styles.container}>
       <Progress.Bar
         progress={0.5}
-        width={350}
-        height={10}
+        width={responsiveWidth(90)}
+        height={6}
         unfilledColor={'#CED6FF'}
         borderWidth={0}
         color={'#585FFF'}
@@ -200,15 +204,14 @@ const AgreeScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginLeft: 20,
-    marginRight: 20,
+    width: '100%',
   },
   title: {
     fontSize: 22,
     fontFamily: 'Pretendard-Bold',
     color: '#232323',
-    marginTop: 30,
-    marginBottom: 20,
+    marginTop: 40,
+    marginBottom: 30,
   },
   allAgreeText: {
     fontSize: 18,
@@ -222,7 +225,7 @@ const styles = StyleSheet.create({
   },
   sheet: {
     flex: 4,
-    width: '100%',
+    marginLeft: 20,
     alignItems: 'flex-start',
   },
   btnWrap: {
@@ -236,24 +239,22 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   nextButton: {
-    width: 400,
+    width: responsiveWidth(100),
     height: 58,
     alignItems: 'center',
     padding: 15,
-    marginLeft: -25,
   },
   nextButtonText: {
     top: 2,
     fontSize: 16,
     fontFamily: 'Pretendard-Medium',
-    color: '#fff',
+    color: '#ffffff',
   },
   barWrap: {
-    width: '100%',
-    height: 6,
-    marginTop: 50,
+    marginLeft: 20,
+    marginTop: 70,
     marginBottom: 10,
-    transform: [{rotateY: '180deg'}],
+    transform: [{rotate: '180deg'}],
   },
   boderLine: {
     borderTopWidth: 1,
@@ -268,11 +269,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   arrow: {
-    left: 160,
+    left: responsiveWidth(45),
     top: 1,
   },
   arrow1: {
-    left: 177,
+    left: responsiveWidth(49),
     top: 1,
   },
 });
