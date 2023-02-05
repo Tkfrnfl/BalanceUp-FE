@@ -27,22 +27,22 @@ let userRpState = atom({
 });
 
 let dailyState = atom({
-  key: 'userRp',
+  key: 'daily',
   default: 0,
 });
 
 let exerciseState = atom({
-  key: 'userRp',
+  key: 'exercise',
   default: 0,
 });
 
 let learningState = atom({
-  key: 'userRp',
+  key: 'learning',
   default: 0,
 });
 
 let mindCareState = atom({
-  key: 'userRp',
+  key: 'mindCare',
   default: 0,
 });
 
