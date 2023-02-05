@@ -17,7 +17,6 @@ import {
 import {useRecoilState} from 'recoil';
 import {validateText} from '../../utils/regex';
 import {ChangeNameAPI, duplicationCheckAPI} from '../../actions/checkNameAPI';
-import {MyBottomTab} from '../../screens/BottomTab/index';
 import {nickNameState} from '../../recoil/atom';
 
 import MoreInfoArrow from '../../resource/image/Agree/moreInfoArrow.svg';
@@ -229,7 +228,6 @@ const MyPage = ({navigation: {navigate}}) => {
           </TouchableOpacity>
           <Text style={styles.verText}>Ver 1.0.0</Text>
         </View>
-        <MyBottomTab navigate={navigate} />
 
         {/* 닉네임 변경 모달 코드 */}
         <Modal
@@ -388,7 +386,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
     marginTop: 2,
-    width: 400,
+    width: responsiveWidth(100),
     height: 55,
   },
   menuText: {

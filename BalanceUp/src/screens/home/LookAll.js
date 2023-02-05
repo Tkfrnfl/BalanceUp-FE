@@ -12,7 +12,6 @@ import {Calendar, LocaleConfig} from 'react-native-calendars';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import {Progress} from './Progress';
 import Complete from './Complete';
-import {CheckBottomTab} from '../BottomTab';
 import {Shadow} from 'react-native-shadow-2';
 import * as ProgressLib from 'react-native-progress';
 
@@ -63,7 +62,7 @@ const renderScene = SceneMap({
   second: Complete,
 });
 
-const LookAll = ({navigation: {navigate}}) => {
+const LookAll = () => {
   const [index, setIndex] = React.useState(0);
   console.log(index);
   const [routes] = React.useState([
@@ -274,7 +273,6 @@ const LookAll = ({navigation: {navigate}}) => {
           )}
         />
       </ScrollView>
-      <CheckBottomTab navigate={navigate} />
     </SafeAreaView>
   );
 };

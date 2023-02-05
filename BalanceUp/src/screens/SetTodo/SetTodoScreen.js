@@ -14,7 +14,6 @@ import education from '../../resource/image/SetTodo/education.png';
 import health from '../../resource/image/SetTodo/health.png';
 import life from '../../resource/image/SetTodo/life.png';
 import mental from '../../resource/image/SetTodo/mental.png';
-import {SetBottomTab} from '../BottomTab';
 import {
   responsiveHeight,
   responsiveWidth,
@@ -120,7 +119,6 @@ const SetTodoScreen = ({navigation: {navigate}}) => {
           <Text style={styles.nextBtnText}>다음</Text>
         </TouchableOpacity>
       </View>
-      <SetBottomTab navigate={navigate} />
     </SafeAreaView>
   );
 };

@@ -219,8 +219,8 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
         res === '루틴 갯수는 4개를 초과할 수 없습니다.'
           ? (setClearModalVisible(false),
             console.log(res),
-            navigate('Main', {overRoutine: 'over'}))
-          : (setClearModalVisible(false), navigate('Main')),
+            navigate('Home', {overRoutine: 'over'}))
+          : (setClearModalVisible(false), navigate('Home')),
       notify(),
     );
   };
@@ -229,7 +229,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const handleEdit = () => {
     modifyRoutine(routineId, todoText, days, time).then(
       setClearModalVisible(false),
-      navigate('Main'),
+      navigate('Home'),
     );
     notify();
   };
@@ -296,7 +296,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
         {isEditing ? (
           <TouchableOpacity
             activeOpacity={1.0}
-            onPress={() => navigate('Main')}>
+            onPress={() => navigate('Home')}>
             <BackArrow style={styles.arrowBtn} />
           </TouchableOpacity>
         ) : (

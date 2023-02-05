@@ -10,12 +10,12 @@ import {
 } from 'react-native';
 import axios from '../../utils/Client';
 import commonStyles from '../../css/commonStyles';
-// import WeekCalendar from '../../components/WeekCalendar';
 // import WeekCalendar from 'react-native-calendars';
 import {format} from 'date-fns';
 import * as Progress from 'react-native-progress';
 import LevelArrow from '../../resource/image/Main/levelArrow.svg';
 import LevelBox from '../../resource/image/Main/levelBox.svg';
+import LevelBox999 from '../../resource/image/Main/levelBox999.svg';
 import LeftArrow from '../../resource/image/Main/left.svg';
 import RightArrow from '../../resource/image/Main/right.svg';
 import life from '../../resource/image/SetTodo/life.png';
@@ -33,7 +33,6 @@ import {
   CalendarProvider,
 } from 'react-native-calendars';
 import {Shadow} from 'react-native-shadow-2';
-import {HomeBottomTab} from '../BottomTab';
 import {Progress as ProgressComponent} from './Progress';
 import {useRecoilState, useRecoilValue} from 'recoil';
 import {nickNameState, userRpState} from '../../recoil/atom';
@@ -42,7 +41,6 @@ import {routineStateDaysSet} from '../../recoil/userState';
 import {getAllRoutine} from '../../actions/routineAPI';
 import {
   responsiveFontSize,
-  responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 
@@ -131,7 +129,7 @@ const MainScreen = ({navigation: {navigate}}) => {
 
   useEffect(() => {
     fetchUserData();
-    // setUserRp(1002);
+    // setUserRp(1003);
     console.log('user RP : ', userRp);
 
     for (let i = 0; i < 14; i++) {
@@ -343,14 +341,6 @@ const MainScreen = ({navigation: {navigate}}) => {
             <Text style={styles.guideText}>키움 성장 가이드</Text>
           </TouchableOpacity>
 
-          {/* <TouchableOpacity
-            activeOpacity={1.0}
-            onPress={() => {
-              navigate('Guide');
-            }}>
-            <Text style={styles.guideText}>키움 성장 가이드</Text>
-          </TouchableOpacity> */}
-
           {/* 레벨 progressBar */}
           <Shadow distance={5} startColor={'#f4f4f4'}>
             <View style={styles.levelContainer}>
@@ -364,6 +354,8 @@ const MainScreen = ({navigation: {navigate}}) => {
                     ]}>
                     Lv.{userLevel}
                   </Text>
+
+                  {/* 상단 Lv, RP 부분 */}
                 </View>
                 {userRp >= 300 ? (
                   <Text
@@ -383,6 +375,8 @@ const MainScreen = ({navigation: {navigate}}) => {
                   </Text>
                 )}
               </View>
+
+              {/* 프로그레스바 부분 */}
               {userRp >= 300 ? (
                 <View>
                   <Progress.Bar
@@ -397,29 +391,40 @@ const MainScreen = ({navigation: {navigate}}) => {
                   <LevelArrow
                     style={[
                       userRp > 999
-                        ? dstyleText(1.0 * 300).bar
+                        ? dstyleText(0.985 * 300).bar
                         : dstyleText((userRp / 999) * 300).bar,
                       {bottom: 28, left: userRp === 0 ? 7 : null},
                     ]}
                   />
                   <View style={{left: userRp === 0 ? 7 : null}}>
-                    <LevelBox
-                      style={[
-                        userRp > 999
-                          ? dstyleText(1.0 * 300).bar
-                          : dstyleText((userRp / 999) * 300).bar,
-                        {bottom: 1, left: -7},
-                      ]}
-                    />
+                    {userRp > 999 ? (
+                      <LevelBox999
+                        style={[
+                          userRp > 999
+                            ? dstyleText(1.0 * 300).bar
+                            : dstyleText((userRp / 999) * 300).bar,
+                          {bottom: 1, left: responsiveWidth(-4.4)},
+                        ]}
+                      />
+                    ) : (
+                      <LevelBox
+                        style={[
+                          userRp > 999
+                            ? dstyleText(1.0 * 300).bar
+                            : dstyleText((userRp / 999) * 300).bar,
+                          {bottom: 1, left: -7},
+                        ]}
+                      />
+                    )}
                     {userRp > 999 ? (
                       <Text
                         style={[
                           styles.progressRpText,
                           dstyleText(1.0 * 300).bar,
                           {
-                            left: -3.5,
+                            left: -8,
                             bottom: 3,
-                            fontSize: responsiveFontSize(1.0),
+                            fontSize: responsiveFontSize(1.08),
                           },
                           ,
                         ]}>
@@ -599,7 +604,6 @@ const MainScreen = ({navigation: {navigate}}) => {
         <ProgressComponent />
         <View style={commonStyles.spacing2} />
       </ScrollView>
-      <HomeBottomTab navigate={navigate} />
     </SafeAreaView>
   );
 };
