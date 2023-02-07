@@ -76,6 +76,8 @@ let routineStateDaysSet = selectorFamily({
           routineList.push(tmp);
         }
       }
+      // 맨 마지막에 전체 res.body 담아보내기
+      routineList.push(res);
       return routineList;
     },
 });

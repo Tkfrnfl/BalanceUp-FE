@@ -99,7 +99,7 @@ const Progress = () => {
   // 날짜 선택시 루틴리스트 생성
   const setRoutinesByDate = () => {
     let tmp = [];
-    for (var i = 0; i < selectTodo.length; i++) {
+    for (var i = 0; i < selectTodo.length-1; i++) {
       if (selectTodo[i].day === dateSelected) {
         let tmpSelected = JSON.parse(JSON.stringify(selectTodo[i]));
         if (
@@ -163,11 +163,11 @@ const Progress = () => {
   // 2번, 3번 or 이어서 다른 루틴 수정시에는 api만 정상 작동, 스크린 반영 안됨
   useEffect(() => {
     DeviceEventEmitter.addListener('refresh', () => {
-      console.log('refresh 실행');
+      //console.log('refresh 실행');
       let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
       setRoutineStateNum(tmpNum + 1);
     });
-  }, []);
+  });
 
   useEffect(() => {
     setRoutinesByDate();
@@ -239,7 +239,7 @@ const Progress = () => {
         // 2주 루틴, 하루루틴 구별
         let checkEveyday = 0;
 
-        for (var i = 0; i < selectTodo.length; i++) {
+        for (var i = 0; i < selectTodo.length-1; i++) {
           if (
             selectTodo[i].routineId === routines[index].routineId &&
             selectTodo[i].completed == false

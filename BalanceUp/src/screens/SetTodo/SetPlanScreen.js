@@ -24,8 +24,10 @@ import PushNotification from 'react-native-push-notification';
 import moment from 'moment';
 import BackArrow from '../../resource/image/Common/backArrow.svg';
 import {createRoutine, modifyRoutine} from '../../actions/routineAPI';
-import {useRecoilState} from 'recoil';
-import {nickNameState} from '../../recoil/atom';
+import {useRecoilState, useRecoilValue} from 'recoil';
+import {nickNameState, jwtState} from '../../recoil/atom';
+import {dateState, routineStateNum} from '../../recoil/appState';
+import {routineStateDaysSet} from '../../recoil/userState';
 
 const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const {planText} = route.params;
@@ -79,14 +81,16 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
 
   const [alertHour, setAlertHour] = useState('');
   const [alertMin, setAlertMin] = useState('');
-  const [time, setTime] = useState('09:00');
+  const [time, setTime] = useState('');
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false); // 알림 기본 설정 = false
   const [shouldShow, setShouldShow] = useState(false); // 알림 기본 설정 = false
   const [disabled, setDisabled] = useState(false);
-
-  //const selectTodo = useRecoilValue(routineStateDaysSet(token,0));
-  //const [routineRefresh, setRoutineStateNum] = useRecoilState(routineStateNum);
+  const [token, setToken] = useRecoilState(jwtState);
+  const selectTodo = useRecoilValue(routineStateDaysSet(token, 0));
+  const [routineRefresh, setRoutineStateNum] = useRecoilState(routineStateNum);
+  // const selectTodo = useRecoilValue(routineStateDaysSet(token,0));
+  // const [routineRefresh, setRoutineStateNum] = useRecoilState(routineStateNum);
 
   // 모달 기능 구현
   const screenHeight = Dimensions.get('screen').height;
@@ -116,8 +120,9 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   }, [clearModalVisible]);
 
   useEffect(() => {
-    if (routineId != null)
+    if (routineId != null) {
       setIsEditing(true), setTodoText(routineTitle), setTime(alarm);
+    }
     if (alarm === null) {
       setIsEnabled(false);
       setShouldShow(false);
@@ -128,9 +133,13 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   }, []);
 
   // 팝업 알림 설정 구현
-  const notify = () => {
+  const notify = (routineId, days, alarmTime) => {
     let activeDays = [dayText];
 
+    PushNotification.channelExists('channel-id', function (exists) {
+      console.log(exists); // true/false
+    });
+    console.log(activeDays);
     activeDays.map((day, index) => {
       if (day === 1) {
         PushNotification.createChannel(
@@ -218,6 +227,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   // 루틴 설정 완료 버튼 구현
   const handleCheck = () => {
     setClearModalVisible(!clearModalVisible);
+    console.log(days);
     setDayText(
       [...dayText].sort((a, b) => dayBy.indexOf(a) - dayBy.indexOf(b)),
     );
@@ -225,15 +235,38 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
 
   // 루틴 생성
   const handleCreate = async () => {
-    createRoutine(todoText, planText, dayText, time).then(
-      res =>
-        res === '루틴 갯수는 4개를 초과할 수 없습니다.'
-          ? (setClearModalVisible(false),
-            console.log(res),
-            navigate('Home', {overRoutine: 'over'}))
-          : (setClearModalVisible(false), navigate('Home')),
-      notify(),
+    let beforeArray = JSON.parse(JSON.stringify(selectTodo));
+    await createRoutine(todoText, planText, dayText, time).then(
+      res => {
+        if (res === '루틴 갯수는 4개를 초과할 수 없습니다.') {
+          setClearModalVisible(false);
+          navigate('Home', {overRoutine: 'over'});
+        } else {
+          setClearModalVisible(false);
+          navigate('Home');
+          // seloctor 업데이트를 위해+1
+          let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
+          setRoutineStateNum(tmpNum + 1);
+        }
+      },
+      // res === '루틴 갯수는 4개를 초과할 수 없습니다.'
+      //   ? (setClearModalVisible(false),
+      //     console.log(res),
+      //     navigate('Home', {overRoutine: 'over'}))
+      //   : (setClearModalVisible(false), navigate('Home')),
     );
+
+    // let changedArray = afterArray.slice(beforeArray.length, afterArray.length);
+    // console.log(beforeArray);
+    // console.log(selectTodo);
+    // console.log(changedArray);
+    let routineId;
+    let days = [];
+    let alarmTime;
+    // for(var i=0;i<selectTodo.length;i++){
+    //   if(selectTodo[i].routineTitle==todoText && )
+    // }
+    // notify(),
     // let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
     // setRoutineStateNum(tmpNum + 1);
     // await routineStateDaysSet(token, routineRefresh);
@@ -245,7 +278,8 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
       setClearModalVisible(false),
       navigate('Home'),
     );
-    notify();
+
+    // notify();
   };
 
   // 토스트 메세지

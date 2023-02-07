@@ -92,7 +92,7 @@ const LookAll = () => {
   let tmpToday = year + '-' + tmpMonth + '-' + tmpDate;
 
   const setCheckValue = () => {
-    for (var i = 0; i < selectTodo.length; i++) {
+    for (var i = 0; i < selectTodo.length - 1; i++) {
       if (selectTodo[i].day != tmpToday) {
         tmpObj[selectTodo[i].day] = {
           selected: true,
@@ -153,7 +153,7 @@ const LookAll = () => {
 
     // 루틴 진행률 구현
     let completeArr = [];
-    for (let i = 0; i < selectTodo.length; i++) {
+    for (let i = 0; i < selectTodo.length - 1; i++) {
       completeArr.push(selectTodo[i].completed);
     }
     console.log(

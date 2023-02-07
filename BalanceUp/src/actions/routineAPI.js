@@ -62,7 +62,7 @@ const getAllRoutine = async () => {
   await axios
     .get('/routines')
     .then(response => {
-      console.log(response.data);
+      //console.log(response.data);
       res = response.data;
     })
     .catch(function (error) {

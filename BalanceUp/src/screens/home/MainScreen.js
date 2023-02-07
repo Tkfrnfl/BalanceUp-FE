@@ -34,16 +34,19 @@ import {Shadow} from 'react-native-shadow-2';
 import {Progress as ProgressComponent} from './Progress';
 import {useRecoilState, useRecoilValue} from 'recoil';
 import {jwtState} from '../../recoil/atom';
-import {dateState} from '../../recoil/appState';
+import {dateState, routineStateNum} from '../../recoil/appState';
 import {nickNameState, userRpState} from '../../recoil/atom';
 import {routineStateDaysSet} from '../../recoil/userState';
 import {getAllRoutine} from '../../actions/routineAPI';
+import {useIsFocused} from '@react-navigation/native';
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import {DeviceEventEmitter} from 'react-native';
+import PushNotification from 'react-native-push-notification';
+import moment from 'moment';
 
 LocaleConfig.locales.fr = {
   monthNames: [
@@ -98,6 +101,7 @@ const MainScreen = ({navigation: {navigate}}) => {
   // const [exercise, setExercise] = useRecoilState(exerciseState);
   // const [learning, setLearning] = useRecoilState(learningState);
   // const [mindCare, setMindCare] = useRecoilState(mindCareState);
+  const [routineRefresh, setRoutineStateNum] = useRecoilState(routineStateNum);
   const [userRp, setUserRp] = useRecoilState(userRpState);
   const [token, setToken] = useRecoilState(jwtState);
   const [userLevel, setUserLevel] = useState(1);
@@ -123,6 +127,7 @@ const MainScreen = ({navigation: {navigate}}) => {
   const [selectedDate, setSelectedDate] = useState(
     format(new Date(), 'yyyy-MM-dd'),
   );
+  const isFocused = useIsFocused();
 
   // RP 레벨 처리
   useEffect(() => {
@@ -150,7 +155,7 @@ const MainScreen = ({navigation: {navigate}}) => {
   let tmpToday = year + '-' + tmpMonth + '-' + tmpDate;
 
   const setCheckValue = () => {
-    for (var i = 0; i < selectTodo.length; i++) {
+    for (var i = 0; i < selectTodo.length - 1; i++) {
       if (selectTodo[i].day != tmpToday) {
         tmpObj[selectTodo[i].day] = {
           selected: true,
@@ -201,87 +206,151 @@ const MainScreen = ({navigation: {navigate}}) => {
     setCheckedDateColor(tmpColor);
   };
 
-  const asyncGetAll = async () => {
-    let res;
-
-    res = await getAllRoutine();
-    res = res.body;
-
+  const setTodo = async res => {
+    res = selectTodo[selectTodo.length - 1];
+    let completedTmp, totalTmp;
+    completedTmp = [0, 0, 0, 0];
+    totalTmp = [0, 0, 0, 0];
     for (var i = 0; i < res.length; i++) {
       // 루틴 전체 불러오기
       if (res[i].routineCategory === '일상') {
         if (res[i].completed === true) {
-          let completedTmp, totalTmp;
-          completedTmp = todoCompleted;
-          totalTmp = todoTotal;
           completedTmp[0] += 1;
           totalTmp[0] += 1;
-          setTodoCompleted(completedTmp);
-          setTodoTotal(totalTmp);
         } else {
-          let totalTmp;
-          totalTmp = todoTotal;
           totalTmp[0] += 1;
-          setTodoTotal(totalTmp);
         }
       } else if (res[i].routineCategory === '학습') {
         if (res[i].completed === true) {
-          let completedTmp, totalTmp;
-          completedTmp = todoCompleted;
-          totalTmp = todoTotal;
           completedTmp[1] += 1;
           totalTmp[1] += 1;
-          setTodoCompleted(completedTmp);
-          setTodoTotal(totalTmp);
         } else {
-          let totalTmp;
-          totalTmp = todoTotal;
           totalTmp[1] += 1;
-          setTodoTotal(totalTmp);
         }
       } else if (res[i].routineCategory === '마음관리') {
         if (res[i].completed === true) {
-          let completedTmp, totalTmp;
-          completedTmp = todoCompleted;
-          totalTmp = todoTotal;
           completedTmp[2] += 1;
           totalTmp[2] += 1;
-          setTodoCompleted(completedTmp);
-          setTodoTotal(totalTmp);
         } else {
-          let totalTmp;
-          totalTmp = todoTotal;
           totalTmp[2] += 1;
-          setTodoTotal(totalTmp);
         }
       } else if (res[i].routineCategory === '운동') {
         if (res[i].completed === true) {
-          let completedTmp, totalTmp;
-          completedTmp = todoCompleted;
-          totalTmp = todoTotal;
           completedTmp[3] += 1;
           totalTmp[3] += 1;
-          setTodoCompleted(completedTmp);
-          setTodoTotal(totalTmp);
         } else {
-          let totalTmp;
-          totalTmp = todoTotal;
           totalTmp[3] += 1;
-          setTodoTotal(totalTmp);
         }
       }
+      setTodoCompleted(completedTmp);
+      setTodoTotal(totalTmp);
     }
-    // 루틴 날짜별 정리
   };
 
   useEffect(() => {
-    asyncGetAll();
+    // asyncGetAll();
     setCheckValue();
     setTimeout(() => {
       setTmp(5);
     }, 1000);
     setCheckedDate(tmpToday);
+  }, [selectTodo]);
+  useEffect(() => {
+    PushNotification.setApplicationIconBadgeNumber(0);
   }, []);
+  useEffect(() => {
+    setTodo();
+    // 알림 싱크 체크 후 생성
+    let tmpArray = JSON.parse(
+      JSON.stringify(selectTodo[selectTodo.length - 1]),
+    );
+    // console.log(tmpArray.routineDays);
+    // console.log('??');
+    for (var i = 0; i < tmpArray.length; i++) {
+      let tmpArrayDays = [];
+
+      for (var j = 0; j < tmpArray[i].routineDays.length; j++) {
+        let m = moment().utcOffset(0);
+        // console.log(tmpArray[i].routineDays[j]);
+        let year = parseInt(tmpArray[i].routineDays[j].day.split('-')[0], 10);
+        let month = parseInt(tmpArray[i].routineDays[j].day.split('-')[1], 10);
+        month -= 1;
+        let date = parseInt(tmpArray[i].routineDays[j].day.split('-')[2], 10);
+        let hour = parseInt(tmpArray[i].alarmTime.split(':')[0], 10);
+        let minute = parseInt(tmpArray[i].alarmTime.split(':')[1], 10);
+
+        m.set({
+          year: year,
+          month: month,
+          date: date,
+          hour: hour,
+          minute: minute,
+          second: 0,
+          millisecond: 0,
+        });
+
+        // m = moment(
+        //   year.toString() +
+        //     '-' +
+        //     month.toString() +
+        //     '-' +
+        //     day.toString() +
+        //     ' ' +
+        //     hour.toString() +
+        //     ':' +
+        //     minute.toString(),
+        //   'YYYY-MM-DD HH:MM',
+        // );
+        m.toDate();
+        var tmpM = new Date(m);
+        tmpArrayDays.push(tmpM);
+      }
+      // console.log(tmpArray[i].routineId);
+      console.log(tmpArrayDays);
+      let tmpId = tmpArray[i].routineId;
+      let tmpTitle = tmpArray[i].routineTitle;
+      PushNotification.channelExists(`${tmpId}`, function (exists) {
+        // 채널 확인후 존재하지 않으면 채널 생성후 알림 설정
+        if (!exists) {
+          PushNotification.createChannel(
+            {
+              channelId: `${tmpId}`,
+              channelName: tmpTitle,
+              channelDescription: 'A channel to categorise your notifications',
+              playSound: false,
+              soundName: 'default',
+              vibrate: true,
+            },
+            // created => console.log(`createChannel returned '${created}'`),
+          );
+          PushNotification.localNotificationSchedule({
+            channelId: `${tmpId}`,
+            title: tmpTitle,
+            message: `${nickName}님, 오늘의 루틴을 완료해보세요!`,
+            date: tmpArrayDays,
+            // repeatType: 'week',
+            // date: new Date(Date.now() + 20 * 1000),
+          });
+        } else {
+          PushNotification.localNotificationSchedule({
+            channelId: `${tmpId}`,
+            title: tmpTitle,
+            message: `${nickName}님, 오늘의 루틴을 완료해보세요!`,
+            date: tmpArrayDays[0], // 알람 하나씩 설정
+            // repeatType: 'week',
+            // date: new Date(Date.now() + 20 * 1000),
+          });
+          PushNotification.getScheduledLocalNotifications(callback => {
+            console.log(callback); // ['channel_id_1']
+          });
+          // PushNotification.getChannels(callback => {
+          //   console.log(callback); // ['channel_id_1']
+          // });
+          // PushNotification.clearAllNotifications();
+        }
+      });
+    }
+  }, [routineRefresh]);
 
   return (
     <SafeAreaView style={styles.container}>
