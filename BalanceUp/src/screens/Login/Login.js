@@ -17,6 +17,7 @@ import FastImage from 'react-native-fast-image';
 import Login_Onboading from '../../resource/image/Login/login_onborading.png';
 import KakaoSvg from '../../resource/image/Login/Kakao.svg';
 import GoogleSvg from '../../resource/image/Login/Google.svg';
+import {deleteExpiredRoutine} from '../../actions/routineAPI';
 
 // const naverLogin = async (): Promise<void> => {
 //   console.log('dd');
@@ -95,6 +96,7 @@ export default function Login({navigation}) {
           'jwtRefresh',
           JSON.stringify(res.body.refreshToken),
         );
+        deleteExpiredRoutine();
         navigation.push('Main');
       }
     });
@@ -136,10 +138,6 @@ export default function Login({navigation}) {
         <Button
           title="닉네임 설정 (임시 구현)"
           onPress={() => navigation.push('NickName')}
-        />
-        <Button
-          title="홈 화면으로 가기 (임시 구현)"
-          onPress={() => navigation.push('Main')}
         />
       </View>
     </View>
