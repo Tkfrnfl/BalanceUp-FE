@@ -15,6 +15,7 @@ import {
   // Platform,
   // PermissionsAndroid,
 } from 'react-native';
+import {DeviceEventEmitter} from 'react-native';
 import Toast from 'react-native-easy-toast';
 import DatePicker from 'react-native-date-picker';
 import modalInnerStyles from '../../css/modalStyles';
@@ -23,15 +24,7 @@ import PushNotification from 'react-native-push-notification';
 import moment from 'moment';
 import BackArrow from '../../resource/image/Common/backArrow.svg';
 import {createRoutine, modifyRoutine} from '../../actions/routineAPI';
-import {jwtState} from '../../recoil/atom';
-import {dateState, routineStateNum} from '../../recoil/appState';
-import {
-  routineState,
-  routineStateComplete,
-  routineStateDays,
-  routineStateDaysSet,
-} from '../../recoil/userState';
-import {useRecoilState, useRecoilValue} from 'recoil';
+import {useRecoilState} from 'recoil';
 import {nickNameState} from '../../recoil/atom';
 
 const SetPlanScreen = ({navigation: {navigate}, route}) => {
@@ -91,7 +84,6 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const [open, setOpen] = useState(false); // 알림 기본 설정 = false
   const [shouldShow, setShouldShow] = useState(false); // 알림 기본 설정 = false
   const [disabled, setDisabled] = useState(false);
-  const [token, setToken] = useRecoilState(jwtState);
 
   //const selectTodo = useRecoilValue(routineStateDaysSet(token,0));
   //const [routineRefresh, setRoutineStateNum] = useRecoilState(routineStateNum);
@@ -106,6 +98,12 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
     duration: 20,
     useNativeDriver: true,
   });
+
+  useEffect(() => {
+    return () => {
+      DeviceEventEmitter.emit('refresh');
+    };
+  }, []);
 
   useEffect(() => {
     PushNotification.setApplicationIconBadgeNumber(0);
@@ -225,7 +223,8 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
     );
   };
 
-  const handleCreate = async() => {
+  // 루틴 생성
+  const handleCreate = async () => {
     createRoutine(todoText, planText, dayText, time).then(
       res =>
         res === '루틴 갯수는 4개를 초과할 수 없습니다.'
