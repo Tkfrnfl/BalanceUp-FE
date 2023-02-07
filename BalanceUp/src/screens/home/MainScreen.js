@@ -8,9 +8,7 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import axios from '../../utils/Client';
 import commonStyles from '../../css/commonStyles';
-// import WeekCalendar from 'react-native-calendars';
 import {format} from 'date-fns';
 import * as Progress from 'react-native-progress';
 import LevelArrow from '../../resource/image/Main/levelArrow.svg';
@@ -22,10 +20,10 @@ import life from '../../resource/image/SetTodo/life.png';
 import education from '../../resource/image/SetTodo/education.png';
 import mental from '../../resource/image/SetTodo/mental.png';
 import health from '../../resource/image/SetTodo/health.png';
-import lifeGray from '../../resource/image/SetTodo/life_gray.png';
-import educationGray from '../../resource/image/SetTodo/education_gray.png';
-import mentalGray from '../../resource/image/SetTodo/mental_gray.png';
-import healthGray from '../../resource/image/SetTodo/health_gray.png';
+import LifeGray from '../../resource/image/Main/lifeGray.svg';
+import EducationGray from '../../resource/image/Main/studyGray.svg';
+import HealthGray from '../../resource/image/Main/healthGray.svg';
+import MentalGray from '../../resource/image/Main/mindGray.svg';
 import lv1 from '../../resource/image/Main/1lv.gif';
 import {
   LocaleConfig,
@@ -35,24 +33,17 @@ import {
 import {Shadow} from 'react-native-shadow-2';
 import {Progress as ProgressComponent} from './Progress';
 import {useRecoilState, useRecoilValue} from 'recoil';
-
 import {jwtState} from '../../recoil/atom';
-import {dateState, routineStateNum} from '../../recoil/appState';
-
-import {
-  dailyState,
-  exerciseState,
-  learningState,
-  mindCareState,
-  nickNameState,
-  userRpState,
-} from '../../recoil/atom';
+import {dateState} from '../../recoil/appState';
+import {nickNameState, userRpState} from '../../recoil/atom';
 import {routineStateDaysSet} from '../../recoil/userState';
 import {getAllRoutine} from '../../actions/routineAPI';
 import {
   responsiveFontSize,
+  responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
+import {DeviceEventEmitter} from 'react-native';
 
 LocaleConfig.locales.fr = {
   monthNames: [
@@ -96,29 +87,30 @@ let date = today.getDate(); // 날짜
 const MainScreen = ({navigation: {navigate}}) => {
   const todo = ['일상', '학습', '마음관리', '운동'];
   const todoImg = [life, education, mental, health];
-  const todoImgGray = [lifeGray, educationGray, mentalGray, healthGray];
-  const todoComplete = [0.5, 1, 0.5, 1];
+  const todoImgGray = [
+    <LifeGray />,
+    <EducationGray />,
+    <MentalGray />,
+    <HealthGray />,
+  ];
   const [nickName, setNickName] = useRecoilState(nickNameState);
-  const [daily, setDaily] = useRecoilState(dailyState);
-  const [exercise, setExercise] = useRecoilState(exerciseState);
-  const [learning, setLearning] = useRecoilState(learningState);
-  const [mindCare, setMindCare] = useRecoilState(mindCareState);
+  // const [daily, setDaily] = useRecoilState(dailyState);
+  // const [exercise, setExercise] = useRecoilState(exerciseState);
+  // const [learning, setLearning] = useRecoilState(learningState);
+  // const [mindCare, setMindCare] = useRecoilState(mindCareState);
   const [userRp, setUserRp] = useRecoilState(userRpState);
   const [token, setToken] = useRecoilState(jwtState);
   const [userLevel, setUserLevel] = useState(1);
   const [upRp, setUpRp] = useState(20);
   const [nextLevel, setNextLevel] = useState(2);
-  const [tmpRoutine, setTmpRoutine] = useState();
   const [tmp, setTmp] = useState(0);
   const [todoTotal, setTodoTotal] = useState([0, 0, 0, 0]);
   const [todoCompleted, setTodoCompleted] = useState([0, 0, 0, 0]);
   const [dateSelected, setDateState] = useRecoilState(dateState);
-  // const [routineRefresh, setRoutineStateNum] = useRecoilState(routineStateNum);
   const [routineDays, setRoutineDays] = useState({});
   const [checkedDateColor, setCheckedDateColor] = useState('#FFFFFF');
   const [checkedDate, setCheckedDate] = useState();
   const selectTodo = useRecoilValue(routineStateDaysSet(token, 0));
-
   const upRpState = [
     40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300,
   ];
@@ -126,33 +118,14 @@ const MainScreen = ({navigation: {navigate}}) => {
     20, 39, 59, 79, 99, 119, 139, 159, 179, 199, 219, 239, 259, 279, 299,
   ];
   const levelState = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
-
   const fomatToday =
     year.toString() + '-' + month.toString() + '-' + date.toString();
-
   const [selectedDate, setSelectedDate] = useState(
     format(new Date(), 'yyyy-MM-dd'),
   );
-  const [completeModalVisible, setCompleteModalVisible] = useState(false);
-  const [completeDay, setCompleteDayModalVisible] = useState(0);
-  const [completeChangeModalVisible, setCompleteChangeModalVisible] =
-    useState(false);
 
-  const fetchUserData = async () => {
-    const request = await axios.get('/user');
-    setNickName(request.data.body.nickname);
-    setUserRp(request.data.body.rp);
-    setDaily(request.data.body.daily);
-    setExercise(request.data.body.exercise);
-    setLearning(request.data.body.learning);
-    setMindCare(request.data.body.mindCare);
-  };
-
+  // RP 레벨 처리
   useEffect(() => {
-    fetchUserData();
-    // setUserRp(1003);
-    console.log('user RP : ', userRp);
-
     for (let i = 0; i < 14; i++) {
       setUserLevel(1);
       setUpRp(20);
@@ -164,25 +137,11 @@ const MainScreen = ({navigation: {navigate}}) => {
         break;
       }
     }
-
     // 만렙 처리
     if (userRp >= 300) {
       setUserLevel(16);
     }
   }, [userRp]);
-
-  // const markedDates = posts.reduce((acc, current) => {
-  //   const formattedDate = format(new Date(current.date), 'yyyy-MM-dd');
-  //   acc[formattedDate] = {marked: true};
-  //   return acc;
-  // }, {});
-  // const markedSelectedDates = {
-  //   ...markedDates,
-  //   [selectedDate]: {
-  //     selected: true,
-  //     marked: markedDates[selectedDate]?.marked,
-  //   },
-  // };
 
   // 루틴 날짜 객체 생성
   let tmpObj = {};
@@ -240,15 +199,6 @@ const MainScreen = ({navigation: {navigate}}) => {
     setRoutineDays(tmpObj);
     setCheckedDate(date);
     setCheckedDateColor(tmpColor);
-  };
-
-  const checkComplete = index => {
-    if (todoComplete[index] === 1) {
-      setCompleteModalVisible(true);
-      setCompleteDayModalVisible(2); // 1일시 하루, 아닐시 2주 모달 띄움
-    } else {
-      setCompleteChangeModalVisible(true);
-    }
   };
 
   const asyncGetAll = async () => {
@@ -525,7 +475,6 @@ const MainScreen = ({navigation: {navigate}}) => {
               )}
             </View>
           </Shadow>
-
           <View style={commonStyles.spacing2} />
         </View>
         <View style={commonStyles.spacing2} />
@@ -535,12 +484,10 @@ const MainScreen = ({navigation: {navigate}}) => {
           </Text>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             {todo.map((value, index) => (
-              <View key={value.id}>
+              <View key={index}>
                 <View style={styles.view1}>
                   {todoCompleted[index] === todoTotal[index] ? (
-                    <View>
-                      <Image source={todoImgGray[index]} style={styles.img5} />
-                    </View>
+                    <View style={styles.grayImg}>{todoImgGray[index]}</View>
                   ) : (
                     <View>
                       <Image source={todoImg[index]} style={styles.img4} />
@@ -549,15 +496,15 @@ const MainScreen = ({navigation: {navigate}}) => {
                 </View>
                 {todoCompleted[index] === todoTotal[index] ? (
                   <View>
-                    <Text style={styles.mainText10}>{todo[index]}</Text>
-                    <Text style={styles.mainText13}>
+                    <Text style={styles.categoryText}>{todo[index]}</Text>
+                    <Text style={styles.categoryBlackText}>
                       {todoCompleted[index]}/{todoTotal[index]}
                     </Text>
                   </View>
                 ) : (
                   <View>
-                    <Text style={styles.mainText10}>{todo[index]}</Text>
-                    <Text style={styles.mainText11}>
+                    <Text style={styles.categoryText}>{todo[index]}</Text>
+                    <Text style={styles.categoryColorText}>
                       {todoCompleted[index]}/{todoTotal[index]}
                     </Text>
                   </View>
@@ -631,13 +578,6 @@ const MainScreen = ({navigation: {navigate}}) => {
   );
 };
 
-const dstyle = x =>
-  StyleSheet.create({
-    bar: {
-      marginLeft: x + 12,
-      marginTop: -12,
-    },
-  });
 const dstyleText = x =>
   StyleSheet.create({
     bar: {
@@ -741,27 +681,27 @@ const styles = StyleSheet.create({
   mainText4: {
     paddingRight: 60,
   },
-  mainText10: {
+  categoryText: {
     marginTop: 10,
-    marginLeft: 20,
+    marginLeft: 15,
     color: '#232323',
     fontFamily: 'Pretendard-Medium',
     alignSelf: 'center',
     fontSize: 15,
   },
-  mainText11: {
-    marginTop: 10,
-    marginLeft: 20,
+  categoryColorText: {
+    marginTop: 6,
+    marginLeft: 15,
     color: '#585FFF',
-    fontWeight: '600',
+    fontFamily: 'Pretendard-Bold',
     alignSelf: 'center',
     fontSize: 15,
   },
-  mainText13: {
-    marginTop: 10,
-    marginLeft: 20,
+  categoryBlackText: {
+    marginTop: 6,
+    marginLeft: 15,
     color: '#888888',
-    fontWeight: '600',
+    fontFamily: 'Pretendard-Bold',
     alignSelf: 'center',
     fontSize: 15,
   },
@@ -788,7 +728,7 @@ const styles = StyleSheet.create({
     borderRadius: 150 / 2,
     overflow: 'hidden',
   },
-  img5: {
+  grayImg: {
     width: 60,
     height: 60,
     borderRadius: 150 / 2,
@@ -797,19 +737,20 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   view1: {
-    width: 90,
-    height: 90,
-    shadowColor: '#000',
+    width: responsiveWidth(23),
+    height: responsiveHeight(12),
+    shadowColor: '#000000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.5,
     shadowRadius: 2,
     elevation: 5, // changed to a greater value
     borderRadius: 150 / 2,
-    borderColor: 'black',
+    borderColor: '#000000',
     zIndex: 99, // added zIndex
-    backgroundColor: 'white', // added a background color
-    marginTop: 20,
-    marginLeft: 20,
+    backgroundColor: '#FFFFFF', // added a background color
+    marginTop: responsiveHeight(3),
+    marginLeft: responsiveWidth(5),
+    marginRight: 5,
   },
 });
 

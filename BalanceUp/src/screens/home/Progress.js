@@ -1,5 +1,4 @@
-import React, {useState, useRef, useEffect, useCallback} from 'react';
-import axios from '../../utils/Client';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -14,6 +13,15 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
+import {
+  dailyState,
+  exerciseState,
+  learningState,
+  mindCareState,
+  nickNameState,
+  userRpState,
+} from '../../recoil/atom';
+import {DeviceEventEmitter} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import commonStyles from '../../css/commonStyles';
@@ -29,13 +37,8 @@ import mentalGray from '../../resource/image/SetTodo/mental_gray.png';
 import healthGray from '../../resource/image/SetTodo/health_gray.png';
 import oneDay from '../../resource/image/Modal/Crystal.png';
 import twoWeeks from '../../resource/image/Modal/10routine.png';
-import edit from '../../resource/image/Main/edit.png';
-import delete2 from '../../resource/image/Main/delete.png';
-import {api} from '../../utils/Api';
 import {jwtState} from '../../recoil/atom';
-import {useRecoilState, useRecoilValue, useRecoilCallback} from 'recoil';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Toast from 'react-native-easy-toast';
+import {useRecoilState, useRecoilValue} from 'recoil';
 import {
   deleteRoutine,
   progressOneRoutine,
@@ -44,32 +47,28 @@ import {
 } from '../../actions/routineAPI';
 import Edit from '../../resource/image/Main/edit.svg';
 import Delete from '../../resource/image/Main/delete.svg';
-
-import {
-  routineState,
-  routineStateComplete,
-  routineStateDays,
-  routineStateDaysSet,
-  useRefreshRoutine,
-} from '../../recoil/userState';
+import {routineStateDaysSet} from '../../recoil/userState';
 import OverSvg from '../../resource/image/Common/overRoutine.svg';
 import {dateState, routineStateNum} from '../../recoil/appState';
 import {responsiveWidth} from 'react-native-responsive-dimensions';
+import axios from '../../utils/Client';
 
 const Progress = () => {
   const route = useRoute();
+  const [nickName, setNickName] = useRecoilState(nickNameState);
+  const [daily, setDaily] = useRecoilState(dailyState);
+  const [exercise, setExercise] = useRecoilState(exerciseState);
+  const [learning, setLearning] = useRecoilState(learningState);
+  const [mindCare, setMindCare] = useRecoilState(mindCareState);
+  const [userRp, setUserRp] = useRecoilState(userRpState);
   const [routines, setRoutines] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [routineId, setRoutineId] = useState();
   const [routineCategory, setroutineCategory] = useState();
-  const [todoDays, setTodoDays] = useRecoilState(routineStateDays);
   const [dateSelected, setDateState] = useRecoilState(dateState);
   const [token, setToken] = useRecoilState(jwtState);
-  const [todoList, setTodoList] = useState([]);
   const selectTodo = useRecoilValue(routineStateDaysSet(token, 0));
   const [routineRefresh, setRoutineStateNum] = useRecoilState(routineStateNum);
 
-  // const [nowdata, setNowdata] = useState();
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
   const [completeDay, setCompleteDayNum] = useState(0);
   const [completeChangeModalVisible, setCompleteChangeModalVisible] =
@@ -85,6 +84,17 @@ const Progress = () => {
   let tmpMonth = ('0' + month).slice(-2); // 오늘 제외
   let tmpDate = ('0' + date).slice(-2);
   let tmpToday = year + '-' + tmpMonth + '-' + tmpDate;
+
+  // 유저 정보 업데이트
+  const fetchUserData = async () => {
+    const request = await axios.get('/user');
+    setNickName(request.data.body.nickname);
+    setUserRp(request.data.body.rp);
+    setDaily(request.data.body.daily);
+    setExercise(request.data.body.exercise);
+    setLearning(request.data.body.learning);
+    setMindCare(request.data.body.mindCare);
+  };
 
   // 날짜 선택시 루틴리스트 생성
   const setRoutinesByDate = () => {
@@ -139,26 +149,36 @@ const Progress = () => {
     setRoutines(tmp);
   };
 
+  // 루틴 4개 초과시 초과 모달
   useEffect(() => {
-    setRoutinesByDate();
-    console.log(routines);
-  }, []);
-
-  useEffect(() => {
-    console.log(route.params);
     if (route.params != null) {
       setOverRoutineModalVisible(!overRoutineModalVisible);
       route.params = null;
     }
-  }, [route]);
+  }, [route.params]);
+
+  // 루틴 생성, 수정 후 리프레쉬 ->
+  // 생성은 문제 없음.
+  // 최초 1번만 수정이 바로 스크린에 반영됨.
+  // 2번, 3번 or 이어서 다른 루틴 수정시에는 api만 정상 작동, 스크린 반영 안됨
+  useEffect(() => {
+    DeviceEventEmitter.addListener('refresh', () => {
+      console.log('refresh 실행');
+      let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
+      setRoutineStateNum(tmpNum + 1);
+    });
+  }, []);
 
   useEffect(() => {
     setRoutinesByDate();
-    console.log(selectTodo);
+    fetchUserData();
+    console.log('nickname: ', nickName, 'user RP : ', userRp);
+    // console.log(selectTodo);
+    // let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
+    // setRoutineStateNum(tmpNum + 1);
   }, [dateSelected, selectTodo]);
 
   const [chosenIndex, setChosenIndex] = useState(0);
-  const [todoComplete, setTodoComplete] = useState([0.5, 1, 0.5, 1]);
 
   // 모달 기능 구현
   const screenHeight = Dimensions.get('screen').height;
@@ -170,9 +190,6 @@ const Progress = () => {
     duration: 10,
     useNativeDriver: true,
   });
-
-  const todoImg = [life, education, mental, health];
-  // const todoComplete = [0.5, 1, 0.5, 1];
 
   useEffect(() => {
     if (
@@ -255,32 +272,39 @@ const Progress = () => {
     }
   };
 
-
   // 완료 체크 취소 기능
   const handleCompleteChange = async index => {
-    let res = await cancelOneRoutine(routines[index].routineId, routines[index].day);
+    let res = await cancelOneRoutine(
+      routines[index].routineId,
+      routines[index].day,
+    );
 
     // seloctor 업데이트를 위해+1
     let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
     setRoutineStateNum(tmpNum + 1);
     setCompleteChangeModalVisible(false);
   };
+
   // 삭제 기능
   const handleDelete = async () => {
     await deleteRoutine(routines[chosenIndex].routineId).then(
       setDeleteModalVisible(!deleteModalVisible),
-      setLoading(true),
     );
     // seloctor 업데이트를 위해+1
     let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
     setRoutineStateNum(tmpNum + 1);
   };
+  const handleRemove = index => {
+    setDeleteModalVisible(!deleteModalVisible);
+    setChosenIndex(index);
+  };
+
   // 수정 기능 구현
   const handleEdit = (
     routineId,
     routineCategory,
     routineTitle,
-    alarm,
+    alarmTime,
     days,
   ) => {
     setRoutineId(routineId);
@@ -290,16 +314,8 @@ const Progress = () => {
       planText: routineCategory,
       routineTitle: routineTitle,
       days: days,
-      alarmTime: alarm,
+      alarm: alarmTime,
     });
-  };
-
-  // 삭제 기능 구현
-  const handleRemove = index => {
-    setDeleteModalVisible(!deleteModalVisible);
-    setChosenIndex(index);
-    // setRoutineId(routineId);
-    // console.log(routineId);
   };
 
   return (
@@ -320,14 +336,14 @@ const Progress = () => {
           <TouchableWithoutFeedback onPress={() => checkComplete(index)}>
             <Svg height={80} style={svg2(setOpacity(data.completed)).bar}>
               <Rect
-                x={20}
+                x={15}
                 y={20}
                 width="60"
                 height="34"
                 rx="18"
                 fill="#585FFF"
               />
-              <SvgText x={38} y={42} style={styles.completeText} fill="white">
+              <SvgText x={34} y={42} style={styles.completeText} fill="white">
                 완료
               </SvgText>
             </Svg>
@@ -347,6 +363,7 @@ const Progress = () => {
           <TouchableWithoutFeedback onPress={() => handleRemove(index)}>
             <Delete />
           </TouchableWithoutFeedback>
+
           {/* 완료 모달 구현 코드 (one Day)*/}
           <Modal
             visible={completeModalVisible}
@@ -362,7 +379,6 @@ const Progress = () => {
                     style={{
                       ...modalInnerStyles.centerSheetContainer,
                     }}>
-                    {/* 모달에 들어갈 내용을 아래에 작성 */}
                     <Text style={modalInnerStyles.completeText1}>+1 RP</Text>
                     <Text style={modalInnerStyles.completeText2}>
                       오늘의 루틴을 완료했습니다!
@@ -557,8 +573,7 @@ const aimText1 = x =>
   StyleSheet.create({
     bar: {
       paddingLeft: 20,
-      paddingRight: 100,
-      paddingTop: 10,
+      paddingTop: 15,
       opacity: x,
       width: 200,
     },
@@ -624,7 +639,6 @@ const styles = StyleSheet.create({
   },
   img2_gray: {
     resizeMode: 'stretch',
-    tintColor: 'gray',
     marginLeft: 10,
     height: 70,
     width: 70,

@@ -3,48 +3,15 @@ import {StyleSheet, View, SafeAreaView, ScrollView} from 'react-native';
 // import WeekCalendar from '../../components/WeekCalendar';
 // import WeekCalendar from 'react-native-calendars';
 import commonStyles from '../../css/commonStyles';
-import {useIsFocused, useRoute} from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 
 import {useRecoilState, useRecoilValue} from 'recoil';
 import {jwtState} from '../../recoil/atom';
 import {dateState, routineStateNum} from '../../recoil/appState';
-import {
-  routineState,
-  routineStateComplete,
-  routineStateDays,
-  routineStateDaysSet,
-} from '../../recoil/userState';
+import {routineStateDaysSet} from '../../recoil/userState';
 // import * as Progress from 'react-native-progress';
-import Svg, {
-  Circle,
-  Ellipse,
-  G,
-  TSpan,
-  TextPath,
-  Path,
-  Polygon,
-  Polyline,
-  Line,
-  Text as SvgText,
-  Rect,
-  Use,
-  Symbol,
-  Defs,
-  LinearGradient,
-  RadialGradient,
-  Stop,
-  ClipPath,
-  Pattern,
-  Mask,
-} from 'react-native-svg';
-import {
-  Calendar,
-  CalendarList,
-  Agenda,
-  LocaleConfig,
-  ExpandableCalendar,
-  CalendarProvider,
-} from 'react-native-calendars';
+import Svg, {Text as SvgText} from 'react-native-svg';
+import {Calendar, LocaleConfig} from 'react-native-calendars';
 
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import {Progress} from './Progress';
@@ -101,7 +68,6 @@ const renderScene = SceneMap({
 
 const LookAll = () => {
   const [index, setIndex] = React.useState(0);
-  console.log(index);
   const [routes] = React.useState([
     {key: 'first', title: '루틴'},
     {key: 'second', title: '통계'},
@@ -110,25 +76,14 @@ const LookAll = () => {
   const [selectedDate, setSelectedDate] = useState();
   const [token, setToken] = useRecoilState(jwtState);
   const selectTodo = useRecoilValue(routineStateDaysSet(token, 0));
-  const [routineProgress, setRoutineProgress] = useState(0.3);
+  const [routineProgress, setRoutineProgress] = useState(0);
   const [checkedDateColor, setCheckedDateColor] = useState('#FFFFFF');
   const [checkedDate, setCheckedDate] = useState();
   const [routineDays, setRoutineDays] = useState({});
   const [dateSelected, setDateState] = useRecoilState(dateState);
   const [routineRefresh, setRoutineStateNum] = useRecoilState(routineStateNum);
 
-  // const markedDates = posts.reduce((acc, current) => {
-  //   const formattedDate = format(new Date(current.date), 'yyyy-MM-dd');
-  //   acc[selectedDate] = {marked: true};
-  //   return acc;
-  // }, {});
-  // const markedSelectedDates = {
-  //   // ...markedDates,
-  //   [selectedDate]: {
-  //     selected: true,
-  //     // marked: markedDates[selectedDate]?.marked,
-  //   },
-  // };
+  const isFocused = useIsFocused();
 
   // 루틴 날짜 객체 생성
   let tmpObj = {};
@@ -195,6 +150,7 @@ const LookAll = () => {
   useEffect(() => {
     setCheckValue();
     setCheckedDate(tmpToday);
+
     // 루틴 진행률 구현
     let completeArr = [];
     for (let i = 0; i < selectTodo.length; i++) {
@@ -206,12 +162,14 @@ const LookAll = () => {
     );
     console.log('루틴 전체 갯수 : ', completeArr.length);
     setRoutineProgress(
-      (
-        completeArr.filter(prev => prev === true).length / completeArr.length
-      ).toFixed(2),
+      Number(
+        (
+          completeArr.filter(prev => prev === true).length / completeArr.length
+        ).toFixed(2),
+      ),
     );
   }, [selectTodo, token]);
-  const isFocused = useIsFocused();
+
   useEffect(() => {
     // seloctor 업데이트를 위해+1
     let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
@@ -287,7 +245,7 @@ const LookAll = () => {
               </SvgText>
               <View style={styles.progressBar}>
                 <ProgressLib.Bar
-                  progress={parseInt(routineProgress)}
+                  progress={routineProgress}
                   // 진행 루틴 Null = 0% 표시
                   // completed true 총합 / selectTodo.length = 결과값.toFixed(2)
                   width={300}

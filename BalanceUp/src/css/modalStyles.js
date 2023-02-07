@@ -109,7 +109,7 @@ const modalInnerStyles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 30,
     marginBottom: 30,
-    zIndex:30
+    zIndex: 30,
   },
 
   // MyPage 닉네임 변경 모달 style
@@ -185,27 +185,27 @@ const modalInnerStyles = StyleSheet.create({
     fontSize: 22,
     fontFamily: 'Pretendard-Bold',
     textAlign: 'center',
-    marginTop: 15,
+    marginTop: responsiveHeight(1.2),
     top: 3,
     color: '#585FFF',
   },
   completeText2: {
     fontSize: 20,
-    marginTop: 10,
+    marginTop: responsiveHeight(1.2),
     fontFamily: 'Pretendard-Bold',
     textAlign: 'center',
-    color: '#000',
+    color: '#232323',
   },
   completeImg1: {
-    marginTop: 4,
+    marginTop: responsiveHeight(3),
     fontFamily: 'Pretendard-Medium',
     textAlign: 'center',
     alignItems: 'center',
     color: '#888888',
   },
-  completeImg1_1:{
-    width:100,
-    height:100
+  completeImg1_1: {
+    width: 180,
+    height: 110,
   },
   complteBottomSheetContainer: {
     height: 240,
