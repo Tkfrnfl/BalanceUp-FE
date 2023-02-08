@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useCallback} from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,7 +11,6 @@ import {
   Modal,
   Pressable,
   ScrollView,
-  Alert,
 } from 'react-native';
 import {
   dailyState,
@@ -50,8 +49,12 @@ import Delete from '../../resource/image/Main/delete.svg';
 import {routineStateDaysSet} from '../../recoil/userState';
 import OverSvg from '../../resource/image/Common/overRoutine.svg';
 import {dateState, routineStateNum} from '../../recoil/appState';
-import {responsiveWidth} from 'react-native-responsive-dimensions';
+import {
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
 import axios from '../../utils/Client';
+import Toast from 'react-native-easy-toast';
 
 const Progress = () => {
   const route = useRoute();
@@ -216,17 +219,12 @@ const Progress = () => {
     }
   };
 
-  // const toastRef = useRef(null); // toast ref 생성
+  // 토스트 메세지
+  const toastRef = useRef();
 
-  // const showCopyToast = useCallback(() => {
-  //   toastRef.current.state.text='test';
-  //   toastRef.current.state.isShow=true;
-  //   toastRef.current.memoizedState.isShow=true;
-  // }, []);
-
-  // const reFresh=useRecoilCallback(({set})=>{
-  //   set(useRefreshRoutine)
-  // })
+  const showCopyToast = useCallback(() => {
+    toastRef.current.show('루틴은 당일 완료만 가능해요!');
+  }, []);
 
   const checkComplete = async index => {
     setChosenIndex(index);
@@ -269,7 +267,7 @@ const Progress = () => {
         }
       }
     } else {
-      Alert.alert('', '루틴은 당일완료만 가능해요!');
+      showCopyToast();
     }
   };
 
@@ -321,6 +319,15 @@ const Progress = () => {
 
   return (
     <View>
+      <Toast
+        ref={toastRef}
+        position="top"
+        positionValue={10}
+        fadeInDuration={300}
+        fadeOutDuration={1500}
+        style={styles.toastView}
+        textStyle={styles.toastText}
+      />
       {routines.map((data, index) => (
         <ScrollView
           key={data.routineId}
@@ -644,6 +651,20 @@ const styles = StyleSheet.create({
     height: 70,
     width: 70,
     // tintColor: 'gray',
+  },
+  toastView: {
+    bottom: responsiveHeight(18),
+    width: 230,
+    height: 47,
+    borderRadius: 35,
+    justifyContent: 'center',
+    backgroundColor: '#444444',
+  },
+  toastText: {
+    color: '#FFFFFF',
+    textAlign: 'center',
+    fontSize: 14,
+    fontFamily: 'Pretendard-Medium',
   },
 });
 
