@@ -653,7 +653,7 @@ const styles = StyleSheet.create({
     // tintColor: 'gray',
   },
   toastView: {
-    bottom: responsiveHeight(18),
+    // bottom: responsiveHeight(18),
     width: 230,
     height: 47,
     borderRadius: 35,
