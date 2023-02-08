@@ -36,6 +36,8 @@ import mentalGray from '../../resource/image/SetTodo/mental_gray.png';
 import healthGray from '../../resource/image/SetTodo/health_gray.png';
 import oneDay from '../../resource/image/Modal/Crystal.png';
 import twoWeeks from '../../resource/image/Modal/10routine.png';
+import Icon from '../../resource/image/Common/icon.svg';
+
 import {jwtState} from '../../recoil/atom';
 import {useRecoilState, useRecoilValue} from 'recoil';
 import {
@@ -166,7 +168,6 @@ const Progress = () => {
   // 2번, 3번 or 이어서 다른 루틴 수정시에는 api만 정상 작동, 스크린 반영 안됨
   useEffect(() => {
     DeviceEventEmitter.addListener('refresh', () => {
-      console.log('refresh 실행');
       let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
       setRoutineStateNum(tmpNum + 1);
     });
@@ -316,8 +317,7 @@ const Progress = () => {
       alarm: alarmTime,
     });
   };
-
-  return (
+  return routines.length > 0 ? (
     <View>
       <Toast
         ref={toastRef}
@@ -566,6 +566,17 @@ const Progress = () => {
         </Pressable>
       </Modal>
     </View>
+  ) : (
+    <View style={{alignItems: 'center'}}>
+      <Icon style={{marginTop: responsiveHeight(10)}} />
+      <Text style={styles.noneText}>진행 중인 루틴이 없습니다</Text>
+      <TouchableOpacity
+        activeOpacity={1.0}
+        onPress={() => navigation.navigate('Set')}
+        style={styles.nonePageBtn}>
+        <Text style={styles.nonePageBtnText}>루틴 추가</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 const img2 = x =>
@@ -665,6 +676,27 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 14,
     fontFamily: 'Pretendard-Medium',
+  },
+  noneText: {
+    marginTop: responsiveHeight(2),
+    fontSize: 14,
+    color: '#B9B9B9',
+    fontFamily: 'Pretendard-Medium',
+  },
+  nonePageBtn: {
+    width: 85,
+    height: 34,
+    marginTop: responsiveHeight(3),
+    backgroundColor: '#585FFF',
+    borderRadius: 50,
+  },
+  nonePageBtnText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontFamily: 'Pretendard-Medium',
+
+    textAlign: 'center',
+    marginTop: responsiveHeight(1.2),
   },
 });
 
