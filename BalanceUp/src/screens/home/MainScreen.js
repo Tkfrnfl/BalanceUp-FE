@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,6 +7,10 @@ import {
   SafeAreaView,
   Image,
   ScrollView,
+  TouchableWithoutFeedback,
+  Animated,
+  Dimensions,
+  Modal,
 } from 'react-native';
 import commonStyles from '../../css/commonStyles';
 import {format} from 'date-fns';
@@ -16,6 +20,7 @@ import LevelBox from '../../resource/image/Main/levelBox.svg';
 import LevelBox999 from '../../resource/image/Main/levelBox999.svg';
 import LeftArrow from '../../resource/image/Main/left.svg';
 import RightArrow from '../../resource/image/Main/right.svg';
+import Iconx from '../../resource/image/Main/back.svg';
 import life from '../../resource/image/SetTodo/life.png';
 import education from '../../resource/image/SetTodo/education.png';
 import mental from '../../resource/image/SetTodo/mental.png';
@@ -25,6 +30,10 @@ import EducationGray from '../../resource/image/Main/studyGray.svg';
 import HealthGray from '../../resource/image/Main/healthGray.svg';
 import MentalGray from '../../resource/image/Main/mindGray.svg';
 import lv1 from '../../resource/image/Main/1lv.gif';
+import lv2 from '../../resource/image/Main/2lv.gif';
+import lv3 from '../../resource/image/Main/3lv.gif';
+import lv2Modal from '../../resource/image/Main/secondLevelModal.png';
+import lv3Modal from '../../resource/image/Main/lastLevelModal.png';
 import {
   LocaleConfig,
   ExpandableCalendar,
@@ -43,7 +52,6 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import {DeviceEventEmitter} from 'react-native';
 
 LocaleConfig.locales.fr = {
   monthNames: [
@@ -123,6 +131,10 @@ const MainScreen = ({navigation: {navigate}}) => {
   const [selectedDate, setSelectedDate] = useState(
     format(new Date(), 'yyyy-MM-dd'),
   );
+  const [levelUpModalVisible, setLevelUpModalVisible] = useState(false);
+  const [levelUp_ModalVisible, setLevelUp_ModalVisible] = useState(false);
+  const [showUpModal, setShowUpModal] = useState(false);
+  const [gif, setGif] = useState(lv1);
 
   // RP 레벨 처리
   useEffect(() => {
@@ -141,7 +153,35 @@ const MainScreen = ({navigation: {navigate}}) => {
     if (userRp >= 300) {
       setUserLevel(16);
     }
-  }, [userRp]);
+
+    // 레벨 진화 이펙트 (Modal State)
+    // RP 85 ~ 99가 되면 modal 상태를 true로
+    if (userRp >= 85 && userRp < 100) {
+      setShowUpModal(true);
+    } else if (userRp >= 285 && userRp < 300) {
+      setShowUpModal(true);
+    }
+
+    // 6레벨 달성시 레벨업 Modal
+    if (userLevel === 6 && showUpModal === true) {
+      setLevelUpModalVisible(true);
+      setTimeout(() => setGif(lv2), 3000);
+      // 레벨업시 한번만 실행을 위해 다시 false
+      setShowUpModal(false);
+    } else if (userLevel === 16 && showUpModal == true) {
+      setLevelUp_ModalVisible(true);
+      setTimeout(() => setGif(lv3), 2000);
+      setShowUpModal(false);
+    }
+
+    // 레벨에 알맞는 캐릭터 구현
+    if (userLevel < 6) {
+      setGif(lv1);
+    } else if (userLevel >= 6 && userLevel <= 15) {
+      setGif(lv2);
+    }
+  }, [userRp, userLevel]);
+  console.log('state', showUpModal);
 
   // 루틴 날짜 객체 생성
   let tmpObj = {};
@@ -200,6 +240,23 @@ const MainScreen = ({navigation: {navigate}}) => {
     setCheckedDate(date);
     setCheckedDateColor(tmpColor);
   };
+
+  // 모달 기능 구현
+  const screenHeight = Dimensions.get('screen').height;
+
+  const panY = useRef(new Animated.Value(screenHeight)).current;
+
+  const resetBottomSheet = Animated.timing(panY, {
+    toValue: 0,
+    duration: 10,
+    useNativeDriver: true,
+  });
+
+  useEffect(() => {
+    if (levelUpModalVisible || levelUp_ModalVisible) {
+      resetBottomSheet.start();
+    }
+  }, [levelUpModalVisible, levelUp_ModalVisible]);
 
   const asyncGetAll = async () => {
     let res;
@@ -305,7 +362,7 @@ const MainScreen = ({navigation: {navigate}}) => {
             </Text>
           )}
 
-          <Image source={lv1} style={styles.gifImg} />
+          <Image source={gif} style={styles.gifImg} />
 
           {/* 가이드 페이지 */}
           <TouchableOpacity
@@ -369,7 +426,11 @@ const MainScreen = ({navigation: {navigate}}) => {
                       {bottom: 28, left: userRp === 0 ? 7 : null},
                     ]}
                   />
-                  <View style={{left: userRp === 0 ? 7 : null}}>
+                  <View
+                    style={{
+                      left: userRp === 0 ? 7 : null,
+                      alignItems: 'center',
+                    }}>
                     {userRp > 999 ? (
                       <LevelBox999
                         style={[
@@ -463,7 +524,7 @@ const MainScreen = ({navigation: {navigate}}) => {
                           styles.progressRpText,
                           dstyleText((userRp / upRp) * 300).bar,
                           {
-                            left: userRp > 100 ? -3 : 0,
+                            left: userRp >= 100 ? -3 : 0,
                           },
                           ,
                         ]}>
@@ -573,6 +634,64 @@ const MainScreen = ({navigation: {navigate}}) => {
         </CalendarProvider>
         <ProgressComponent />
         <View style={commonStyles.spacing2} />
+
+        {/* 6레벨 진화 모달 */}
+        <Modal
+          visible={levelUpModalVisible}
+          animationType={'fade'}
+          transparent={true}
+          statusBarTranslucent={true}>
+          <TouchableWithoutFeedback>
+            <Animated.View style={{alignItems: 'center'}}>
+              <TouchableOpacity
+                activeOpacity={1.0}
+                onPress={() => setLevelUpModalVisible(!levelUpModalVisible)}
+                style={styles.levelUpModalBtn}>
+                <Iconx />
+              </TouchableOpacity>
+              <Text style={styles.levelUpModalText}>축하합니다!</Text>
+              <Text style={[styles.levelUpModalText]}>
+                캐릭터가 첫 번째 성장했어요
+              </Text>
+              <Text style={styles.levelUpModalText_}>
+                루틴을 열심히 진행하셨군요
+              </Text>
+              <Text style={[styles.levelUpModalText_]}>
+                앞으로도 꾸준히 루틴을 실천해 주세요!
+              </Text>
+              <Image source={lv2Modal} style={styles.levelUpModalImg} />
+            </Animated.View>
+          </TouchableWithoutFeedback>
+        </Modal>
+
+        {/* 최종 진화 모달 */}
+        <Modal
+          visible={levelUp_ModalVisible}
+          animationType={'fade'}
+          transparent={true}
+          statusBarTranslucent={true}>
+          <TouchableWithoutFeedback>
+            <Animated.View style={{alignItems: 'center'}}>
+              <TouchableOpacity
+                activeOpacity={1.0}
+                onPress={() => setLevelUp_ModalVisible(!levelUp_ModalVisible)}
+                style={styles.levelUpModalBtn}>
+                <Iconx />
+              </TouchableOpacity>
+              <Text style={styles.levelUpModalText}>축하합니다!</Text>
+              <Text style={[styles.levelUpModalText]}>
+                캐릭터가 최종 성장했어요
+              </Text>
+              <Text style={styles.levelUpModalText_}>
+                루틴이 이제 익숙해지셨나요?
+              </Text>
+              <Text style={[styles.levelUpModalText_]}>
+                앞으로도 꾸준히 루틴을 실천해 주세요!
+              </Text>
+              <Image source={lv3Modal} style={styles.levelUpModalImg} />
+            </Animated.View>
+          </TouchableWithoutFeedback>
+        </Modal>
       </ScrollView>
     </SafeAreaView>
   );
@@ -751,6 +870,30 @@ const styles = StyleSheet.create({
     marginTop: responsiveHeight(3),
     marginLeft: responsiveWidth(5),
     marginRight: 5,
+  },
+  levelUpModalText: {
+    top: responsiveHeight(14.5),
+    color: '#FFFFFF',
+    fontSize: 22,
+    fontFamily: 'Pretendard-Bold',
+    zIndex: 10,
+  },
+  levelUpModalText_: {
+    top: responsiveHeight(17.5),
+    color: '#888888',
+    fontSize: 14,
+    fontFamily: 'Pretendard-Medium',
+    zIndex: 10,
+  },
+  levelUpModalBtn: {
+    left: responsiveWidth(38),
+    top: responsiveHeight(7),
+    zIndex: 10,
+  },
+  levelUpModalImg: {
+    marginTop: responsiveHeight(-17),
+    width: responsiveWidth(100),
+    height: responsiveHeight(100),
   },
 });
 

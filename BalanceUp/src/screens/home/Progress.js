@@ -171,6 +171,7 @@ const Progress = () => {
 
   useEffect(() => {
     setRoutinesByDate();
+    // setUserRp(1003);
     fetchUserData();
     console.log('nickname: ', nickName, 'user RP : ', userRp);
     // console.log(selectTodo);
