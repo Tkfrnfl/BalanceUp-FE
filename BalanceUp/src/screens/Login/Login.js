@@ -134,12 +134,7 @@ export default function Login({navigation}) {
         style={{
           flexDirection: 'row',
           marginTop: 40,
-        }}>
-        <Button
-          title="닉네임 설정 (임시 구현)"
-          onPress={() => navigation.push('NickName')}
-        />
-      </View>
+        }}></View>
     </View>
   );
 }

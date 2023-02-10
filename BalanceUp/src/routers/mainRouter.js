@@ -10,6 +10,7 @@ import Withdrawal from '../screens/myPage/Withdrawal';
 import Login from '../screens/Login/Login';
 import Notice from '../screens/myPage/Notice';
 import Guide from '../screens/Guide';
+import Name from '../screens/register/NameScreen';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import OnHome from '../resource/image/BottomTab/home_on.svg';
@@ -24,6 +25,7 @@ import {
   responsiveFontSize,
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
+import AgreeScreen from '../screens/register/AgreeScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -128,6 +130,16 @@ export function MainRouter() {
         <MainStack.Screen
           name="Guide"
           component={Guide}
+          options={{headerShown: false}}
+        />
+        <MainStack.Screen
+          name="NickName"
+          component={Name}
+          options={{headerShown: false}}
+        />
+        <MainStack.Screen
+          name="Agree"
+          component={AgreeScreen}
           options={{headerShown: false}}
         />
       </MainStack.Navigator>
