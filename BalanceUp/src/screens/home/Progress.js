@@ -37,7 +37,6 @@ import healthGray from '../../resource/image/SetTodo/health_gray.png';
 import oneDay from '../../resource/image/Modal/Crystal.png';
 import twoWeeks from '../../resource/image/Modal/10routine.png';
 import Icon from '../../resource/image/Common/icon.svg';
-
 import {jwtState} from '../../recoil/atom';
 import {useRecoilState, useRecoilValue} from 'recoil';
 import {
@@ -317,6 +316,7 @@ const Progress = () => {
       alarm: alarmTime,
     });
   };
+
   return routines.length > 0 ? (
     <View>
       <Toast
@@ -338,20 +338,32 @@ const Progress = () => {
           <View style={aimText1(setOpacity(data.completed)).bar}>
             <Text style={commonStyles.boldText}>{data.routineTitle}</Text>
             <Text style={commonStyles.lightText}>
-              {data.routineCategory} | {data.days} {data.alarmTime}
+              {data.routineCategory} |{' '}
+              {data.days != '토일' && data.days.length < 4 ? data.days : null}
+              {data.days === '토일' ? '주말' : null}
+              {data.days === '월화수목금' ? '주중' : null}
+              {data.days === '월화수목금토일' ? '매일' : null} {data.alarmTime}
             </Text>
+            <Text
+              style={
+                commonStyles.lightText_
+              }>{`루틴 종료일 : ${data.endDate.reduce((prev, curr) => {
+              return new Date(prev).getTime() <= new Date(curr).getTime()
+                ? curr
+                : prev;
+            })} `}</Text>
           </View>
           <TouchableWithoutFeedback onPress={() => checkComplete(index)}>
             <Svg height={80} style={svg2(setOpacity(data.completed)).bar}>
               <Rect
                 x={15}
-                y={20}
+                y={22}
                 width="60"
                 height="34"
                 rx="18"
                 fill="#585FFF"
               />
-              <SvgText x={34} y={42} style={styles.completeText} fill="white">
+              <SvgText x={34} y={44} style={styles.completeText} fill="white">
                 완료
               </SvgText>
             </Svg>
@@ -570,12 +582,6 @@ const Progress = () => {
     <View style={{alignItems: 'center'}}>
       <Icon style={{marginTop: responsiveHeight(10)}} />
       <Text style={styles.noneText}>진행 중인 루틴이 없습니다</Text>
-      <TouchableOpacity
-        activeOpacity={1.0}
-        onPress={() => navigation.navigate('Set')}
-        style={styles.nonePageBtn}>
-        <Text style={styles.nonePageBtnText}>루틴 추가</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -592,7 +598,7 @@ const aimText1 = x =>
   StyleSheet.create({
     bar: {
       paddingLeft: 20,
-      paddingTop: 15,
+      paddingTop: 7,
       opacity: x,
       width: 200,
     },
