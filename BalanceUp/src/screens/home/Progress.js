@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useCallback} from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,7 +11,6 @@ import {
   Modal,
   Pressable,
   ScrollView,
-  Alert,
 } from 'react-native';
 import {
   dailyState,
@@ -37,6 +36,7 @@ import mentalGray from '../../resource/image/SetTodo/mental_gray.png';
 import healthGray from '../../resource/image/SetTodo/health_gray.png';
 import oneDay from '../../resource/image/Modal/Crystal.png';
 import twoWeeks from '../../resource/image/Modal/10routine.png';
+import Icon from '../../resource/image/Common/icon.svg';
 import {jwtState} from '../../recoil/atom';
 import {useRecoilState, useRecoilValue} from 'recoil';
 import {
@@ -50,8 +50,12 @@ import Delete from '../../resource/image/Main/delete.svg';
 import {routineStateDaysSet} from '../../recoil/userState';
 import OverSvg from '../../resource/image/Common/overRoutine.svg';
 import {dateState, routineStateNum} from '../../recoil/appState';
-import {responsiveWidth} from 'react-native-responsive-dimensions';
+import {
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
 import axios from '../../utils/Client';
+import Toast from 'react-native-easy-toast';
 
 const Progress = () => {
   const route = useRoute();
@@ -163,7 +167,6 @@ const Progress = () => {
   // 2번, 3번 or 이어서 다른 루틴 수정시에는 api만 정상 작동, 스크린 반영 안됨
   useEffect(() => {
     DeviceEventEmitter.addListener('refresh', () => {
-      console.log('refresh 실행');
       let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
       setRoutineStateNum(tmpNum + 1);
     });
@@ -171,6 +174,7 @@ const Progress = () => {
 
   useEffect(() => {
     setRoutinesByDate();
+    // setUserRp(120);
     fetchUserData();
     console.log('nickname: ', nickName, 'user RP : ', userRp);
     // console.log(selectTodo);
@@ -215,17 +219,12 @@ const Progress = () => {
     }
   };
 
-  // const toastRef = useRef(null); // toast ref 생성
+  // 토스트 메세지
+  const toastRef = useRef();
 
-  // const showCopyToast = useCallback(() => {
-  //   toastRef.current.state.text='test';
-  //   toastRef.current.state.isShow=true;
-  //   toastRef.current.memoizedState.isShow=true;
-  // }, []);
-
-  // const reFresh=useRecoilCallback(({set})=>{
-  //   set(useRefreshRoutine)
-  // })
+  const showCopyToast = useCallback(() => {
+    toastRef.current.show('루틴은 당일 완료만 가능해요!');
+  }, []);
 
   const checkComplete = async index => {
     setChosenIndex(index);
@@ -268,7 +267,7 @@ const Progress = () => {
         }
       }
     } else {
-      Alert.alert('', '루틴은 당일완료만 가능해요!');
+      showCopyToast();
     }
   };
 
@@ -318,8 +317,17 @@ const Progress = () => {
     });
   };
 
-  return (
+  return routines.length > 0 ? (
     <View>
+      <Toast
+        ref={toastRef}
+        position="top"
+        positionValue={10}
+        fadeInDuration={300}
+        fadeOutDuration={1500}
+        style={styles.toastView}
+        textStyle={styles.toastText}
+      />
       {routines.map((data, index) => (
         <ScrollView
           key={data.routineId}
@@ -330,20 +338,32 @@ const Progress = () => {
           <View style={aimText1(setOpacity(data.completed)).bar}>
             <Text style={commonStyles.boldText}>{data.routineTitle}</Text>
             <Text style={commonStyles.lightText}>
-              {data.routineCategory} | {data.days} {data.alarmTime}
+              {data.routineCategory} |{' '}
+              {data.days != '토일' && data.days.length < 4 ? data.days : null}
+              {data.days === '토일' ? '주말' : null}
+              {data.days === '월화수목금' ? '주중' : null}
+              {data.days === '월화수목금토일' ? '매일' : null} {data.alarmTime}
             </Text>
+            <Text
+              style={
+                commonStyles.lightText_
+              }>{`루틴 종료일 : ${data.endDate.reduce((prev, curr) => {
+              return new Date(prev).getTime() <= new Date(curr).getTime()
+                ? curr
+                : prev;
+            })} `}</Text>
           </View>
           <TouchableWithoutFeedback onPress={() => checkComplete(index)}>
             <Svg height={80} style={svg2(setOpacity(data.completed)).bar}>
               <Rect
                 x={15}
-                y={20}
+                y={22}
                 width="60"
                 height="34"
                 rx="18"
                 fill="#585FFF"
               />
-              <SvgText x={34} y={42} style={styles.completeText} fill="white">
+              <SvgText x={34} y={44} style={styles.completeText} fill="white">
                 완료
               </SvgText>
             </Svg>
@@ -558,6 +578,11 @@ const Progress = () => {
         </Pressable>
       </Modal>
     </View>
+  ) : (
+    <View style={{alignItems: 'center'}}>
+      <Icon style={{marginTop: responsiveHeight(10)}} />
+      <Text style={styles.noneText}>진행 중인 루틴이 없습니다</Text>
+    </View>
   );
 };
 const img2 = x =>
@@ -573,7 +598,7 @@ const aimText1 = x =>
   StyleSheet.create({
     bar: {
       paddingLeft: 20,
-      paddingTop: 15,
+      paddingTop: 7,
       opacity: x,
       width: 200,
     },
@@ -643,6 +668,41 @@ const styles = StyleSheet.create({
     height: 70,
     width: 70,
     // tintColor: 'gray',
+  },
+  toastView: {
+    // bottom: responsiveHeight(18),
+    width: 230,
+    height: 47,
+    borderRadius: 35,
+    justifyContent: 'center',
+    backgroundColor: '#444444',
+  },
+  toastText: {
+    color: '#FFFFFF',
+    textAlign: 'center',
+    fontSize: 14,
+    fontFamily: 'Pretendard-Medium',
+  },
+  noneText: {
+    marginTop: responsiveHeight(2),
+    fontSize: 14,
+    color: '#B9B9B9',
+    fontFamily: 'Pretendard-Medium',
+  },
+  nonePageBtn: {
+    width: 85,
+    height: 34,
+    marginTop: responsiveHeight(3),
+    backgroundColor: '#585FFF',
+    borderRadius: 50,
+  },
+  nonePageBtnText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontFamily: 'Pretendard-Medium',
+
+    textAlign: 'center',
+    marginTop: responsiveHeight(1.2),
   },
 });
 

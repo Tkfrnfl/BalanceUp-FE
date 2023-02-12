@@ -15,6 +15,7 @@ import health from '../../resource/image/SetTodo/health.png';
 import life from '../../resource/image/SetTodo/life.png';
 import mental from '../../resource/image/SetTodo/mental.png';
 import {
+  responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
@@ -129,12 +130,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 22,
+    fontSize: responsiveFontSize(2.75),
     fontFamily: 'Pretendard-Bold',
     color: '#232323',
     textAlign: 'center',
-    marginTop: 70,
-    marginBottom: 50,
+    marginTop: responsiveHeight(10),
+    marginBottom: responsiveHeight(6),
   },
   btnSheet: {
     flexDirection: 'column',

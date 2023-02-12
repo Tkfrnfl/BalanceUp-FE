@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Button} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {
   KakaoOAuthToken,
   getProfile as getKakaoProfile,
@@ -17,6 +17,12 @@ import FastImage from 'react-native-fast-image';
 import Login_Onboading from '../../resource/image/Login/login_onborading.png';
 import KakaoSvg from '../../resource/image/Login/Kakao.svg';
 import GoogleSvg from '../../resource/image/Login/Google.svg';
+import {deleteExpiredRoutine} from '../../actions/routineAPI';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
 
 // const naverLogin = async (): Promise<void> => {
 //   console.log('dd');
@@ -95,6 +101,7 @@ export default function Login({navigation}) {
           'jwtRefresh',
           JSON.stringify(res.body.refreshToken),
         );
+        deleteExpiredRoutine();
         navigation.push('Main');
       }
     });
@@ -112,7 +119,7 @@ export default function Login({navigation}) {
   return (
     <View style={styles.container}>
       <View style={styles.imgView}>
-        <FastImage style={{width: 335, height: 335}} source={Login_Onboading} />
+        <FastImage style={styles.loginImg} source={Login_Onboading} />
       </View>
       <Text style={styles.title}>만나서 반가워요!</Text>
       <Text style={styles.subTitle}>로그인 할 계정을 선택해 주세요</Text>
@@ -120,69 +127,46 @@ export default function Login({navigation}) {
         activeOpacity={1.0}
         onPress={signInWithKakao}
         style={styles.btnKakao}>
-        <KakaoSvg width={335} height={48} />
+        <KakaoSvg />
       </TouchableOpacity>
       <TouchableOpacity
         activeOpacity={1.0}
         style={styles.btnGoogle}
         onPress={() => onGoogleButtonPress()}>
-        <GoogleSvg width={335} height={48} />
+        <GoogleSvg />
       </TouchableOpacity>
-      <View
-        style={{
-          flexDirection: 'row',
-          marginTop: 40,
-        }}>
-        <Button
-          title="닉네임 설정 (임시 구현)"
-          onPress={() => navigation.push('NickName')}
-        />
-        <Button
-          title="홈 화면으로 가기 (임시 구현)"
-          onPress={() => navigation.push('Main')}
-        />
-      </View>
     </View>
   );
 }
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FFFFFF',
     flex: 1,
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
   },
+  loginImg: {
+    width: responsiveWidth(83),
+    height: responsiveHeight(48),
+  },
   title: {
-    width: '100%',
     color: '#232323',
-    textAlign: 'center',
-    fontSize: 22,
+    fontSize: responsiveFontSize(2.75),
     fontFamily: 'Pretendard-Bold',
   },
   subTitle: {
-    width: '100%',
     fontFamily: 'Pretendard-Medium',
     color: '#888888',
-    textAlign: 'center',
-    marginTop: 5,
-    fontSize: 14,
+    marginTop: responsiveHeight(0.8),
+    fontSize: responsiveFontSize(1.75),
   },
   imgView: {
-    marginTop: 60,
-    marginBottom: 30,
+    marginTop: responsiveHeight(10),
+    marginBottom: responsiveHeight(5),
   },
   btnKakao: {
-    marginTop: 35,
-    width: 335,
-    height: 48,
+    marginTop: responsiveHeight(4.5),
   },
   btnGoogle: {
-    marginTop: 10,
-    width: 335,
-    height: 48,
-  },
-  btnText: {
-    color: '#000',
-    fontSize: 15,
-    textAlign: 'center',
+    marginTop: responsiveHeight(2),
   },
 });

@@ -9,6 +9,7 @@ import first from '../../resource/image/Guide/1st.png';
 import second from '../../resource/image/Guide/2nd.png';
 import third from '../../resource/image/Guide/3rd.png';
 import Top from './Top';
+import {responsiveWidth} from 'react-native-responsive-dimensions';
 
 export default function Guide({navigation: {navigate}}) {
   return (
@@ -154,22 +155,22 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
   },
   infoSheet: {
-    width: 355,
-    height: 396,
+    width: responsiveWidth(90),
+    height: 406,
     backgroundColor: '#ffffff',
     borderRadius: 5,
     alignItems: 'center',
   },
   infoSheet_: {
-    width: 355,
+    width: responsiveWidth(90),
     height: 273,
     backgroundColor: '#ffffff',
     borderRadius: 5,
     alignItems: 'center',
   },
   infoSheet__: {
-    width: 355,
-    height: 452,
+    width: responsiveWidth(90),
+    height: 462,
     backgroundColor: '#ffffff',
     borderRadius: 5,
     alignItems: 'center',

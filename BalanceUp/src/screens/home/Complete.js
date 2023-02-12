@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Svg, {Circle} from 'react-native-svg';
-import commonStyles from '../../css/commonStyles';
+import Icon from '../../resource/image/Common/icon.svg';
 import CircleCustom from '../../components/CircleCustom';
 import {useRecoilState} from 'recoil';
 import {
@@ -10,7 +10,10 @@ import {
   learningState,
   mindCareState,
 } from '../../recoil/atom';
-import {responsiveWidth} from 'react-native-responsive-dimensions';
+import {
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
 
 const circleSize = 80;
 const Complete = () => {
@@ -19,8 +22,54 @@ const Complete = () => {
   const [learning, setLearning] = useRecoilState(learningState);
   const [mindCare, setMindCare] = useRecoilState(mindCareState);
   const allClear = daily + exercise + learning + mindCare;
+  const [topTitle, setTopTitle] = useState('');
+  const topRoutine = Math.max(daily, exercise, learning, mindCare);
 
-  return (
+  // const daily = 7;
+  // const exercise = 9;
+  // const mindCare = 10;
+  // const learning = 9;
+
+  useEffect(() => {
+    if (topRoutine === daily) {
+      setTopTitle('일상');
+    } else if (topRoutine === exercise) {
+      setTopTitle('운동');
+    } else if (topRoutine === mindCare) {
+      setTopTitle('마음관리');
+    } else if (topRoutine === learning) {
+      setTopTitle('학습');
+    }
+  }, [daily, exercise, mindCare, learning]);
+
+  const routineData = [
+    {
+      id: 1,
+      title: '일상',
+      count: daily,
+      color: '#585FFF',
+    },
+    {
+      id: 2,
+      title: '운동',
+      count: exercise,
+      color: '#8397FF',
+    },
+    {
+      id: 3,
+      title: '마음관리',
+      count: mindCare,
+      color: '#B9C8FF',
+    },
+    {
+      id: 4,
+      title: '학습',
+      count: learning,
+      color: '#D7E0FF',
+    },
+  ];
+
+  return allClear > 0 ? (
     <View style={styles.container}>
       <View style={{height: 35}} />
       <CircleCustom
@@ -30,62 +79,60 @@ const Complete = () => {
         percent3={exercise / allClear.toFixed(2)} //운동 - 운동 루틴 완료 횟수 / 전체 루틴 완료 횟수 = 결과값.toFixed(2)
         percent4={daily / allClear.toFixed(2)} // 일상 - 일상 루틴 완료 횟수 / 전체 루틴 완료 횟수 = 결과값.toFixed(2)
       />
-      <View style={styles.view1}>
-        <View style={styles.view2}>
+      <View
+        style={[
+          styles.dailyView,
+          {top: topRoutine === exercise ? responsiveHeight(23) : null},
+          {left: topRoutine === mindCare ? responsiveWidth(45) : null},
+          {bottom: topRoutine === mindCare ? responsiveHeight(-19) : null},
+          {right: topRoutine === learning ? responsiveHeight(-21) : null},
+        ]}>
+        <View style={styles.categotySheet}>
           {/* 가장 퍼센트 높은 카테고리 */}
-          <Text style={styles.mainText}>일상</Text>
-          <Text style={styles.percentText}>35%</Text>
-        </View>
-      </View>
-
-      <View style={commonStyles.spacing2} />
-      <View style={commonStyles.spacing2} />
-      <View style={commonStyles.spacing2} />
-      <View style={commonStyles.spacing3} />
-
-      <View style={[commonStyles.row, styles.view3]}>
-        <Svg width={20} height={20}>
-          <Circle x={10} y={10} r={8} fill="#585FFF" />
-        </Svg>
-        <Text style={styles.tilteText}>
-          일상 {(daily / allClear.toFixed(2)) * 100}%
-        </Text>
-        {/* 일상 루틴 완료 횟수 / 전체 루틴 완료 횟수 = 결과값.toFixed(2) * 100 */}
-        <Text style={[styles.numText, {marginLeft: 55}]}>{daily}회</Text>
-        {/* 일상 루틴 완료 횟수 받아서 설정 */}
-        <View style={commonStyles.row}>
-          <Svg width={20} height={20} style={styles.numText}>
-            <Circle x={10} y={10} r={8} fill="#8397FF" />
-          </Svg>
-          <Text style={styles.tilteText}>
-            운동 {(exercise / allClear.toFixed(2)) * 100}%
+          <Text
+            style={[
+              styles.topRoutineText,
+              {right: topRoutine === mindCare ? responsiveWidth(2.5) : -2},
+            ]}>
+            {topTitle}
           </Text>
-          {/* 운동 루틴 완료 횟수 / 전체 루틴 완료 횟수 = 결과값.toFixed(2) * 100 */}
-          <Text style={styles.numText}>{exercise}회</Text>
-          {/* 운동 루틴 완료 횟수 받아서 설정 */}
+          <Text
+            style={[
+              styles.percentText,
+              {left: topRoutine === learning ? responsiveWidth(0) : null},
+            ]}>
+            {Math.round((topRoutine / allClear).toFixed(2) * 100)}%
+          </Text>
         </View>
       </View>
-      <View style={commonStyles.spacing3} />
-      <View style={[commonStyles.row, styles.view3]}>
-        <Svg width={20} height={20}>
-          <Circle x={10} y={10} r={8} fill="#B9C8FF" />
-        </Svg>
-        <Text style={styles.tilteText}>
-          마음관리 {(mindCare / allClear.toFixed(2)) * 100}%
-        </Text>
-        {/* 마음관리 루틴 완료 횟수 / 전체 루틴 완료 횟수 = 결과값.toFixed(2) * 100 */}
-        <Text style={styles.numText}>{mindCare}회</Text>
-        {/* 마음관리 루틴 완료 횟수 받아서 설정 */}
-        <Svg width={20} height={20} style={styles.numText}>
-          <Circle x={10} y={10} r={8} fill="#D7E0FF" />
-        </Svg>
-        <Text style={styles.tilteText}>
-          학습 {(learning / allClear.toFixed(2)) * 100}%
-        </Text>
-        {/* 학습 루틴 완료 횟수 / 전체 루틴 완료 횟수 = 결과값.toFixed(2) * 100 */}
-        <Text style={styles.numText}>{learning}회</Text>
-        {/* 학습 루틴 완료 횟수 받아서 설정 */}
+      <View style={styles.sheetContainer}>
+        {routineData.map(data => (
+          <View key={data.id} style={styles.routineSheet}>
+            <Svg width={20} height={20}>
+              <Circle x={10} y={10} r={8} fill={data.color} />
+            </Svg>
+            <Text style={styles.tilteText}>
+              {data.title} {/* // 공백 */}
+              {Math.round((data.count / allClear).toFixed(2) * 100)}%
+            </Text>
+            <Text
+              style={[
+                styles.numText,
+                {
+                  left:
+                    data.id === 1 ? responsiveWidth(18.8) : responsiveWidth(13),
+                },
+              ]}>
+              {data.count}회
+            </Text>
+          </View>
+        ))}
       </View>
+    </View>
+  ) : (
+    <View style={{alignItems: 'center'}}>
+      <Icon style={{marginTop: responsiveHeight(10)}} />
+      <Text style={styles.noneText}>통계 내역이 없습니다</Text>
     </View>
   );
 };
@@ -95,35 +142,48 @@ export default Complete;
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    borderTopColor: 'red',
     backgroundColor: '#ffffff',
     flex: 1,
   },
-  mainText: {
+  sheetContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    marginRight: -30,
+    marginLeft: 15,
+    marginTop: responsiveHeight(23),
+  },
+  routineSheet: {
+    flexDirection: 'row',
+    width: '50%',
+    marginTop: 15,
+  },
+  topRoutineText: {
     fontSize: 16,
     color: '#232323',
     fontFamily: 'Pretendard-Bold',
   },
   tilteText: {
     fontSize: 14,
-    marginLeft: responsiveWidth(3),
     color: '#232323',
     fontFamily: 'Pretendard-Medium',
+    left: responsiveWidth(2),
+    fontVariant: ['tabular-nums'],
   },
   numText: {
     color: '#888888',
     fontSize: 14,
     fontFamily: 'Pretendard-Medium',
-    marginLeft: 30,
+    fontVariant: ['tabular-nums'],
   },
   percentText: {
-    bottom: 1,
-    right: 3,
+    right: 2,
     fontSize: 16,
     color: '#585FFF',
     fontFamily: 'Pretendard-Bold',
   },
-  view1: {
+  dailyView: {
     width: 90,
     height: 90,
     shadowColor: '#000',
@@ -135,15 +195,17 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     zIndex: 99, // added zIndex
     backgroundColor: 'white', // added a background color
-    marginTop: -230,
-    marginLeft: -180,
+    marginTop: -260,
+    marginLeft: -150,
   },
-  view2: {
+  categotySheet: {
     marginTop: 25,
     marginLeft: 30,
   },
-  view3: {
-    marginTop: -15,
-    position: 'relative',
+  noneText: {
+    marginTop: responsiveHeight(2),
+    fontSize: 14,
+    color: '#B9B9B9',
+    fontFamily: 'Pretendard-Medium',
   },
 });
