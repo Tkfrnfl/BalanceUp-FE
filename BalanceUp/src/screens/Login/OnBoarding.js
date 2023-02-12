@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import {
+  responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
@@ -9,7 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useRecoilState} from 'recoil';
 import FastImage from 'react-native-fast-image';
 import {getRefreshToken} from '../../actions/memberJoinApi';
-import { deleteExpiredRoutine } from '../../actions/routineAPI';
+import {deleteExpiredRoutine} from '../../actions/routineAPI';
 import {jwtState, jwtRefreshState} from '../../recoil/atom';
 
 import jwt_decode from 'jwt-decode';
@@ -163,63 +164,59 @@ const styles = StyleSheet.create({
     marginTop: responsiveHeight(13),
     marginBottom: responsiveHeight(3),
   },
+  typoStyle: {
+    width: responsiveWidth(58),
+    height: responsiveHeight(5),
+    marginLeft: 4,
+  },
   onBoardingIMG: {
-    width: responsiveWidth(55),
+    width: responsiveWidth(58),
     height: responsiveHeight(36),
     marginLeft: 12,
   },
   title: {
     color: '#232323',
     textAlign: 'center',
-    marginTop: responsiveHeight(10),
-    marginBottom: 5,
-    fontSize: 22,
     fontFamily: 'Pretendard-Bold',
+    marginTop: responsiveHeight(10),
+    marginBottom: responsiveHeight(0.8),
+    fontSize: responsiveFontSize(2.75),
   },
   subTitle: {
-    width: '100%',
+    fontSize: responsiveFontSize(1.75),
     fontFamily: 'Pretendard-Medium',
     color: '#888888',
-    textAlign: 'center',
     marginTop: 3,
-    fontSize: 14,
-  },
-  typoStyle: {
-    width: responsiveWidth(55),
-    height: responsiveHeight(5),
-    marginLeft: 4,
   },
   btnStart: {
     fontWeight: 'bold',
     padding: 15,
   },
   btnText: {
+    textAlign: 'center',
     color: '#ffffff',
     fontFamily: 'Pretendard-Medium',
-    fontSize: 16,
-    textAlign: 'center',
+    fontSize: responsiveFontSize(1.98),
   },
   dotStyle: {
     backgroundColor: '#888888',
-    width: 9,
-    height: 9,
+    width: responsiveWidth(2.3),
+    height: responsiveHeight(1.2),
     borderRadius: 10,
     marginLeft: 4,
     marginRight: 4,
-    marginBottom: responsiveHeight(25),
+    marginBottom: responsiveHeight(24),
   },
   activeDotStyle: {
     backgroundColor: '#232323',
-    width: 25,
-    height: 9,
+    width: responsiveWidth(7),
+    height: responsiveHeight(1.2),
     borderRadius: 10,
     marginLeft: 4,
     marginRight: 4,
-    marginBottom: responsiveHeight(25),
+    marginBottom: responsiveHeight(24),
   },
   svgStyle: {
-    width: 38,
-    height: 38,
     marginBottom: responsiveHeight(33),
   },
 });

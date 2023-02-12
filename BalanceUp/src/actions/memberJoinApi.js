@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {api} from '../utils/Api';
+import axiosInstance from '../utils/Client';
 
 const loginKakao = async params => {
   let res;
@@ -99,4 +100,22 @@ const getRefreshToken = async (userName, token, refreshToken) => {
   return res;
 };
 
-export {loginKakao, loginGoogle, joinKakao, SignInKakao, getRefreshToken};
+const userWithdraw = async () => {
+  await axiosInstance
+    .delete('/withdraw')
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(function (error) {
+      console.log(error.response.data);
+    });
+};
+
+export {
+  loginKakao,
+  loginGoogle,
+  joinKakao,
+  SignInKakao,
+  getRefreshToken,
+  userWithdraw,
+};

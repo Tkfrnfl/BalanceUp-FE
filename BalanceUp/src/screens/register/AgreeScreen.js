@@ -130,7 +130,9 @@ const AgreeScreen = ({navigation}) => {
               onPress={useBtnEvent}
             />
           )}
-          <Text style={styles.agreeText}>개인정보 처리 방침 (필수)</Text>
+          <Text style={styles.agreeText}>
+            [필수] 서비스 이용약관에 동의합니다.
+          </Text>
           <TouchableOpacity
             onPress={() =>
               Linking.openURL(
@@ -157,11 +159,13 @@ const AgreeScreen = ({navigation}) => {
               onPress={serviceBtnEvent}
             />
           )}
-          <Text style={styles.agreeText}>서비스 이용약관 (필수)</Text>
+          <Text style={styles.agreeText}>
+            [필수] 개인정보 수집 / 이용에 동의합니다.
+          </Text>
           <TouchableOpacity
             onPress={() =>
               Linking.openURL(
-                'https://keyum.notion.site/KEYUM-dd9853b3ffa74f34951a57cfb7d195ce',
+                'https://keyum.notion.site/KEYUM-ef4e1a7f198d4cec8d4642c3bf7cc0a4',
               )
             }
             activeOpacity={1.0}>
@@ -184,7 +188,7 @@ const AgreeScreen = ({navigation}) => {
               onPress={ageBtnEvent}
             />
           )}
-          <Text style={styles.agreeText}>14세 이상입니다 (필수)</Text>
+          <Text style={styles.agreeText}>[필수] 만 14세 이상입니다.</Text>
         </View>
       </View>
       <TouchableOpacity
@@ -269,11 +273,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   arrow: {
-    left: responsiveWidth(45),
+    left: responsiveWidth(27),
     top: 1,
   },
   arrow1: {
-    left: responsiveWidth(49),
+    left: responsiveWidth(21),
     top: 1,
   },
 });

@@ -33,6 +33,13 @@ const commonStyles = StyleSheet.create({
     marginTop: 3,
     color: '#232323',
   },
+  lightText_: {
+    fontSize: 12,
+    fontFamily: 'Pretendard-Light',
+    marginTop: 3,
+    color: '#232323',
+  },
+
   imgView: {
     flexDirection: 'row',
     marginTop: 60,

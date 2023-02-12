@@ -3,8 +3,6 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
 import NameScreen from '../screens/register/NameScreen';
 import AgreeScreen from '../screens/register/AgreeScreen';
-import UseInfoScreen from '../screens/register/UseInfoScreen';
-import ServiceInfoScreen from '../screens/register/ServiceInfoScreen';
 import MainScreen from '../screens/home/MainScreen';
 const NickNameStack = createStackNavigator();
 
@@ -39,16 +37,6 @@ export function NickNameRouter() {
         <NickNameStack.Screen
           name="Agree"
           component={AgreeScreen}
-          options={{headerShown: false}}
-        />
-        <NickNameStack.Screen
-          name="UseInfo"
-          component={UseInfoScreen}
-          options={{headerShown: false}}
-        />
-        <NickNameStack.Screen
-          name="ServiceInfo"
-          component={ServiceInfoScreen}
           options={{headerShown: false}}
         />
         <NickNameStack.Screen

@@ -1,10 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-
+import {userWithdraw} from '../../actions/memberJoinApi';
 import CheckOn from '../../resource/image/Agree/check_on.svg';
 import CheckOff from '../../resource/image/Agree/check_off.svg';
 import BackArrow from '../../resource/image/Common/backArrow.svg';
-import axios from '../../utils/Client';
 import {
   responsiveHeight,
   responsiveWidth,
@@ -13,6 +12,7 @@ import {
 const Withdrawal = ({navigation: {navigate}}) => {
   const [useCheck, setUseCheck] = useState(false);
   const [disabled, setDisabled] = useState(false);
+  const [withdrawal, setWithdrawal] = useState(false);
 
   const useBtnEvent = () => {
     if (useCheck === false) {
@@ -25,18 +25,6 @@ const Withdrawal = ({navigation: {navigate}}) => {
   useEffect(() => {
     setDisabled(!useCheck);
   }, [useCheck]);
-
-  // 회원 탈퇴 임시 API (아직 백엔드에서 확실한 구현 X)
-  // const userWithdraw = async () => {
-  //   await axios
-  //     .delete()
-  //     .then(response => {
-  //       console.log(response);
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     });
-  // };
 
   return (
     <View style={styles.container}>
@@ -83,7 +71,11 @@ const Withdrawal = ({navigation: {navigate}}) => {
           styles.Nextbutton,
           {backgroundColor: disabled ? '#CED6FF' : '#585FFF'},
         ]}
-        onPress={() => navigate('Login')}
+        onPress={() =>
+          userWithdraw().then(() => {
+            navigate('Login');
+          })
+        }
         activeOpacity={1.0}
         disabled={disabled}>
         <Text style={styles.NextbuttonText}>탈퇴하기</Text>

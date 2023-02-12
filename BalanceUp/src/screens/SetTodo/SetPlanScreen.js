@@ -382,11 +382,11 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
         {isEditing ? (
           <View style={styles.inputSheet}>
             <Text style={styles.inputText}>루틴명</Text>
-            <Text style={styles.count}>{todoText.length}/20</Text>
+            <Text style={styles.count}>{todoText.length}/10</Text>
             <TextInput
               style={styles.inputStyle}
               fontSize={16}
-              maxLength={20}
+              maxLength={10}
               autoCapitalize="none"
               value={todoText}
               onChangeText={handleTextChange}
@@ -395,11 +395,11 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
         ) : (
           <View style={styles.inputSheet}>
             <Text style={styles.inputText}>루틴명</Text>
-            <Text style={styles.count}>{lengthTodo}/20</Text>
+            <Text style={styles.count}>{lengthTodo}/10</Text>
             <TextInput
               style={styles.inputStyle}
               fontSize={16}
-              maxLength={20}
+              maxLength={10}
               autoCapitalize="none"
               placeholderTextColor="#AFAFAF"
               placeholder="ex) 물💧 마시기!"

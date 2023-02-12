@@ -176,6 +176,8 @@ const LookAll = () => {
     setRoutineStateNum(tmpNum + 1);
   }, [isFocused]);
 
+  console.log(selectTodo.length);
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollview}>
@@ -235,19 +237,23 @@ const LookAll = () => {
                 style={styles.routineBarText}>
                 루틴 진행률
               </SvgText>
+
               <SvgText
                 x="295"
                 y="28"
                 text-anchor="middle"
                 fill="#585FFF"
                 style={styles.percentageText}>
-                {`${Math.floor(routineProgress * 100)}%`}
+                {selectTodo.length === 0
+                  ? '0%'
+                  : `${Math.floor(routineProgress * 100)}%`}
               </SvgText>
+
               <View style={styles.progressBar}>
                 <ProgressLib.Bar
-                  progress={routineProgress}
+                  progress={selectTodo.length === 0 ? 0 : routineProgress}
                   // 진행 루틴 Null = 0% 표시
-                  // completed true 총합 / selectTodo.length = 결과값.toFixed(2)
+                  // completed true 총합 / selectTodo.length(루틴 총합) = 결과값.toFixed(2)
                   width={300}
                   height={12}
                   color="#585FFF"

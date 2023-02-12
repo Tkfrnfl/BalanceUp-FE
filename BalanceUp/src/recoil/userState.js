@@ -65,9 +65,11 @@ let routineStateDaysSet = selectorFamily({
       });
       res = res.body;
       let routineList = [];
+      let dayList = [[], [], [], []];
       for (var i = 0; i < res.length; i++) {
         // 맨끝 날짜 구해서 end date 도 넣어주기
         for (var j = 0; j < res[i].routineDays.length; j++) {
+          dayList[i].push(res[i].routineDays[j].day);
           let tmp = {
             routineId: res[i].routineId,
             // id: res[i].routineDays[j].id,
@@ -77,6 +79,7 @@ let routineStateDaysSet = selectorFamily({
             alarmTime: res[i].alarmTime,
             day: res[i].routineDays[j].day,
             completed: res[i].routineDays[j].completed,
+            endDate: dayList[i],
           };
           routineList.push(tmp);
         }
