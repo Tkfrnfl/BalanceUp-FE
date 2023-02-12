@@ -44,6 +44,11 @@ let routineStateDays = atom({
   default: [],
 });
 
+let alarmChanged = atom({
+  key: 'alarmChanged',
+  default: 0,
+});
+
 // const useRefreshRoutine = num => {
 //   const setNum = useSetRecoilState(routineStateNum);
 //   return () => setNum(id => id + 1);
@@ -87,4 +92,5 @@ export {
   routineStateComplete,
   routineStateDays,
   routineStateDaysSet,
+  alarmChanged,
 };

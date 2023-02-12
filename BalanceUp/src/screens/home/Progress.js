@@ -47,11 +47,13 @@ import {
 } from '../../actions/routineAPI';
 import Edit from '../../resource/image/Main/edit.svg';
 import Delete from '../../resource/image/Main/delete.svg';
-import {routineStateDaysSet} from '../../recoil/userState';
+import {routineStateDaysSet, alarmChanged} from '../../recoil/userState';
 import OverSvg from '../../resource/image/Common/overRoutine.svg';
 import {dateState, routineStateNum} from '../../recoil/appState';
 import {responsiveWidth} from 'react-native-responsive-dimensions';
 import axios from '../../utils/Client';
+import getMoment from '../../utils/Day';
+import PushNotification from 'react-native-push-notification';
 
 const Progress = () => {
   const route = useRoute();
@@ -76,6 +78,7 @@ const Progress = () => {
   const [overRoutineModalVisible, setOverRoutineModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const navigation = useNavigation();
+  const [alarmChange, setAlarmChanged] = useRecoilState(alarmChanged);
 
   let today = new Date();
   let year = today.getFullYear(); // 년도
@@ -99,7 +102,7 @@ const Progress = () => {
   // 날짜 선택시 루틴리스트 생성
   const setRoutinesByDate = () => {
     let tmp = [];
-    for (var i = 0; i < selectTodo.length-1; i++) {
+    for (var i = 0; i < selectTodo.length - 1; i++) {
       if (selectTodo[i].day === dateSelected) {
         let tmpSelected = JSON.parse(JSON.stringify(selectTodo[i]));
         if (
@@ -163,7 +166,7 @@ const Progress = () => {
   // 2번, 3번 or 이어서 다른 루틴 수정시에는 api만 정상 작동, 스크린 반영 안됨
   useEffect(() => {
     DeviceEventEmitter.addListener('refresh', () => {
-      //console.log('refresh 실행');
+      // console.log('refresh 실행');
       let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
       setRoutineStateNum(tmpNum + 1);
     });
@@ -239,7 +242,7 @@ const Progress = () => {
         // 2주 루틴, 하루루틴 구별
         let checkEveyday = 0;
 
-        for (var i = 0; i < selectTodo.length-1; i++) {
+        for (var i = 0; i < selectTodo.length - 1; i++) {
           if (
             selectTodo[i].routineId === routines[index].routineId &&
             selectTodo[i].completed == false
@@ -290,11 +293,35 @@ const Progress = () => {
     await deleteRoutine(routines[chosenIndex].routineId).then(
       setDeleteModalVisible(!deleteModalVisible),
     );
+    // 알림 삭제
+    let tmpArrayDays = [];
+    let tmpId = routines[chosenIndex].routineId;
+
+    await PushNotification.getChannels(callback => {
+      for (var i = 0; i < callback.length; i++) {
+        // console.log(callback[i].slice(0, 4));
+        if (
+          callback[i].slice(0, 4) === String(tmpId) ||
+          callback[i].slice(0, 5) === String(tmpId)
+        ) {
+          let tmp1 = callback[i].slice(4);
+          let tmp2 = callback[i].slice(5);
+          tmpArrayDays.push(tmp1);
+          tmpArrayDays.push(tmp2);
+        }
+      }
+      for (var j = 0; j < tmpArrayDays.length; j++) {
+        let tmp = tmpArrayDays[j];
+        console.log(tmp);
+        PushNotification.deleteChannel(`${tmpId}${tmp}`);
+      }
+    });
+
     // seloctor 업데이트를 위해+1
     let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
     setRoutineStateNum(tmpNum + 1);
   };
-  const handleRemove = index => {
+  const handleRemove = async index => {
     setDeleteModalVisible(!deleteModalVisible);
     setChosenIndex(index);
   };
@@ -309,6 +336,12 @@ const Progress = () => {
   ) => {
     setRoutineId(routineId);
     setroutineCategory(routineCategory);
+    // PushNotification.cancelAllLocalNotifications();
+
+    PushNotification.getScheduledLocalNotifications(callback => {
+      console.log(callback); // ['channel_id_1']
+    });
+    console.log(alarmTime);
     navigation.navigate('Plan', {
       routineId: routineId,
       planText: routineCategory,

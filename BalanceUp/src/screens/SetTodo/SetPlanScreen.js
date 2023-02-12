@@ -27,7 +27,7 @@ import {createRoutine, modifyRoutine} from '../../actions/routineAPI';
 import {useRecoilState, useRecoilValue} from 'recoil';
 import {nickNameState, jwtState} from '../../recoil/atom';
 import {dateState, routineStateNum} from '../../recoil/appState';
-import {routineStateDaysSet} from '../../recoil/userState';
+import {routineStateDaysSet, alarmChanged} from '../../recoil/userState';
 
 const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const {planText} = route.params;
@@ -37,6 +37,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   const {alarm} = route.params;
 
   const [nickName, setNickName] = useRecoilState(nickNameState);
+  const [alarmChange, setAlarmChanged] = useRecoilState(alarmChanged);
   const [isEditing, setIsEditing] = useState(false);
   const [selected, setSelected] = useState(new Map());
   const [lengthTodo, setLengthTodo] = useState(0);
@@ -236,40 +237,21 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   // 루틴 생성
   const handleCreate = async () => {
     let beforeArray = JSON.parse(JSON.stringify(selectTodo));
-    await createRoutine(todoText, planText, dayText, time).then(
-      res => {
-        if (res === '루틴 갯수는 4개를 초과할 수 없습니다.') {
-          setClearModalVisible(false);
-          navigate('Home', {overRoutine: 'over'});
-        } else {
-          setClearModalVisible(false);
-          navigate('Home');
-          // seloctor 업데이트를 위해+1
-          let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
-          setRoutineStateNum(tmpNum + 1);
-        }
-      },
-      // res === '루틴 갯수는 4개를 초과할 수 없습니다.'
-      //   ? (setClearModalVisible(false),
-      //     console.log(res),
-      //     navigate('Home', {overRoutine: 'over'}))
-      //   : (setClearModalVisible(false), navigate('Home')),
-    );
-
-    // let changedArray = afterArray.slice(beforeArray.length, afterArray.length);
-    // console.log(beforeArray);
-    // console.log(selectTodo);
-    // console.log(changedArray);
-    let routineId;
-    let days = [];
-    let alarmTime;
-    // for(var i=0;i<selectTodo.length;i++){
-    //   if(selectTodo[i].routineTitle==todoText && )
-    // }
-    // notify(),
-    // let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
-    // setRoutineStateNum(tmpNum + 1);
-    // await routineStateDaysSet(token, routineRefresh);
+    await createRoutine(todoText, planText, dayText, time).then(res => {
+      if (res === '루틴 갯수는 4개를 초과할 수 없습니다.') {
+        setClearModalVisible(false);
+        navigate('Home', {overRoutine: 'over'});
+      } else {
+        setClearModalVisible(false);
+        navigate('Home');
+        // 알림 설정
+        let tmp = JSON.parse(JSON.stringify(alarmChanged));
+        setAlarmChanged(tmp + 1);
+        // seloctor 업데이트를 위해+1
+        let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
+        setRoutineStateNum(tmpNum + 1);
+      }
+    });
   };
 
   // 루틴 수정
@@ -278,8 +260,50 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
       setClearModalVisible(false),
       navigate('Home'),
     );
+    let tmpArray = [];
+    let tmpId = routineId;
 
-    // notify();
+    PushNotification.getScheduledLocalNotifications(callback => {
+      for (var i = 0; i < callback.length; i++) {
+        if (callback[i].id.slice(0, 4) === String(tmpId).slice(0, 4)) {
+          // id 만자리수 대비
+          tmpArray.push(callback[i]);
+        }
+      }
+      for (var j = 0; j < tmpArray.length; j++) {
+        let beforeDate = tmpArray[j].date;
+        console.log(beforeDate);
+        PushNotification.deleteChannel(`${tmpId}${beforeDate}`); // 이전채널 삭제
+        let m = moment(beforeDate);
+
+        m.set({hour: time.split(':')[0], minute: time.split(':')[1]}); // 시간만 바꿈
+        m.toDate();
+        var tmpM = new Date(m);
+        PushNotification.createChannel(
+          {
+            channelId: `${tmpId}${tmpM}`,
+            channelName: tmpArray[j].title,
+            channelDescription: 'A channel to categorise your notifications',
+            playSound: false,
+            soundName: 'default',
+            vibrate: true,
+          },
+          // created => console.log(`createChannel returned '${created}'`),
+        );
+        PushNotification.localNotificationSchedule({
+          channelId: `${tmpId}${tmpM}`,
+          id: `${tmpId}${tmpM}`,
+          title: tmpArray[j].title,
+          message: `${nickName}님, 오늘의 루틴을 완료해보세요!`,
+          date: tmpM,
+          // repeatType: 'week',
+          // date: new Date(Date.now() + 20 * 1000), //시간대 에러날시 서버시간 체크후 보정
+        });
+      }
+      PushNotification.getScheduledLocalNotifications(callback2 => {
+        console.log(callback2); // ['channel_id_1']
+      });
+    });
   };
 
   // 토스트 메세지

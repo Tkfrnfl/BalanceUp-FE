@@ -36,7 +36,7 @@ import {useRecoilState, useRecoilValue} from 'recoil';
 import {jwtState} from '../../recoil/atom';
 import {dateState, routineStateNum} from '../../recoil/appState';
 import {nickNameState, userRpState} from '../../recoil/atom';
-import {routineStateDaysSet} from '../../recoil/userState';
+import {routineStateDaysSet, alarmChanged} from '../../recoil/userState';
 import {getAllRoutine} from '../../actions/routineAPI';
 import {useIsFocused} from '@react-navigation/native';
 import {
@@ -102,6 +102,7 @@ const MainScreen = ({navigation: {navigate}}) => {
   // const [learning, setLearning] = useRecoilState(learningState);
   // const [mindCare, setMindCare] = useRecoilState(mindCareState);
   const [routineRefresh, setRoutineStateNum] = useRecoilState(routineStateNum);
+  const [alarmChange, setAlarmChanged] = useRecoilState(alarmChanged);
   const [userRp, setUserRp] = useRecoilState(userRpState);
   const [token, setToken] = useRecoilState(jwtState);
   const [userLevel, setUserLevel] = useState(1);
@@ -260,12 +261,12 @@ const MainScreen = ({navigation: {navigate}}) => {
   }, []);
   useEffect(() => {
     setTodo();
-    // 알림 싱크 체크 후 생성
+  }, [routineRefresh]);
+  useEffect(() => {
+    // 알림 생성 체크 후 생성
     let tmpArray = JSON.parse(
       JSON.stringify(selectTodo[selectTodo.length - 1]),
     );
-    // console.log(tmpArray.routineDays);
-    // console.log('??');
     for (var i = 0; i < tmpArray.length; i++) {
       let tmpArrayDays = [];
 
@@ -288,69 +289,66 @@ const MainScreen = ({navigation: {navigate}}) => {
           second: 0,
           millisecond: 0,
         });
-
-        // m = moment(
-        //   year.toString() +
-        //     '-' +
-        //     month.toString() +
-        //     '-' +
-        //     day.toString() +
-        //     ' ' +
-        //     hour.toString() +
-        //     ':' +
-        //     minute.toString(),
-        //   'YYYY-MM-DD HH:MM',
-        // );
         m.toDate();
         var tmpM = new Date(m);
         tmpArrayDays.push(tmpM);
       }
-      // console.log(tmpArray[i].routineId);
-      console.log(tmpArrayDays);
-      let tmpId = tmpArray[i].routineId;
-      let tmpTitle = tmpArray[i].routineTitle;
-      PushNotification.channelExists(`${tmpId}`, function (exists) {
-        // 채널 확인후 존재하지 않으면 채널 생성후 알림 설정
-        if (!exists) {
-          PushNotification.createChannel(
-            {
-              channelId: `${tmpId}`,
-              channelName: tmpTitle,
-              channelDescription: 'A channel to categorise your notifications',
-              playSound: false,
-              soundName: 'default',
-              vibrate: true,
-            },
-            // created => console.log(`createChannel returned '${created}'`),
-          );
-          PushNotification.localNotificationSchedule({
-            channelId: `${tmpId}`,
-            title: tmpTitle,
-            message: `${nickName}님, 오늘의 루틴을 완료해보세요!`,
-            date: tmpArrayDays,
-            // repeatType: 'week',
-            // date: new Date(Date.now() + 20 * 1000),
-          });
-        } else {
-          PushNotification.localNotificationSchedule({
-            channelId: `${tmpId}`,
-            title: tmpTitle,
-            message: `${nickName}님, 오늘의 루틴을 완료해보세요!`,
-            date: tmpArrayDays[0], // 알람 하나씩 설정
-            // repeatType: 'week',
-            // date: new Date(Date.now() + 20 * 1000),
-          });
-          PushNotification.getScheduledLocalNotifications(callback => {
-            console.log(callback); // ['channel_id_1']
-          });
-          // PushNotification.getChannels(callback => {
-          //   console.log(callback); // ['channel_id_1']
-          // });
-          // PushNotification.clearAllNotifications();
-        }
-      });
+      console.log(tmpArray[i].routineId);
+
+      for (var k = 0; k < tmpArrayDays.length; k++) {
+        let tmpId = tmpArray[i].routineId;
+        let tmpTitle = tmpArray[i].routineTitle;
+        let tmpDays = tmpArrayDays[k];
+        // let strtmpDays=tmpArray[i].routineDays[k].day;
+        PushNotification.channelExists(`${tmpId}${tmpDays}`, function (exists) {
+          // 채널 확인후 존재하지 않으면 채널 생성후 알림 설정
+          if (!exists) {
+            PushNotification.createChannel(
+              {
+                channelId: `${tmpId}${tmpDays}`,
+                channelName: tmpTitle,
+                channelDescription:
+                  'A channel to categorise your notifications',
+                playSound: false,
+                soundName: 'default',
+                vibrate: true,
+              },
+              // created => console.log(`createChannel returned '${created}'`),
+            );
+            PushNotification.localNotificationSchedule({
+              channelId: `${tmpId}${tmpDays}`,
+              id: `${tmpId}${tmpDays}`,
+              title: tmpTitle,
+              message: `${nickName}님, 오늘의 루틴을 완료해보세요!`,
+              date: tmpDays,
+              // repeatType: 'week',
+              // date: new Date(Date.now() + 20 * 1000), //시간대 에러날시 서버시간 체크후 보정
+            });
+          } else {
+            // PushNotification.deleteChannel(`${tmpId}${tmpDays}`)
+            // PushNotification.getScheduledLocalNotifications(callback => {
+            //   console.log(callback); // ['channel_id_1']
+            // });
+            // PushNotification.getChannels(callback => {
+            //   console.log(callback);
+            // });
+          }
+        });
+      }
+      // PushNotification.getChannels(callback => {
+      //   for (var i = 0; i < callback.length; i++) {
+      //     let tmpId = callback[i].slice(0, 3);
+      //     let tmpDay = callback[i].slice(4);
+
+      //     let exists = false;
+
+      //     for (var k = 0; k < tmpArrayDays.length; k++){
+      //       if(tmpDay===tmpArrayDays[k]&&tmpId===)
+      //     }
+      //   }
+      // });
     }
-  }, [routineRefresh]);
+  }, [alarmChange]);
 
   return (
     <SafeAreaView style={styles.container}>
