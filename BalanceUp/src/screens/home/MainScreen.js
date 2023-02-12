@@ -399,7 +399,11 @@ const MainScreen = ({navigation: {navigate}}) => {
                   <Text
                     style={[
                       styles.progressLevelText,
-                      {color: '#888888', top: 5, marginRight: 18},
+                      {
+                        color: '#888888',
+                        top: 5,
+                        marginRight: responsiveWidth(4),
+                      },
                     ]}>
                     {userRp}/{upRp} RP
                   </Text>
@@ -456,9 +460,9 @@ const MainScreen = ({navigation: {navigate}}) => {
                           styles.progressRpText,
                           dstyleText(1.0 * 300).bar,
                           {
-                            left: -8,
+                            left: -9,
                             bottom: 3,
-                            fontSize: responsiveFontSize(1.08),
+                            fontSize: responsiveFontSize(0.95),
                           },
                           ,
                         ]}>
@@ -524,7 +528,9 @@ const MainScreen = ({navigation: {navigate}}) => {
                           styles.progressRpText,
                           dstyleText((userRp / upRp) * 300).bar,
                           {
-                            left: userRp >= 100 ? -3 : 0,
+                            fontSize:
+                              userRp >= 100 ? responsiveFontSize(1.4) : 12,
+                            left: userRp >= 100 ? responsiveWidth(-0.85) : 0,
                           },
                           ,
                         ]}>
@@ -546,7 +552,7 @@ const MainScreen = ({navigation: {navigate}}) => {
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             {todo.map((value, index) => (
               <View key={index}>
-                <View style={styles.view1}>
+                <View style={styles.notCompletedSheet}>
                   {todoCompleted[index] === todoTotal[index] ? (
                     <View style={styles.grayImg}>{todoImgGray[index]}</View>
                   ) : (
@@ -718,16 +724,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#FAFBFF',
   },
   showAllBtn: {
-    left: 35,
+    left: 38,
     width: 65,
+    height: 26,
     paddingTop: 3,
     borderColor: '#EBEBEB',
     borderWidth: 1,
     borderRadius: 5,
-    height: 25,
   },
   btnText: {
     fontSize: 12,
+    right: 1,
     textAlign: 'center',
     color: '#888888',
     fontFamily: 'Pretendard-Medium',
@@ -741,12 +748,12 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   nameText: {
-    fontSize: 22,
+    fontSize: responsiveFontSize(2.75),
     color: '#232323',
     fontFamily: 'Pretendard-Bold',
   },
   levelContainer: {
-    width: 340,
+    width: responsiveWidth(86),
     height: 110,
     paddingTop: 15,
     borderRadius: 5,
@@ -779,23 +786,23 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-Medium',
   },
   nextLevelText: {
-    fontSize: 22,
+    fontSize: responsiveFontSize(2.75),
     color: '#585FFF',
     fontFamily: 'Pretendard-Bold',
   },
   upText: {
-    fontSize: 12,
+    fontSize: responsiveHeight(1.6),
     color: '#232323',
     fontFamily: 'Pretendard-Medium',
-    marginTop: 8,
+    marginTop: responsiveHeight(0.8),
   },
   guideText: {
-    fontSize: 12,
     color: '#888888',
+    fontSize: responsiveFontSize(1.5),
     fontFamily: 'Pretendard-Medium',
     textDecorationLine: 'underline',
     marginLeft: responsiveWidth(65),
-    marginBottom: 20,
+    marginBottom: responsiveHeight(3),
   },
   mainText4: {
     paddingRight: 60,
@@ -830,11 +837,11 @@ const styles = StyleSheet.create({
     color: '#232323',
   },
   gifImg: {
-    marginTop: -25,
-    marginBottom: -30,
+    marginTop: responsiveHeight(-2),
+    marginBottom: responsiveWidth(-7),
     resizeMode: 'stretch',
-    height: 360,
-    width: 350,
+    height: 380,
+    width: 380,
   },
   progress: {
     marginTop: 50,
@@ -855,9 +862,9 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginTop: 15,
   },
-  view1: {
-    width: responsiveWidth(23),
-    height: responsiveHeight(12),
+  notCompletedSheet: {
+    width: 90,
+    height: 90,
     shadowColor: '#000000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.5,
@@ -893,7 +900,7 @@ const styles = StyleSheet.create({
   levelUpModalImg: {
     marginTop: responsiveHeight(-17),
     width: responsiveWidth(100),
-    height: responsiveHeight(100),
+    height: responsiveHeight(104),
   },
 });
 

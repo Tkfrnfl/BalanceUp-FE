@@ -189,9 +189,7 @@ const MyPage = ({navigation: {navigate}}) => {
               <View style={styles.menuSheet}>
                 <Text style={styles.menuText}>{data.title}</Text>
                 {data.id === 2 ? <NewNotice style={styles.newSvg} /> : null}
-                <MoreInfoArrow
-                  style={[styles.arrowBtnStyle, {left: responsiveWidth(69)}]}
-                />
+                <MoreInfoArrow style={styles.arrowBtnStyle} />
               </View>
             </TouchableOpacity>
           ))}
@@ -205,17 +203,7 @@ const MyPage = ({navigation: {navigate}}) => {
               <View
                 style={[styles.menuSheet, {marginTop: data.id === 1 ? 15 : 2}]}>
                 <Text style={styles.menuText}>{data.title}</Text>
-                <MoreInfoArrow
-                  style={[
-                    styles.arrowBtnStyle,
-                    {
-                      left:
-                        data.id === 1
-                          ? responsiveWidth(57.8)
-                          : responsiveWidth(62.3),
-                    },
-                  ]}
-                />
+                <MoreInfoArrow style={styles.arrowBtnStyle} />
               </View>
             </TouchableOpacity>
           ))}
@@ -383,10 +371,10 @@ const styles = StyleSheet.create({
     color: '#888888',
   },
   menuSheet: {
+    width: responsiveWidth(100),
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
     marginTop: 2,
-    width: responsiveWidth(100),
     height: 55,
   },
   menuText: {
@@ -397,8 +385,9 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   arrowBtnStyle: {
-    left: 290,
-    top: 20,
+    alignSelf: 'center',
+    position: 'absolute',
+    right: responsiveWidth(5),
   },
   blank: {
     color: '#000',
@@ -473,10 +462,10 @@ const styles = StyleSheet.create({
     height: 18,
     position: 'absolute',
     left: responsiveWidth(50),
-    top: 17,
+    top: responsiveHeight(2.5),
   },
   newSvg: {
-    top: responsiveHeight(2.5),
+    alignSelf: 'center',
     left: responsiveWidth(3),
   },
 });

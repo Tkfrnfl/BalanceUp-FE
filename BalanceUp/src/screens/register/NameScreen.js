@@ -246,11 +246,9 @@ const styles = StyleSheet.create({
     height: 269,
   },
   errorImg: {
-    width: 18,
-    height: 18,
     position: 'absolute',
     left: responsiveWidth(50),
-    top: 17,
+    top: responsiveHeight(2.5),
   },
 });
 
