@@ -17,7 +17,6 @@ import {format} from 'date-fns';
 import * as Progress from 'react-native-progress';
 import LevelArrow from '../../resource/image/Main/levelArrow.svg';
 import LevelBox from '../../resource/image/Main/levelBox.svg';
-import LevelBox999 from '../../resource/image/Main/levelBox999.svg';
 import LeftArrow from '../../resource/image/Main/left.svg';
 import RightArrow from '../../resource/image/Main/right.svg';
 import Iconx from '../../resource/image/Main/back.svg';
@@ -53,7 +52,6 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import {DeviceEventEmitter} from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import moment from 'moment';
 
@@ -188,7 +186,7 @@ const MainScreen = ({navigation: {navigate}}) => {
       setGif(lv2);
     }
   }, [userRp, userLevel]);
-  console.log('state', showUpModal);
+  // console.log('state', showUpModal);
 
   // 루틴 날짜 객체 생성
   let tmpObj = {};
@@ -471,11 +469,7 @@ const MainScreen = ({navigation: {navigate}}) => {
           {/* 레벨 progressBar */}
           <Shadow distance={5} startColor={'#f4f4f4'}>
             <View style={styles.levelContainer}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
+              <View style={styles.progressStyle}>
                 <View style={styles.levelSheet}>
                   <Text
                     style={[
@@ -484,162 +478,93 @@ const MainScreen = ({navigation: {navigate}}) => {
                     ]}>
                     Lv.{userLevel}
                   </Text>
-
-                  {/* 상단 Lv, RP 부분 */}
                 </View>
+                {/* 상단 Lv, RP 부분 */}
                 {userRp >= 300 ? (
-                  <Text
-                    style={[
-                      styles.progressLevelText,
-                      {color: '#888888', top: 5, marginRight: 18},
-                    ]}>
+                  <Text style={[styles.progressRpText_, {marginRight: 18}]}>
                     {userRp} RP
                   </Text>
                 ) : (
-                  <Text
-                    style={[
-                      styles.progressLevelText,
-                      {
-                        color: '#888888',
-                        top: 5,
-                        marginRight: responsiveWidth(4),
-                      },
-                    ]}>
+                  <Text style={styles.progressRpText_}>
                     {userRp}/{upRp} RP
                   </Text>
                 )}
               </View>
-
               {/* 프로그레스바 부분 */}
-              {userRp >= 300 ? (
-                <View>
-                  <Progress.Bar
-                    progress={userRp / 999}
-                    width={300}
-                    height={7}
-                    color={'#585FFF'}
-                    borderColor={'#FFFFFF'}
-                    unfilledColor={'#CED6FF'}
-                    style={[styles.progress, {bottom: 30}]}
-                  />
-                  <LevelArrow
-                    style={[
-                      userRp > 999
-                        ? dstyleText(0.985 * 300).bar
-                        : dstyleText((userRp / 999) * 300).bar,
-                      {bottom: 28, left: userRp === 0 ? 7 : null},
-                    ]}
-                  />
-                  <View
-                    style={{
-                      left: userRp === 0 ? 7 : null,
-                      alignItems: 'center',
-                    }}>
-                    {userRp > 999 ? (
-                      <LevelBox999
-                        style={[
-                          userRp > 999
-                            ? dstyleText(1.0 * 300).bar
-                            : dstyleText((userRp / 999) * 300).bar,
-                          {bottom: 1, left: responsiveWidth(-4.4)},
-                        ]}
-                      />
-                    ) : (
-                      <LevelBox
-                        style={[
-                          userRp > 999
-                            ? dstyleText(1.0 * 300).bar
-                            : dstyleText((userRp / 999) * 300).bar,
-                          {bottom: 1, left: -7},
-                        ]}
-                      />
-                    )}
-                    {userRp > 999 ? (
-                      <Text
-                        style={[
-                          styles.progressRpText,
-                          dstyleText(1.0 * 300).bar,
-                          {
-                            left: -9,
-                            bottom: 3,
-                            fontSize: responsiveFontSize(0.95),
-                          },
-                          ,
-                        ]}>
-                        999+
-                      </Text>
-                    ) : (
-                      <Text
-                        style={[
-                          styles.progressRpText,
-                          dstyleText((userRp / 999) * 300).bar,
-                          {
-                            left: responsiveWidth(-0.5),
-                            bottom: 1,
-                            fontSize:
-                              userRp > 999 ? 8.5 : responsiveFontSize(1.2),
-                          },
-                          ,
-                        ]}>
-                        {userRp}
-                      </Text>
-                    )}
-                  </View>
-                </View>
+              <Progress.Bar
+                progress={userRp < 300 ? userRp / upRp : userRp / 999}
+                width={300}
+                height={7}
+                color={'#585FFF'}
+                borderColor={'#FFFFFF'}
+                unfilledColor={'#CED6FF'}
+                style={styles.progress}
+              />
+              {userRp <= 999 ? (
+                <LevelArrow
+                  style={[
+                    dstyleText(
+                      (userRp < 300 ? userRp / upRp : userRp / 999) * 300,
+                    ).bar,
+                    {position: 'absolute'},
+                  ]}
+                />
               ) : (
-                <View>
-                  <Progress.Bar
-                    progress={userRp / upRp}
-                    width={300}
-                    height={7}
-                    color={'#585FFF'}
-                    borderColor={'#FFFFFF'}
-                    unfilledColor={'#CED6FF'}
-                    style={[styles.progress, {bottom: 30}]}
-                  />
-                  <LevelArrow
+                // 만렙 처리
+                <LevelArrow
+                  style={[
+                    dstyleText((999 / 999) * 300).bar,
+                    {position: 'absolute'},
+                  ]}
+                />
+              )}
+              <View style={{alignItems: 'center', position: 'absolute'}}>
+                {userRp <= 999 ? (
+                  <LevelBox
                     style={[
-                      dstyleText((userRp / upRp) * 300).bar,
-                      {bottom: 28, left: userRp === 0 ? 7 : null},
+                      dstyleText(
+                        (userRp < 300 ? userRp / upRp : userRp / 999) * 300,
+                      ).bar,
+                      {top: responsiveHeight(2.5), left: responsiveWidth(-1.7)},
                     ]}
                   />
-                  <View style={{left: userRp === 0 ? 7 : null}}>
-                    <LevelBox
-                      style={[
-                        dstyleText((userRp / upRp) * 300).bar,
-                        {bottom: 1, left: -7},
-                      ]}
-                    />
-                    {userRp < 10 ? (
-                      <Text
-                        style={[
-                          styles.progressRpText,
-                          dstyleText((userRp / upRp) * 300).bar,
-                          {
-                            left: 3,
-                          },
-                          ,
-                        ]}>
-                        {userRp}
-                      </Text>
-                    ) : (
-                      <Text
-                        style={[
-                          styles.progressRpText,
-                          dstyleText((userRp / upRp) * 300).bar,
-                          {
-                            fontSize:
-                              userRp >= 100 ? responsiveFontSize(1.4) : 12,
-                            left: userRp >= 100 ? responsiveWidth(-0.85) : 0,
-                          },
-                          ,
-                        ]}>
-                        {userRp}
-                      </Text>
-                    )}
-                  </View>
-                </View>
-              )}
+                ) : (
+                  // 만렙 처리
+                  <LevelBox
+                    style={[
+                      dstyleText((999 / 999) * 300).bar,
+                      {top: responsiveHeight(2.5), left: responsiveWidth(-1.7)},
+                    ]}
+                  />
+                )}
+                {userRp <= 999 ? (
+                  <Text
+                    style={[
+                      styles.progressRpText,
+                      dstyleText(
+                        (userRp < 300 ? userRp / upRp : userRp / 999) * 300,
+                      ).bar,
+                      {
+                        fontSize: responsiveFontSize(1.3),
+                      },
+                    ]}>
+                    {userRp}
+                  </Text>
+                ) : (
+                  // 만렙 처리
+                  <Text
+                    style={[
+                      styles.progressRpText,
+                      dstyleText((999 / 999) * 300).bar,
+                      {
+                        fontSize: responsiveFontSize(0.99),
+                        bottom: responsiveHeight(6.3),
+                      },
+                    ]}>
+                    999+
+                  </Text>
+                )}
+              </View>
             </View>
           </Shadow>
           <View style={commonStyles.spacing2} />
@@ -807,8 +732,8 @@ const dstyleText = x =>
   StyleSheet.create({
     bar: {
       marginLeft: x + 17,
-      marginTop: 70,
-      position: 'absolute',
+      marginTop: 50.5,
+      // position: 'absolute',
     },
   });
 
@@ -875,9 +800,17 @@ const styles = StyleSheet.create({
   },
   progressRpText: {
     color: '#FFFFFF',
-    bottom: 0.5,
-    fontSize: 12,
+    bottom: responsiveHeight(6.5),
+    fontSize: responsiveFontSize(1.4),
     fontFamily: 'Pretendard-Bold',
+    left: responsiveWidth(-1.7),
+  },
+  progressRpText_: {
+    fontSize: 12,
+    marginRight: responsiveWidth(4),
+    fontFamily: 'Pretendard-Bold',
+    color: '#888888',
+    top: 5,
   },
   progresPointText: {
     fontSize: 12,
@@ -947,6 +880,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
     marginLeft: 25,
     borderRadius: 10,
+    bottom: 30,
   },
   img4: {
     width: 90,
@@ -1001,6 +935,10 @@ const styles = StyleSheet.create({
     marginTop: responsiveHeight(-17),
     width: responsiveWidth(100),
     height: responsiveHeight(104),
+  },
+  progressStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 

@@ -17,28 +17,25 @@ import {
 
 const circleSize = 80;
 const Complete = () => {
+  const [topTitle, setTopTitle] = useState('');
+
   const [daily, setDaily] = useRecoilState(dailyState);
   const [exercise, setExercise] = useRecoilState(exerciseState);
   const [learning, setLearning] = useRecoilState(learningState);
   const [mindCare, setMindCare] = useRecoilState(mindCareState);
+
   const allClear = daily + exercise + learning + mindCare;
-  const [topTitle, setTopTitle] = useState('');
   const topRoutine = Math.max(daily, exercise, learning, mindCare);
 
-  // const daily = 7;
-  // const exercise = 9;
-  // const mindCare = 10;
-  // const learning = 9;
-
   useEffect(() => {
-    if (topRoutine === daily) {
-      setTopTitle('일상');
-    } else if (topRoutine === exercise) {
-      setTopTitle('운동');
-    } else if (topRoutine === mindCare) {
-      setTopTitle('마음관리');
-    } else if (topRoutine === learning) {
-      setTopTitle('학습');
+    let titleArr = ['일상', '운동', '마음관리', '학습'];
+    let engArr = [daily, exercise, mindCare, learning];
+
+    for (let i = 0; i < titleArr.length; i++) {
+      if (topRoutine === engArr[i]) {
+        setTopTitle(titleArr[i]);
+        break;
+      }
     }
   }, [daily, exercise, mindCare, learning]);
 
@@ -82,24 +79,24 @@ const Complete = () => {
       <View
         style={[
           styles.dailyView,
-          {top: topRoutine === exercise ? responsiveHeight(23) : null},
-          {left: topRoutine === mindCare ? responsiveWidth(45) : null},
-          {bottom: topRoutine === mindCare ? responsiveHeight(-19) : null},
-          {right: topRoutine === learning ? responsiveHeight(-21) : null},
+          {top: topTitle === '운동' ? responsiveHeight(20) : null},
+          {left: topTitle === '마음관리' ? responsiveWidth(45) : null},
+          {bottom: topTitle === '마음관리' ? responsiveHeight(-19) : null},
+          {right: topTitle === '학습' ? responsiveHeight(-21) : null},
         ]}>
         <View style={styles.categotySheet}>
           {/* 가장 퍼센트 높은 카테고리 */}
           <Text
             style={[
               styles.topRoutineText,
-              {right: topRoutine === mindCare ? responsiveWidth(2.5) : -2},
+              {right: topTitle === '마음관리' ? responsiveWidth(2.5) : -2},
             ]}>
             {topTitle}
           </Text>
           <Text
             style={[
               styles.percentText,
-              {left: topRoutine === learning ? responsiveWidth(0) : null},
+              {left: topTitle === '학습' ? responsiveWidth(0) : null},
             ]}>
             {Math.round((topRoutine / allClear).toFixed(2) * 100)}%
           </Text>
@@ -115,16 +112,7 @@ const Complete = () => {
               {data.title} {/* // 공백 */}
               {Math.round((data.count / allClear).toFixed(2) * 100)}%
             </Text>
-            <Text
-              style={[
-                styles.numText,
-                {
-                  left:
-                    data.id === 1 ? responsiveWidth(18.8) : responsiveWidth(13),
-                },
-              ]}>
-              {data.count}회
-            </Text>
+            <Text style={styles.numText}>{data.count}회</Text>
           </View>
         ))}
       </View>
@@ -152,7 +140,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginRight: -30,
     marginLeft: 15,
-    marginTop: responsiveHeight(23),
+    marginTop: responsiveHeight(25),
   },
   routineSheet: {
     flexDirection: 'row',
@@ -173,9 +161,10 @@ const styles = StyleSheet.create({
   },
   numText: {
     color: '#888888',
+    position: 'absolute',
+    right: 43,
     fontSize: 14,
-    fontFamily: 'Pretendard-Medium',
-    fontVariant: ['tabular-nums'],
+    fontFamily: 'Pretendard-Light',
   },
   percentText: {
     right: 2,

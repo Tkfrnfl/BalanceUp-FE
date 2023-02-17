@@ -181,7 +181,7 @@ const modalInnerStyles = StyleSheet.create({
     borderRadius: 5,
     padding: 30,
   },
-  completeText1: {
+  oneCompleteText: {
     fontSize: 22,
     fontFamily: 'Pretendard-Bold',
     textAlign: 'center',
@@ -189,21 +189,28 @@ const modalInnerStyles = StyleSheet.create({
     top: 3,
     color: '#585FFF',
   },
-  completeText2: {
+  onecompleteText_: {
     fontSize: 20,
     marginTop: responsiveHeight(1.2),
     fontFamily: 'Pretendard-Bold',
     textAlign: 'center',
     color: '#232323',
   },
-  completeImg1: {
+  onecompleteText__: {
+    top: 3,
+    color: '#888888',
+    fontSize: 12,
+    textAlign: 'center',
+    fontFamily: 'Pretendard-Medium',
+  },
+  oneCompleteImg: {
     marginTop: responsiveHeight(3),
     fontFamily: 'Pretendard-Medium',
     textAlign: 'center',
     alignItems: 'center',
     color: '#888888',
   },
-  completeImg1_1: {
+  oneCompleteImg_: {
     width: 180,
     height: 110,
   },
