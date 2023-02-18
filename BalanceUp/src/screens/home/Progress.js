@@ -30,10 +30,10 @@ import life from '../../resource/image/SetTodo/life.png';
 import education from '../../resource/image/SetTodo/education.png';
 import mental from '../../resource/image/SetTodo/mental.png';
 import health from '../../resource/image/SetTodo/health.png';
-import lifeGray from '../../resource/image/SetTodo/life_gray.png';
-import educationGray from '../../resource/image/SetTodo/education_gray.png';
-import mentalGray from '../../resource/image/SetTodo/mental_gray.png';
-import healthGray from '../../resource/image/SetTodo/health_gray.png';
+import lifeGray from '../../resource/image/Main/daily_off.png';
+import educationGray from '../../resource/image/Main/study_off.png';
+import mentalGray from '../../resource/image/Main/mind_off.png';
+import healthGray from '../../resource/image/Main/health_off.png';
 import oneDay from '../../resource/image/Modal/Crystal.png';
 import twoWeeks from '../../resource/image/Modal/10routine.png';
 import Icon from '../../resource/image/Common/icon.svg';
@@ -55,9 +55,9 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import axios from '../../utils/Client';
-import getMoment from '../../utils/Day';
 import PushNotification from 'react-native-push-notification';
 import Toast from 'react-native-easy-toast';
+import Clock from '../../resource/image/Main/clock.svg';
 
 const Progress = () => {
   const route = useRoute();
@@ -164,10 +164,6 @@ const Progress = () => {
     }
   }, [route.params]);
 
-  // 루틴 생성, 수정 후 리프레쉬 ->
-  // 생성은 문제 없음.
-  // 최초 1번만 수정이 바로 스크린에 반영됨.
-  // 2번, 3번 or 이어서 다른 루틴 수정시에는 api만 정상 작동, 스크린 반영 안됨
   useEffect(() => {
     DeviceEventEmitter.addListener('refresh', () => {
       // console.log('refresh 실행');
@@ -178,7 +174,7 @@ const Progress = () => {
 
   useEffect(() => {
     setRoutinesByDate();
-    // setUserRp(120);
+    // setUserRp(14);
     fetchUserData();
     console.log('nickname: ', nickName, 'user RP : ', userRp);
     // console.log(selectTodo);
@@ -195,7 +191,7 @@ const Progress = () => {
 
   const resetBottomSheet = Animated.timing(panY, {
     toValue: 0,
-    duration: 10,
+    duration: 0,
     useNativeDriver: true,
   });
 
@@ -208,16 +204,11 @@ const Progress = () => {
     ) {
       resetBottomSheet.start();
     }
-  }, [
-    completeModalVisible,
-    completeChangeModalVisible,
-    deleteModalVisible,
-    overRoutineModalVisible,
-  ]);
+  }, [completeChangeModalVisible, deleteModalVisible, overRoutineModalVisible]);
 
   const setOpacity = value => {
     if (value) {
-      return 0.5;
+      return 0.6;
     } else {
       return 1;
     }
@@ -371,35 +362,44 @@ const Progress = () => {
           <Image source={data.categoryImg} style={styles.img2_gray} />
           <View style={aimText1(setOpacity(data.completed)).bar}>
             <Text style={commonStyles.boldText}>{data.routineTitle}</Text>
-            <Text style={commonStyles.lightText}>
+            <View style={{flexDirection: 'row'}}>
+              <Clock style={{top: responsiveHeight(0.8), marginRight: 5}} />
+              <Text style={commonStyles.mediumText}>
+                {data.days != '토일' && data.days.length < 4 ? data.days : null}
+                {data.days === '토일' ? '주말' : null}
+                {data.days === '월화수목금' ? '평일' : null}
+                {data.days === '월화수목금토일' ? '매일' : null}{' '}
+                {data.alarmTime}
+              </Text>
+            </View>
+            <Text style={commonStyles.mediumText_}>
               {data.routineCategory} |{' '}
-              {data.days != '토일' && data.days.length < 4 ? data.days : null}
-              {data.days === '토일' ? '주말' : null}
-              {data.days === '월화수목금' ? '주중' : null}
-              {data.days === '월화수목금토일' ? '매일' : null} {data.alarmTime}
+              {`루틴 종료일 ${data.endDate.reduce((prev, curr) => {
+                return new Date(prev).getTime() <= new Date(curr).getTime()
+                  ? curr
+                  : prev;
+              })} `}
             </Text>
-            <Text
-              style={
-                commonStyles.lightText_
-              }>{`루틴 종료일 : ${data.endDate.reduce((prev, curr) => {
-              return new Date(prev).getTime() <= new Date(curr).getTime()
-                ? curr
-                : prev;
-            })} `}</Text>
           </View>
           <TouchableWithoutFeedback onPress={() => checkComplete(index)}>
             <Svg height={80} style={svg2(setOpacity(data.completed)).bar}>
               <Rect
-                x={15}
-                y={22}
+                x={25}
+                y={32}
                 width="60"
                 height="34"
                 rx="18"
                 fill="#585FFF"
               />
-              <SvgText x={34} y={44} style={styles.completeText} fill="white">
-                완료
-              </SvgText>
+              {data.completed === true ? (
+                <SvgText x={44} y={54} style={styles.completeText} fill="white">
+                  취소
+                </SvgText>
+              ) : (
+                <SvgText x={44} y={54} style={styles.completeText} fill="white">
+                  완료
+                </SvgText>
+              )}
             </Svg>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
@@ -417,65 +417,6 @@ const Progress = () => {
           <TouchableWithoutFeedback onPress={() => handleRemove(index)}>
             <Delete />
           </TouchableWithoutFeedback>
-
-          {/* 완료 모달 구현 코드 (one Day)*/}
-          <Modal
-            visible={completeModalVisible}
-            animationType={'fade'}
-            transparent={true}
-            statusBarTranslucent={true}>
-            {completeDay === 1 ? (
-              <Pressable
-                style={modalInnerStyles.complteModalOverlay}
-                onPress={() => setCompleteModalVisible(!completeModalVisible)}>
-                <TouchableWithoutFeedback>
-                  <Animated.View
-                    style={{
-                      ...modalInnerStyles.centerSheetContainer,
-                    }}>
-                    <Text style={modalInnerStyles.completeText1}>+1 RP</Text>
-                    <Text style={modalInnerStyles.completeText2}>
-                      오늘의 루틴을 완료했습니다!
-                    </Text>
-                    <View style={modalInnerStyles.completeImg1}>
-                      <Image
-                        source={oneDay}
-                        style={modalInnerStyles.completeImg1_1}
-                      />
-                    </View>
-                  </Animated.View>
-                </TouchableWithoutFeedback>
-              </Pressable>
-            ) : (
-              <Pressable
-                style={modalInnerStyles.complteModalOverlay}
-                onPress={() => setCompleteModalVisible(!completeModalVisible)}>
-                <TouchableWithoutFeedback>
-                  <Animated.View
-                    style={[
-                      {
-                        ...modalInnerStyles.centerSheetContainer,
-                      },
-                      {height: 270},
-                    ]}>
-                    <Text style={modalInnerStyles.completeText1}>+10 RP</Text>
-                    <Text style={modalInnerStyles.completeText2}>
-                      2주간 완벽하게 루틴을 완료했어요
-                    </Text>
-                    <Text style={modalInnerStyles.completeImg1}>
-                      앞으로도 꾸준한 루틴 기대할게요!
-                    </Text>
-                    <View style={modalInnerStyles.completeImg1}>
-                      <Image
-                        source={twoWeeks}
-                        style={{width: 270, height: 140, bottom: 15}}
-                      />
-                    </View>
-                  </Animated.View>
-                </TouchableWithoutFeedback>
-              </Pressable>
-            )}
-          </Modal>
 
           {/* 완료 취소 모달 구현 코드 */}
           <Modal
@@ -567,6 +508,56 @@ const Progress = () => {
         </ScrollView>
       ))}
 
+      {/* 완료 모달 구현 코드 (one Day)*/}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={completeModalVisible}>
+        {completeDay === 1 ? (
+          <Pressable
+            style={modalInnerStyles.complteModalOverlay}
+            onPress={() => setCompleteModalVisible(!completeModalVisible)}>
+            <TouchableWithoutFeedback>
+              <View style={modalInnerStyles.centerSheetContainer}>
+                <Text style={modalInnerStyles.oneCompleteText}>+1 RP</Text>
+                <Text style={modalInnerStyles.onecompleteText_}>
+                  오늘의 루틴을 완료했습니다!
+                </Text>
+                <View style={modalInnerStyles.oneCompleteImg}>
+                  <Image
+                    source={oneDay}
+                    style={modalInnerStyles.oneCompleteImg_}
+                  />
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </Pressable>
+        ) : (
+          <Pressable
+            style={modalInnerStyles.complteModalOverlay}
+            onPress={() => setCompleteModalVisible(!completeModalVisible)}>
+            <TouchableWithoutFeedback>
+              <Animated.View
+                style={[modalInnerStyles.centerSheetContainer, {height: 270}]}>
+                <Text style={modalInnerStyles.oneCompleteText}>+10 RP</Text>
+                <Text style={modalInnerStyles.onecompleteText_}>
+                  2주간 완벽하게 루틴을 완료했어요
+                </Text>
+                <Text style={modalInnerStyles.onecompleteText__}>
+                  앞으로도 꾸준한 루틴 기대할게요!
+                </Text>
+                <View style={{marginTop: 13}}>
+                  <Image
+                    source={twoWeeks}
+                    style={{width: 270, height: 140, bottom: 15}}
+                  />
+                </View>
+              </Animated.View>
+            </TouchableWithoutFeedback>
+          </Pressable>
+        )}
+      </Modal>
+
       {/* 삭제 모달 구현 코드 */}
       <Modal
         visible={deleteModalVisible}
@@ -631,8 +622,8 @@ const img2 = x =>
 const aimText1 = x =>
   StyleSheet.create({
     bar: {
-      paddingLeft: 20,
-      paddingTop: 7,
+      paddingLeft: 8,
+      paddingTop: 19,
       opacity: x,
       width: 200,
     },
@@ -689,19 +680,20 @@ const styles = StyleSheet.create({
   },
   routineSheet: {
     width: responsiveWidth(87),
+    height: responsiveHeight(13.6),
     backgroundColor: '#FFFFFF',
-    shadowColor: '#c5c5c5',
-    elevation: 15,
+    shadowColor: '#ababab',
+    elevation: 10,
     borderRadius: 5,
     marginTop: 20,
     marginLeft: responsiveWidth(6),
   },
   img2_gray: {
     resizeMode: 'stretch',
-    marginLeft: 10,
+    top: responsiveHeight(2),
+    marginLeft: 5,
     height: 70,
     width: 70,
-    // tintColor: 'gray',
   },
   toastView: {
     // bottom: responsiveHeight(18),
@@ -737,6 +729,47 @@ const styles = StyleSheet.create({
 
     textAlign: 'center',
     marginTop: responsiveHeight(1.2),
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
   },
 });
 

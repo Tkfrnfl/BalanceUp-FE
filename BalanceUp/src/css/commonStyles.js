@@ -27,17 +27,17 @@ const commonStyles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
     color: '#232323',
   },
-  lightText: {
+  mediumText: {
     fontSize: 14,
-    fontFamily: 'Pretendard-Light',
+    fontFamily: 'Pretendard-Medium',
     marginTop: 3,
-    color: '#232323',
+    color: '#888888',
   },
-  lightText_: {
+  mediumText_: {
     fontSize: 12,
-    fontFamily: 'Pretendard-Light',
+    fontFamily: 'Pretendard-Medium',
     marginTop: 3,
-    color: '#232323',
+    color: '#888888',
   },
 
   imgView: {
