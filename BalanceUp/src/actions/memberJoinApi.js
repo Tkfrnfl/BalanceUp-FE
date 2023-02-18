@@ -4,32 +4,38 @@ import axiosInstance from '../utils/Client';
 
 const loginKakao = async params => {
   let res;
+  console.log(params);
   await axios
-    .get(
-      'http://ec2-15-165-88-42.ap-northeast-2.compute.amazonaws.com:8080/login/kakao',
-      {
-        params: {accessToken: params},
-      },
-    )
+    .get('https://api.keyum.co.kr/login/kakao', {
+      params: {accessToken: String(params)},
+      withCredentials: true,
+    })
     .then(response => {
-      console.log(response.data);
+      console.log(response);
       res = response.data;
     })
     .catch(function (error) {
-      console.log(error);
+      console.log(error.message);
     });
   return res;
 };
+// const loginKakao = async params => {
+//   let tmp = 'accessToken' + '=' + String(params);
+
+//   fetch('https://api.keyum.co.kr/login/kakao?' + tmp, {
+//     method: 'GET',
+//     credentials: 'include',
+//   })
+//     .then(res => console.log(res))
+//     .catch(err => console.log(err));
+// };
 
 const loginGoogle = async params => {
   let res;
   await axios
-    .get(
-      'http://ec2-15-165-88-42.ap-northeast-2.compute.amazonaws.com:8080/login/google',
-      {
-        params: {accessToken: params},
-      },
-    )
+    .get('https://api.keyum.co.kr/login/google', {
+      params: {accessToken: params},
+    })
     .then(response => {
       console.log(response.data);
       res = response.data;
@@ -45,14 +51,11 @@ const joinKakao = async (userName, nickName) => {
   console.log(nickName);
   let res;
   await axios
-    .post(
-      'http://ec2-15-165-88-42.ap-northeast-2.compute.amazonaws.com:8080/auth/sign-up/kakao',
-      {
-        username: userName,
-        provider: 'kakao',
-        nickname: nickName,
-      },
-    )
+    .post('https://api.keyum.co.kr/auth/sign-up/kakao', {
+      username: userName,
+      provider: 'kakao',
+      nickname: nickName,
+    })
     .then(response => {
       console.log(response.data);
       res = response.data;

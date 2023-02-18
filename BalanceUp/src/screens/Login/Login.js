@@ -72,11 +72,11 @@ export default function Login({navigation}) {
   const signInWithKakao = async (): Promise<void> => {
     const token: KakaoOAuthToken = await loginWithKakaoAccount();
 
-    console.log(token.accessToken);
+    // console.log(token.accessToken);
     let res;
     await loginKakao(token.accessToken).then(response => {
       res = response;
-      console.log(res.body);
+      //console.log(response);
       if (res.body.login === 'sign-up') {
         setUserName(res.body.username);
         navigation.push('NickName');
