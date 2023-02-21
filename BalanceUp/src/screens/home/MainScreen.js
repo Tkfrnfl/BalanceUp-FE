@@ -485,7 +485,7 @@ const MainScreen = ({navigation: {navigate}}) => {
                     {userRp} RP
                   </Text>
                 ) : (
-                  <Text style={styles.progressRpText_}>
+                  <Text style={[styles.progressRpText_, {marginRight: 23}]}>
                     {userRp}/{upRp} RP
                   </Text>
                 )}
@@ -493,7 +493,7 @@ const MainScreen = ({navigation: {navigate}}) => {
               {/* 프로그레스바 부분 */}
               <Progress.Bar
                 progress={userRp < 300 ? userRp / upRp : userRp / 999}
-                width={300}
+                width={responsiveWidth(76)}
                 height={7}
                 color={'#585FFF'}
                 borderColor={'#FFFFFF'}
@@ -504,7 +504,8 @@ const MainScreen = ({navigation: {navigate}}) => {
                 <LevelArrow
                   style={[
                     dstyleText(
-                      (userRp < 300 ? userRp / upRp : userRp / 999) * 300,
+                      (userRp < 300 ? userRp / upRp : userRp / 999) *
+                        responsiveWidth(76),
                     ).bar,
                     {position: 'absolute'},
                   ]}
@@ -513,7 +514,7 @@ const MainScreen = ({navigation: {navigate}}) => {
                 // 만렙 처리
                 <LevelArrow
                   style={[
-                    dstyleText((999 / 999) * 300).bar,
+                    dstyleText((999 / 999) * responsiveWidth(76)).bar,
                     {position: 'absolute'},
                   ]}
                 />
@@ -523,7 +524,8 @@ const MainScreen = ({navigation: {navigate}}) => {
                   <LevelBox
                     style={[
                       dstyleText(
-                        (userRp < 300 ? userRp / upRp : userRp / 999) * 300,
+                        (userRp < 300 ? userRp / upRp : userRp / 999) *
+                          responsiveWidth(76),
                       ).bar,
                       {top: responsiveHeight(2.5), left: responsiveWidth(-1.7)},
                     ]}
@@ -532,7 +534,7 @@ const MainScreen = ({navigation: {navigate}}) => {
                   // 만렙 처리
                   <LevelBox
                     style={[
-                      dstyleText((999 / 999) * 300).bar,
+                      dstyleText((999 / 999) * responsiveWidth(76)).bar,
                       {top: responsiveHeight(2.5), left: responsiveWidth(-1.7)},
                     ]}
                   />
@@ -542,10 +544,11 @@ const MainScreen = ({navigation: {navigate}}) => {
                     style={[
                       styles.progressRpText,
                       dstyleText(
-                        (userRp < 300 ? userRp / upRp : userRp / 999) * 300,
+                        (userRp < 300 ? userRp / upRp : userRp / 999) *
+                          responsiveWidth(76),
                       ).bar,
                       {
-                        fontSize: responsiveFontSize(1.3),
+                        fontSize: 10,
                       },
                     ]}>
                     {userRp}
@@ -555,10 +558,10 @@ const MainScreen = ({navigation: {navigate}}) => {
                   <Text
                     style={[
                       styles.progressRpText,
-                      dstyleText((999 / 999) * 300).bar,
+                      dstyleText((999 / 999) * responsiveWidth(76)).bar,
                       {
-                        fontSize: responsiveFontSize(0.99),
-                        bottom: responsiveHeight(6.3),
+                        fontSize: 7.8,
+                        bottom: responsiveHeight(6.2),
                       },
                     ]}>
                     999+
@@ -749,7 +752,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FAFBFF',
   },
   showAllBtn: {
-    left: 38,
+    position: 'absolute',
+    right: 23,
     width: 65,
     height: 26,
     paddingTop: 3,
@@ -788,7 +792,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 18,
     top: 5,
-    marginLeft: 25,
+    marginLeft: 20,
     backgroundColor: '#585FFF',
     borderRadius: 30,
     alignItems: 'center',
@@ -800,8 +804,7 @@ const styles = StyleSheet.create({
   },
   progressRpText: {
     color: '#FFFFFF',
-    bottom: responsiveHeight(6.5),
-    fontSize: responsiveFontSize(1.4),
+    bottom: responsiveHeight(6.4),
     fontFamily: 'Pretendard-Bold',
     left: responsiveWidth(-1.7),
   },
@@ -878,7 +881,7 @@ const styles = StyleSheet.create({
   },
   progress: {
     marginTop: 50,
-    marginLeft: 25,
+    marginLeft: 20,
     borderRadius: 10,
     bottom: 30,
   },

@@ -166,7 +166,6 @@ const Progress = () => {
 
   useEffect(() => {
     DeviceEventEmitter.addListener('refresh', () => {
-      // console.log('refresh 실행');
       let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
       setRoutineStateNum(tmpNum + 1);
     });
@@ -177,9 +176,6 @@ const Progress = () => {
     // setUserRp(14);
     fetchUserData();
     console.log('nickname: ', nickName, 'user RP : ', userRp);
-    // console.log(selectTodo);
-    // let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
-    // setRoutineStateNum(tmpNum + 1);
   }, [dateSelected, selectTodo]);
 
   const [chosenIndex, setChosenIndex] = useState(0);
@@ -384,7 +380,7 @@ const Progress = () => {
           <TouchableWithoutFeedback onPress={() => checkComplete(index)}>
             <Svg height={80} style={svg2(setOpacity(data.completed)).bar}>
               <Rect
-                x={25}
+                x={35}
                 y={32}
                 width="60"
                 height="34"
@@ -392,11 +388,11 @@ const Progress = () => {
                 fill="#585FFF"
               />
               {data.completed === true ? (
-                <SvgText x={44} y={54} style={styles.completeText} fill="white">
+                <SvgText x={54} y={54} style={styles.completeText} fill="white">
                   취소
                 </SvgText>
               ) : (
-                <SvgText x={44} y={54} style={styles.completeText} fill="white">
+                <SvgText x={54} y={54} style={styles.completeText} fill="white">
                   완료
                 </SvgText>
               )}
@@ -610,22 +606,13 @@ const Progress = () => {
     </View>
   );
 };
-const img2 = x =>
-  StyleSheet.create({
-    bar: {
-      resizeMode: 'stretch',
-      height: 70,
-      width: 70,
-      opacity: x,
-    },
-  });
 const aimText1 = x =>
   StyleSheet.create({
     bar: {
-      paddingLeft: 8,
+      paddingLeft: 3,
       paddingTop: 19,
       opacity: x,
-      width: 200,
+      width: responsiveWidth(51),
     },
   });
 
@@ -679,14 +666,14 @@ const styles = StyleSheet.create({
     height: 110,
   },
   routineSheet: {
-    width: responsiveWidth(87),
-    height: responsiveHeight(13.6),
+    width: responsiveWidth(89),
+    height: 100,
     backgroundColor: '#FFFFFF',
     shadowColor: '#ababab',
     elevation: 10,
     borderRadius: 5,
     marginTop: 20,
-    marginLeft: responsiveWidth(6),
+    marginLeft: 20,
   },
   img2_gray: {
     resizeMode: 'stretch',
@@ -729,6 +716,47 @@ const styles = StyleSheet.create({
 
     textAlign: 'center',
     marginTop: responsiveHeight(1.2),
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
   },
   centeredView: {
     flex: 1,

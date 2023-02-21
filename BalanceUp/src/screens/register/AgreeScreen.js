@@ -14,6 +14,7 @@ import {
   jwtRefreshState,
 } from '../../recoil/atom';
 import {
+  responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
@@ -243,14 +244,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   nextButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
     width: responsiveWidth(100),
     height: 58,
-    alignItems: 'center',
     padding: 15,
   },
   nextButtonText: {
-    top: 2,
-    fontSize: 16,
+    fontSize: responsiveFontSize(1.98),
     fontFamily: 'Pretendard-Medium',
     color: '#ffffff',
   },

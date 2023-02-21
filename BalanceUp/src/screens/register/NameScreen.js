@@ -10,6 +10,7 @@ import {
   Keyboard,
 } from 'react-native';
 import {
+  responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
@@ -188,13 +189,13 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     width: responsiveWidth(100),
-    height: 58,
+    justifyContent: 'center',
     alignItems: 'center',
+    height: 58,
     padding: 15,
   },
   nextButtonText: {
-    top: 2,
-    fontSize: 16,
+    fontSize: responsiveFontSize(1.98),
     fontFamily: 'Pretendard-Medium',
     color: '#fff',
   },

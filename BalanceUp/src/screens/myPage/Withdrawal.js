@@ -5,6 +5,7 @@ import CheckOn from '../../resource/image/Agree/check_on.svg';
 import CheckOff from '../../resource/image/Agree/check_off.svg';
 import BackArrow from '../../resource/image/Common/backArrow.svg';
 import {
+  responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
@@ -145,13 +146,14 @@ const styles = StyleSheet.create({
   },
   Nextbutton: {
     width: responsiveWidth(100),
+    height: responsiveHeight(7),
+    justifyContent: 'center',
     alignItems: 'center',
-    padding: 15,
   },
   NextbuttonText: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(1.98),
     fontFamily: 'Pretendard-Medium',
-    color: '#fff',
+    color: '#FFFFFF',
   },
 });
 export default Withdrawal;
