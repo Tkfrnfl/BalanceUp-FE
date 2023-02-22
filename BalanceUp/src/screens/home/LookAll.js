@@ -255,7 +255,7 @@ const LookAll = () => {
                   progress={selectTodo.length === 1 ? 0 : routineProgress}
                   // 진행 루틴 Null = 0% 표시
                   // completed true 총합 / selectTodo.length(루틴 총합) = 결과값.toFixed(2)
-                  width={responsiveWidth(76)}
+                  width={300}
                   height={12}
                   color="#585FFF"
                   unfilledColor="#CED6FF"
