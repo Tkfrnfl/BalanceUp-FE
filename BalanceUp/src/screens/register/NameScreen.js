@@ -134,7 +134,6 @@ const NameScreen = ({navigation}) => {
         <View style={styles.gifView}>
           <FastImage style={styles.onboardingImg} source={NameOnboarding} />
         </View>
-
         <TouchableOpacity
           style={[
             styles.nextButton,
@@ -166,7 +165,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   form: {
-    flex: 4,
+    flex: 1,
     marginLeft: 20,
   },
   inputWrapper: {
@@ -222,7 +221,7 @@ const styles = StyleSheet.create({
   gifView: {
     alignItems: 'center',
     width: '100%',
-    marginBottom: 100,
+    marginBottom: responsiveHeight(6),
   },
   inputText: {
     color: '#AFAFAF',
