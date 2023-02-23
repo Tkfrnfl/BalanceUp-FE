@@ -12,6 +12,7 @@ import {
   userNameState,
   jwtState,
   jwtRefreshState,
+  userLogin,
 } from '../../recoil/atom';
 import {
   responsiveHeight,
@@ -20,7 +21,7 @@ import {
 import * as Progress from 'react-native-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useRecoilState} from 'recoil';
-import {joinKakao} from '../../actions/memberJoinApi';
+import {joinKakao, joinGoogle} from '../../actions/memberJoinApi';
 
 import CheckOn from '../../resource/image/Agree/check_on.svg';
 import CheckOff from '../../resource/image/Agree/check_off.svg';
@@ -35,6 +36,7 @@ const AgreeScreen = ({navigation}) => {
   const [nickName, setNickName] = useRecoilState(nickNameState);
   const [userName, setUserName] = useRecoilState(userNameState);
   const [jwt, setjwt] = useRecoilState(jwtState);
+  const [KorG, setKorG] = useRecoilState(userLogin);
   const [jwtRefresh, setJwtRefresh] = useRecoilState(jwtRefreshState);
 
   const allBtnEvent = () => {
@@ -77,19 +79,39 @@ const AgreeScreen = ({navigation}) => {
 
   const goJoin = async (): Promise<void> => {
     let res;
-    await joinKakao(userName, nickName).then(response => {
-      res = response;
-
-      if (res.resultCode === 'success') {
-        // jwt 로컬 스토리지 저장후 메인화면 보내기
-        setjwt(res.body.token);
-        setJwtRefresh(res.body.refreshToken);
-        AsyncStorage.setItem('nickName', nickName);
-        AsyncStorage.setItem('jwt', res.body.token);
-        AsyncStorage.setItem('jwtRefresh', res.body.refreshToken);
-        navigation.push('Main');
-      }
-    });
+    if (KorG === 'K') {
+      await joinKakao(userName, nickName).then(response => {
+        res = response;
+        if (res.resultCode === 'success') {
+          // jwt 로컬 스토리지 저장후 메인화면 보내기
+          setjwt(res.body.token);
+          setJwtRefresh(res.body.refreshToken);
+          AsyncStorage.setItem('nickName', nickName);
+          AsyncStorage.setItem('jwt', JSON.stringify(res.body.token));
+          AsyncStorage.setItem(
+            'jwtRefresh',
+            JSON.stringify(res.body.refreshToken),
+          );
+          navigation.push('Main');
+        }
+      });
+    } else {
+      await joinGoogle(userName, nickName).then(response => {
+        res = response;
+        if (res.resultCode === 'success') {
+          // jwt 로컬 스토리지 저장후 메인화면 보내기
+          setjwt(res.body.token);
+          setJwtRefresh(res.body.refreshToken);
+          AsyncStorage.setItem('nickName', nickName);
+          AsyncStorage.setItem('jwt', JSON.stringify(res.body.token));
+          AsyncStorage.setItem(
+            'jwtRefresh',
+            JSON.stringify(res.body.refreshToken),
+          );
+          navigation.push('Main');
+        }
+      });
+    }
   };
 
   return (

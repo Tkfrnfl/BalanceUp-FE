@@ -46,6 +46,11 @@ let mindCareState = atom({
   default: 0,
 });
 
+let userLogin = atom({
+  key: 'userLogin',
+  default: '',
+});
+
 export {
   dailyState,
   exerciseState,
@@ -56,4 +61,5 @@ export {
   userNameState,
   jwtState,
   jwtRefreshState,
+  userLogin,
 };

@@ -53,6 +53,8 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import PushNotification from 'react-native-push-notification';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import moment from 'moment';
 
 LocaleConfig.locales.fr = {
@@ -303,47 +305,47 @@ const MainScreen = ({navigation: {navigate}}) => {
     }
   }, [levelUpModalVisible, levelUp_ModalVisible]);
 
-  const asyncGetAll = async () => {
-    let res;
+  // const asyncGetAll = async () => {
+  //   let res;
 
-    res = await getAllRoutine();
-    res = res.body;
+  //   res = await getAllRoutine();
+  //   res = res.body;
 
-    for (var i = 0; i < res.length; i++) {
-      // 루틴 전체 불러오기
-      if (res[i].routineCategory === '일상') {
-        if (res[i].completed === true) {
-          completedTmp[0] += 1;
-          totalTmp[0] += 1;
-        } else {
-          totalTmp[0] += 1;
-        }
-      } else if (res[i].routineCategory === '학습') {
-        if (res[i].completed === true) {
-          completedTmp[1] += 1;
-          totalTmp[1] += 1;
-        } else {
-          totalTmp[1] += 1;
-        }
-      } else if (res[i].routineCategory === '마음관리') {
-        if (res[i].completed === true) {
-          completedTmp[2] += 1;
-          totalTmp[2] += 1;
-        } else {
-          totalTmp[2] += 1;
-        }
-      } else if (res[i].routineCategory === '운동') {
-        if (res[i].completed === true) {
-          completedTmp[3] += 1;
-          totalTmp[3] += 1;
-        } else {
-          totalTmp[3] += 1;
-        }
-      }
-      setTodoCompleted(completedTmp);
-      setTodoTotal(totalTmp);
-    }
-  };
+  //   for (var i = 0; i < res.length; i++) {
+  //     // 루틴 전체 불러오기
+  //     if (res[i].routineCategory === '일상') {
+  //       if (res[i].completed === true) {
+  //         completedTmp[0] += 1;
+  //         totalTmp[0] += 1;
+  //       } else {
+  //         totalTmp[0] += 1;
+  //       }
+  //     } else if (res[i].routineCategory === '학습') {
+  //       if (res[i].completed === true) {
+  //         completedTmp[1] += 1;
+  //         totalTmp[1] += 1;
+  //       } else {
+  //         totalTmp[1] += 1;
+  //       }
+  //     } else if (res[i].routineCategory === '마음관리') {
+  //       if (res[i].completed === true) {
+  //         completedTmp[2] += 1;
+  //         totalTmp[2] += 1;
+  //       } else {
+  //         totalTmp[2] += 1;
+  //       }
+  //     } else if (res[i].routineCategory === '운동') {
+  //       if (res[i].completed === true) {
+  //         completedTmp[3] += 1;
+  //         totalTmp[3] += 1;
+  //       } else {
+  //         totalTmp[3] += 1;
+  //       }
+  //     }
+  //     setTodoCompleted(completedTmp);
+  //     setTodoTotal(totalTmp);
+  //   }
+  // };
 
   useEffect(() => {
     // asyncGetAll();

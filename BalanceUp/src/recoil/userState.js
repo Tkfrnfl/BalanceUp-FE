@@ -63,6 +63,11 @@ let routineStateDaysSet = selectorFamily({
       let res = await getAllRoutine(token).then(res => {
         return res;
       });
+      if (res === undefined) {
+        // 초기 생성시 body null err처리
+        res = {};
+        res.body = [];
+      }
       res = res.body;
       let routineList = [];
       let dayList = [[], [], [], []];

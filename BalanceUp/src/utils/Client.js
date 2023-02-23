@@ -9,7 +9,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   async config => {
     const token = await AsyncStorage.getItem('jwt');
-    config.headers['Authorization'] = JSON.parse(token);
+    config.headers.Authorization = JSON.parse(token);
     return config;
   },
   err => {
@@ -22,6 +22,7 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   async error => {
+    //console.log(error);
     const {
       config,
       response: {status},

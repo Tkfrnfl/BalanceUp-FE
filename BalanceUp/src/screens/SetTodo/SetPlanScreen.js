@@ -236,7 +236,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
 
   // 루틴 생성
   const handleCreate = async () => {
-    let beforeArray = JSON.parse(JSON.stringify(selectTodo));
+    //let beforeArray = JSON.parse(JSON.stringify(selectTodo));
     await createRoutine(todoText, planText, dayText, time).then(res => {
       if (res === '루틴 갯수는 4개를 초과할 수 없습니다.') {
         setClearModalVisible(false);

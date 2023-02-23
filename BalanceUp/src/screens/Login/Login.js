@@ -9,10 +9,20 @@ import {
 } from '@react-native-seoul/kakao-login';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
-import {loginKakao, SignInKakao} from '../../actions/memberJoinApi';
+import {
+  loginKakao,
+  SignInKakao,
+  loginGoogle,
+  SignInGoogle,
+} from '../../actions/memberJoinApi';
 import {useRecoilState} from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {userNameState, jwtState, jwtRefreshState} from '../../recoil/atom';
+import {
+  userNameState,
+  jwtState,
+  jwtRefreshState,
+  userLogin,
+} from '../../recoil/atom';
 import FastImage from 'react-native-fast-image';
 import Login_Onboading from '../../resource/image/Login/login_onborading.png';
 import KakaoSvg from '../../resource/image/Login/Kakao.svg';
@@ -67,6 +77,7 @@ export default function Login({navigation}) {
   // const [login, setLoginState] = React.useState(0);
   const [userName, setUserName] = useRecoilState(userNameState);
   const [jwt, setjwt] = useRecoilState(jwtState);
+  const [KorG, setKorG] = useRecoilState(userLogin);
   const [jwtRefresh, setJwtRefresh] = useRecoilState(jwtRefreshState);
 
   const signInWithKakao = async (): Promise<void> => {
@@ -76,9 +87,10 @@ export default function Login({navigation}) {
     let res;
     await loginKakao(token.accessToken).then(response => {
       res = response;
-      //console.log(response);
+      // console.log(response);
       if (res.body.login === 'sign-up') {
         setUserName(res.body.username);
+        setKorG('K');
         navigation.push('NickName');
       } else if (res.body.login === 'sign-in') {
         // setUserName(res.body.username);
@@ -107,13 +119,48 @@ export default function Login({navigation}) {
     });
   };
 
+  const signInGoogle = async (userName): Promise<void> => {
+    let res;
+    await SignInKakao(userName).then(response => {
+      res = response;
+      if (res.resultCode === 'success') {
+        setjwt(res.body.token);
+        setJwtRefresh(res.body.refreshToken);
+        // jwt 로컬 스토리지 저장후 메인화면 보내기
+        AsyncStorage.setItem('jwt', JSON.stringify(res.body.token));
+        AsyncStorage.setItem(
+          'jwtRefresh',
+          JSON.stringify(res.body.refreshToken),
+        );
+        deleteExpiredRoutine();
+        navigation.push('Main');
+      }
+    });
+  };
+
   const onGoogleButtonPress = async (): Promise<void> => {
     const {idToken} = await GoogleSignin.signIn();
     const code = await GoogleSignin.getTokens();
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
     console.log(code);
 
-    return auth().signInWithCredential(googleCredential);
+    // const token = await auth().signInWithCredential(googleCredential);
+    const token = code;
+    await loginGoogle(token.accessToken).then(response => {
+      let res = response;
+      // console.log(response);
+      if (res.body.login === 'sign-up') {
+        setUserName(res.body.username);
+        setKorG('G');
+        navigation.push('NickName');
+        // AsyncStorage.setItem('username', res.body.username); // test 임시 저장
+        // signInGoogle(res.body.username);
+      } else if (res.body.login === 'sign-in') {
+        // setUserName(res.body.username);
+        AsyncStorage.setItem('username', res.body.username); // test 임시 저장
+        signInGoogle(res.body.username);
+      }
+    });
   };
 
   return (
