@@ -10,6 +10,7 @@ import {
   Keyboard,
 } from 'react-native';
 import {
+  responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
@@ -133,7 +134,6 @@ const NameScreen = ({navigation}) => {
         <View style={styles.gifView}>
           <FastImage style={styles.onboardingImg} source={NameOnboarding} />
         </View>
-
         <TouchableOpacity
           style={[
             styles.nextButton,
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   form: {
-    flex: 4,
+    flex: 1,
     marginLeft: 20,
   },
   inputWrapper: {
@@ -188,13 +188,13 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     width: responsiveWidth(100),
-    height: 58,
+    justifyContent: 'center',
     alignItems: 'center',
+    height: 58,
     padding: 15,
   },
   nextButtonText: {
-    top: 2,
-    fontSize: 16,
+    fontSize: responsiveFontSize(1.98),
     fontFamily: 'Pretendard-Medium',
     color: '#fff',
   },
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
   gifView: {
     alignItems: 'center',
     width: '100%',
-    marginBottom: 100,
+    marginBottom: responsiveHeight(6),
   },
   inputText: {
     color: '#AFAFAF',

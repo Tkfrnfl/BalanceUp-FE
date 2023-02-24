@@ -24,6 +24,7 @@ import modalInnerStyles from '../../css/modalStyles';
 import ErrorSvg from '../../resource/image/Name/name_error.svg';
 import NewNotice from '../../resource/image/Common/noti_new.svg';
 import {
+  responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
@@ -424,8 +425,9 @@ const styles = StyleSheet.create({
   duplicationBtn: {
     width: responsiveWidth(23.5),
     height: responsiveHeight(7),
-    borderWidth: 1,
+    justifyContent: 'center',
     borderColor: '#585FFF',
+    borderWidth: 1,
     borderRadius: 5,
     marginLeft: 13,
   },
@@ -433,8 +435,7 @@ const styles = StyleSheet.create({
     color: '#585FFF',
     fontFamily: 'Pretendard-Medium',
     textAlign: 'center',
-    fontSize: 16,
-    marginTop: responsiveHeight(1.8),
+    fontSize: responsiveFontSize(1.98),
   },
   inputText: {
     color: '#AFAFAF',
@@ -462,7 +463,7 @@ const styles = StyleSheet.create({
     height: 18,
     position: 'absolute',
     left: responsiveWidth(50),
-    top: responsiveHeight(2.5),
+    top: responsiveHeight(2.3),
   },
   newSvg: {
     alignSelf: 'center',

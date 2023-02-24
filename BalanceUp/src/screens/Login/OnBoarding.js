@@ -200,8 +200,8 @@ const styles = StyleSheet.create({
   },
   dotStyle: {
     backgroundColor: '#888888',
-    width: responsiveWidth(2.3),
-    height: responsiveHeight(1.2),
+    width: 10,
+    height: 10,
     borderRadius: 10,
     marginLeft: 4,
     marginRight: 4,
@@ -209,8 +209,8 @@ const styles = StyleSheet.create({
   },
   activeDotStyle: {
     backgroundColor: '#232323',
-    width: responsiveWidth(7),
-    height: responsiveHeight(1.2),
+    width: 25,
+    height: 10,
     borderRadius: 10,
     marginLeft: 4,
     marginRight: 4,

@@ -50,6 +50,7 @@ import {useIsFocused} from '@react-navigation/native';
 import {
   responsiveFontSize,
   responsiveHeight,
+  responsiveScreenHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import PushNotification from 'react-native-push-notification';
@@ -487,7 +488,7 @@ const MainScreen = ({navigation: {navigate}}) => {
                     {userRp} RP
                   </Text>
                 ) : (
-                  <Text style={styles.progressRpText_}>
+                  <Text style={[styles.progressRpText_, {marginRight: 23}]}>
                     {userRp}/{upRp} RP
                   </Text>
                 )}
@@ -495,7 +496,7 @@ const MainScreen = ({navigation: {navigate}}) => {
               {/* 프로그레스바 부분 */}
               <Progress.Bar
                 progress={userRp < 300 ? userRp / upRp : userRp / 999}
-                width={300}
+                width={responsiveWidth(76)}
                 height={7}
                 color={'#585FFF'}
                 borderColor={'#FFFFFF'}
@@ -506,7 +507,8 @@ const MainScreen = ({navigation: {navigate}}) => {
                 <LevelArrow
                   style={[
                     dstyleText(
-                      (userRp < 300 ? userRp / upRp : userRp / 999) * 300,
+                      (userRp < 300 ? userRp / upRp : userRp / 999) *
+                        responsiveWidth(75.5),
                     ).bar,
                     {position: 'absolute'},
                   ]}
@@ -515,40 +517,47 @@ const MainScreen = ({navigation: {navigate}}) => {
                 // 만렙 처리
                 <LevelArrow
                   style={[
-                    dstyleText((999 / 999) * 300).bar,
+                    dstyleText((999 / 999) * responsiveWidth(75.5)).bar,
                     {position: 'absolute'},
                   ]}
                 />
               )}
               <View style={{alignItems: 'center', position: 'absolute'}}>
-                {userRp <= 999 ? (
-                  <LevelBox
-                    style={[
-                      dstyleText(
-                        (userRp < 300 ? userRp / upRp : userRp / 999) * 300,
-                      ).bar,
-                      {top: responsiveHeight(2.5), left: responsiveWidth(-1.7)},
-                    ]}
-                  />
-                ) : (
+                <View
+                  style={[
+                    styles.levelSheet_,
+                    dstyleText(
+                      (userRp < 300 ? userRp / upRp : userRp / 999) *
+                        responsiveWidth(75.5),
+                    ).bar,
+                    {top: responsiveHeight(3.8), left: responsiveWidth(-1.7)},
+                  ]}>
+                  <View style={styles.talkBubbleTriangle} />
+                  {userRp <= 999 ? (
+                    <Text style={styles.progressLevelText}>{userRp}</Text>
+                  ) : (
+                    <Text style={[styles.progressLevelText, {fontSize: 9}]}>
+                      999+
+                    </Text>
+                  )}
+                </View>
+                {/* ) : (
                   // 만렙 처리
                   <LevelBox
                     style={[
-                      dstyleText((999 / 999) * 300).bar,
+                      dstyleText((999 / 999) * responsiveWidth(75.5)).bar,
                       {top: responsiveHeight(2.5), left: responsiveWidth(-1.7)},
                     ]}
                   />
-                )}
-                {userRp <= 999 ? (
+                )} */}
+                {/* {userRp <= 999 ? (
                   <Text
                     style={[
                       styles.progressRpText,
-                      dstyleText(
-                        (userRp < 300 ? userRp / upRp : userRp / 999) * 300,
+                      dstyleText_(
+                        (userRp < 300 ? userRp / upRp : userRp / 999) *
+                          responsiveWidth(75.5),
                       ).bar,
-                      {
-                        fontSize: responsiveFontSize(1.3),
-                      },
                     ]}>
                     {userRp}
                   </Text>
@@ -557,15 +566,11 @@ const MainScreen = ({navigation: {navigate}}) => {
                   <Text
                     style={[
                       styles.progressRpText,
-                      dstyleText((999 / 999) * 300).bar,
-                      {
-                        fontSize: responsiveFontSize(0.99),
-                        bottom: responsiveHeight(6.3),
-                      },
+                      dstyleText_((999 / 999) * responsiveWidth(75.5)).bar_,
                     ]}>
                     999+
                   </Text>
-                )}
+                )} */}
               </View>
             </View>
           </Shadow>
@@ -739,6 +744,18 @@ const dstyleText = x =>
     },
   });
 
+const dstyleText_ = x =>
+  StyleSheet.create({
+    bar: {
+      marginLeft: x + 17,
+      fontSize: 10,
+    },
+    bar_: {
+      marginLeft: x + 17,
+      fontSize: 7.8,
+    },
+  });
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
@@ -751,7 +768,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FAFBFF',
   },
   showAllBtn: {
-    left: 38,
+    position: 'absolute',
+    right: 23,
     width: 65,
     height: 26,
     paddingTop: 3,
@@ -790,10 +808,19 @@ const styles = StyleSheet.create({
     width: 36,
     height: 18,
     top: 5,
-    marginLeft: 25,
+    marginLeft: 20,
     backgroundColor: '#585FFF',
     borderRadius: 30,
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  levelSheet_: {
+    width: 29,
+    height: 19,
+    borderRadius: 2,
+    alignItems: 'center',
+    backgroundColor: '#585FFF',
+    justifyContent: 'center',
   },
   progressLevelText: {
     fontSize: 12,
@@ -802,10 +829,7 @@ const styles = StyleSheet.create({
   },
   progressRpText: {
     color: '#FFFFFF',
-    bottom: responsiveHeight(6.5),
-    fontSize: responsiveFontSize(1.4),
     fontFamily: 'Pretendard-Bold',
-    left: responsiveWidth(-1.7),
   },
   progressRpText_: {
     fontSize: 12,
@@ -880,7 +904,7 @@ const styles = StyleSheet.create({
   },
   progress: {
     marginTop: 50,
-    marginLeft: 25,
+    marginLeft: 20,
     borderRadius: 10,
     bottom: 30,
   },
@@ -941,6 +965,18 @@ const styles = StyleSheet.create({
   progressStyle: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  talkBubbleTriangle: {
+    position: 'absolute',
+    bottom: 14,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderLeftWidth: 10,
+    borderRightWidth: 10,
+    borderBottomWidth: 10,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: '#585FFF',
   },
 });
 

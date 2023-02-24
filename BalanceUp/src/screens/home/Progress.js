@@ -166,7 +166,6 @@ const Progress = () => {
 
   useEffect(() => {
     DeviceEventEmitter.addListener('refresh', () => {
-      // console.log('refresh 실행');
       let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
       setRoutineStateNum(tmpNum + 1);
     });
@@ -174,12 +173,9 @@ const Progress = () => {
 
   useEffect(() => {
     setRoutinesByDate();
-    // setUserRp(14);
+    // setUserRp(1000);
     fetchUserData();
     console.log('nickname: ', nickName, 'user RP : ', userRp);
-    // console.log(selectTodo);
-    // let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
-    // setRoutineStateNum(tmpNum + 1);
   }, [dateSelected, selectTodo]);
 
   const [chosenIndex, setChosenIndex] = useState(0);
@@ -363,7 +359,7 @@ const Progress = () => {
           <View style={aimText1(setOpacity(data.completed)).bar}>
             <Text style={commonStyles.boldText}>{data.routineTitle}</Text>
             <View style={{flexDirection: 'row'}}>
-              <Clock style={{top: responsiveHeight(0.8), marginRight: 5}} />
+              <Clock style={{top: 6, marginRight: 5}} />
               <Text style={commonStyles.mediumText}>
                 {data.days != '토일' && data.days.length < 4 ? data.days : null}
                 {data.days === '토일' ? '주말' : null}
@@ -384,7 +380,7 @@ const Progress = () => {
           <TouchableWithoutFeedback onPress={() => checkComplete(index)}>
             <Svg height={80} style={svg2(setOpacity(data.completed)).bar}>
               <Rect
-                x={25}
+                x={35}
                 y={32}
                 width="60"
                 height="34"
@@ -392,11 +388,11 @@ const Progress = () => {
                 fill="#585FFF"
               />
               {data.completed === true ? (
-                <SvgText x={44} y={54} style={styles.completeText} fill="white">
+                <SvgText x={54} y={54} style={styles.completeText} fill="white">
                   취소
                 </SvgText>
               ) : (
-                <SvgText x={44} y={54} style={styles.completeText} fill="white">
+                <SvgText x={54} y={54} style={styles.completeText} fill="white">
                   완료
                 </SvgText>
               )}
@@ -610,22 +606,13 @@ const Progress = () => {
     </View>
   );
 };
-const img2 = x =>
-  StyleSheet.create({
-    bar: {
-      resizeMode: 'stretch',
-      height: 70,
-      width: 70,
-      opacity: x,
-    },
-  });
 const aimText1 = x =>
   StyleSheet.create({
     bar: {
-      paddingLeft: 8,
+      paddingLeft: 3,
       paddingTop: 19,
       opacity: x,
-      width: 200,
+      width: responsiveWidth(52),
     },
   });
 
@@ -679,14 +666,14 @@ const styles = StyleSheet.create({
     height: 110,
   },
   routineSheet: {
-    width: responsiveWidth(87),
-    height: responsiveHeight(13.6),
+    width: responsiveWidth(89),
+    height: 100,
     backgroundColor: '#FFFFFF',
     shadowColor: '#ababab',
     elevation: 10,
     borderRadius: 5,
     marginTop: 20,
-    marginLeft: responsiveWidth(6),
+    marginLeft: 20,
   },
   img2_gray: {
     resizeMode: 'stretch',
@@ -714,62 +701,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#B9B9B9',
     fontFamily: 'Pretendard-Medium',
-  },
-  nonePageBtn: {
-    width: 85,
-    height: 34,
-    marginTop: responsiveHeight(3),
-    backgroundColor: '#585FFF',
-    borderRadius: 50,
-  },
-  nonePageBtnText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontFamily: 'Pretendard-Medium',
-
-    textAlign: 'center',
-    marginTop: responsiveHeight(1.2),
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
   },
 });
 
