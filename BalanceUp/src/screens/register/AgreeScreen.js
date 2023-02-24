@@ -14,6 +14,7 @@ import {
   jwtRefreshState,
 } from '../../recoil/atom';
 import {
+  responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
@@ -133,15 +134,14 @@ const AgreeScreen = ({navigation}) => {
           <Text style={styles.agreeText}>
             [필수] 서비스 이용약관에 동의합니다.
           </Text>
-          <TouchableOpacity
+          <MoreInfoArrow
             onPress={() =>
               Linking.openURL(
                 'https://keyum.notion.site/KEYUM-dc7a7a7e475f402ea75025985a34061e',
               )
             }
-            activeOpacity={1.0}>
-            <MoreInfoArrow style={styles.arrow} />
-          </TouchableOpacity>
+            style={styles.arrowBtnStyle}
+          />
         </View>
         <View style={styles.btnWrap}>
           {serviceCheck ? (
@@ -162,15 +162,14 @@ const AgreeScreen = ({navigation}) => {
           <Text style={styles.agreeText}>
             [필수] 개인정보 수집 / 이용에 동의합니다.
           </Text>
-          <TouchableOpacity
+          <MoreInfoArrow
             onPress={() =>
               Linking.openURL(
                 'https://keyum.notion.site/KEYUM-ef4e1a7f198d4cec8d4642c3bf7cc0a4',
               )
             }
-            activeOpacity={1.0}>
-            <MoreInfoArrow style={styles.arrow1} />
-          </TouchableOpacity>
+            style={styles.arrowBtnStyle}
+          />
         </View>
         <View style={styles.btnWrap}>
           {ageCheck ? (
@@ -208,7 +207,6 @@ const AgreeScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
   },
   title: {
     fontSize: 22,
@@ -228,9 +226,8 @@ const styles = StyleSheet.create({
     color: '#232323',
   },
   sheet: {
-    flex: 4,
+    flex: 1,
     marginLeft: 20,
-    alignItems: 'flex-start',
   },
   btnWrap: {
     flexDirection: 'row',
@@ -238,19 +235,16 @@ const styles = StyleSheet.create({
   },
   allBtnWrap: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
     marginBottom: 20,
   },
   nextButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
     width: responsiveWidth(100),
     height: 58,
-    alignItems: 'center',
-    padding: 15,
   },
   nextButtonText: {
-    top: 2,
-    fontSize: 16,
+    fontSize: responsiveFontSize(1.98),
     fontFamily: 'Pretendard-Medium',
     color: '#ffffff',
   },
@@ -272,13 +266,10 @@ const styles = StyleSheet.create({
   checkBox: {
     marginRight: 10,
   },
-  arrow: {
-    left: responsiveWidth(27),
-    top: 1,
-  },
-  arrow1: {
-    left: responsiveWidth(21),
-    top: 1,
+  arrowBtnStyle: {
+    alignSelf: 'center',
+    position: 'absolute',
+    right: responsiveWidth(5),
   },
 });
 

@@ -1,5 +1,9 @@
 import {StyleSheet} from 'react-native';
-import {responsiveHeight} from 'react-native-responsive-dimensions';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
 
 const modalInnerStyles = StyleSheet.create({
   modalFlex: {
@@ -13,26 +17,19 @@ const modalInnerStyles = StyleSheet.create({
     color: '#000',
   },
   noBtn: {
-    width: '50%',
-    padding: 8,
+    width: responsiveWidth(42),
+    height: responsiveHeight(7),
+    justifyContent: 'center',
     backgroundColor: '#fff',
     borderRadius: 5,
     borderWidth: 1,
     borderColor: '#AFAFAF',
     marginTop: 30,
     marginBottom: 30,
-    marginRight: 35,
-  },
-  nextBtn: {
-    padding: 8,
-    backgroundColor: '#6D81FA',
-    borderRadius: 5,
-    marginTop: 30,
-    marginBottom: 30,
+    marginRight: 30,
   },
   noText: {
-    padding: 6,
-    fontSize: 16,
+    fontSize: responsiveFontSize(1.98),
     fontFamily: 'Pretendard-Medium',
     color: '#232323',
     textAlign: 'center',
@@ -40,8 +37,7 @@ const modalInnerStyles = StyleSheet.create({
     marginRight: 40,
   },
   nextText: {
-    padding: 6,
-    fontSize: 16,
+    fontSize: responsiveFontSize(1.98),
     fontFamily: 'Pretendard-Medium',
     color: '#fff',
     textAlign: 'center',
@@ -103,8 +99,9 @@ const modalInnerStyles = StyleSheet.create({
     marginTop: 5,
   },
   yesBtn: {
-    width: '50%',
-    padding: 8,
+    width: responsiveWidth(42.5),
+    height: responsiveHeight(7),
+    justifyContent: 'center',
     backgroundColor: '#585FFF',
     borderRadius: 5,
     marginTop: 30,
@@ -127,20 +124,19 @@ const modalInnerStyles = StyleSheet.create({
     fontSize: 15,
   },
   saveBtn: {
+    width: responsiveWidth(90),
+    justifyContent: 'center',
     padding: 8,
     borderRadius: 5,
     marginTop: 25,
     marginBottom: 30,
-    width: '105%',
   },
   saveText: {
-    padding: 6,
-    fontSize: 16,
+    fontSize: responsiveFontSize(1.98),
     fontFamily: 'Pretendard-Medium',
-    color: '#fff',
     textAlign: 'center',
-    marginLeft: 40,
-    marginRight: 40,
+    color: '#FFFFFF',
+    padding: 6,
   },
 
   // MyPage 로그아웃 모달 style

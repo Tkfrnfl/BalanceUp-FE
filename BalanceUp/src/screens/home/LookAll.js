@@ -21,6 +21,7 @@ import * as ProgressLib from 'react-native-progress';
 
 import LettArrow from '../../resource/image/Main/left.svg';
 import RightArrow from '../../resource/image/Main/right.svg';
+import {responsiveWidth} from 'react-native-responsive-dimensions';
 
 LocaleConfig.locales.fr = {
   monthNames: [
@@ -170,13 +171,13 @@ const LookAll = () => {
     );
   }, [selectTodo, token]);
 
+  // * selectTodo - 1 해줘야함, 최초의 selectTodo.length = 1
+
   useEffect(() => {
     // seloctor 업데이트를 위해+1
     let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
     setRoutineStateNum(tmpNum + 1);
   }, [isFocused]);
-
-  console.log(selectTodo.length);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -244,14 +245,14 @@ const LookAll = () => {
                 text-anchor="middle"
                 fill="#585FFF"
                 style={styles.percentageText}>
-                {selectTodo.length === 0
+                {selectTodo.length === 1
                   ? '0%'
                   : `${Math.floor(routineProgress * 100)}%`}
               </SvgText>
 
               <View style={styles.progressBar}>
                 <ProgressLib.Bar
-                  progress={selectTodo.length === 0 ? 0 : routineProgress}
+                  progress={selectTodo.length === 1 ? 0 : routineProgress}
                   // 진행 루틴 Null = 0% 표시
                   // completed true 총합 / selectTodo.length(루틴 총합) = 결과값.toFixed(2)
                   width={300}
