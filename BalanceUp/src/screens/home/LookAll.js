@@ -203,6 +203,8 @@ const LookAll = () => {
                 textMonthFontWeight: '800',
                 selectedDayBackgroundColor: '#585FFF',
                 todayTextColor: '#009688',
+                dayTextColor: '#232323',
+                dotColor: '#F4F7FF',
                 textMonthFontFamily: 'Pretendard-Bold',
                 textDayFontFamily: 'Pretendard-Medium',
                 textDayHeaderFontFamily: 'Pretendard-Medium',
@@ -217,6 +219,9 @@ const LookAll = () => {
                     paddingRight: 50,
                     marginTop: 6,
                     alignItems: 'center',
+                  },
+                  dayHeader: {
+                    color: '#888888',
                   },
                 },
               }}

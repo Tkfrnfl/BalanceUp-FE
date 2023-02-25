@@ -644,8 +644,9 @@ const MainScreen = ({navigation: {navigate}}) => {
             theme={{
               textMonthFontWeight: '800',
               selectedDayBackgroundColor: '#585FFF',
-              dotColor: '#585FFF',
+              dotColor: '#F4F7FF',
               todayTextColor: '#009688',
+              dayTextColor: '#232323',
               textMonthFontFamily: 'Pretendard-Bold',
               textDayFontFamily: 'Pretendard-Medium',
               textDayHeaderFontFamily: 'Pretendard-Medium',
@@ -660,6 +661,10 @@ const MainScreen = ({navigation: {navigate}}) => {
                   paddingRight: 50,
                   marginTop: 6,
                   alignItems: 'center',
+                  color: 'red',
+                },
+                dayHeader: {
+                  color: '#888888',
                 },
               },
             }}
