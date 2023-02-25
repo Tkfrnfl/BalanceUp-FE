@@ -133,7 +133,7 @@ export default function OnBoarding({navigation}) {
             <FastImage
               style={[
                 styles.onBoardingIMG,
-                {marginRight: data.id === 3 ? 12 : null},
+                {marginRight: data.id === 3 ? responsiveWidth(2) : null},
               ]}
               source={data.img}
             />
@@ -179,6 +179,7 @@ const styles = StyleSheet.create({
     width: responsiveWidth(58),
     height: responsiveHeight(36),
     marginLeft: 12,
+    marginBottom: responsiveHeight(3),
   },
   title: {
     color: '#232323',
