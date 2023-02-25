@@ -24,10 +24,10 @@ import life from '../../resource/image/SetTodo/life.png';
 import education from '../../resource/image/SetTodo/education.png';
 import mental from '../../resource/image/SetTodo/mental.png';
 import health from '../../resource/image/SetTodo/health.png';
-import LifeGray from '../../resource/image/Main/lifeGray.svg';
-import EducationGray from '../../resource/image/Main/studyGray.svg';
-import HealthGray from '../../resource/image/Main/healthGray.svg';
-import MentalGray from '../../resource/image/Main/mindGray.svg';
+import lifeGray from '../../resource/image/Main/daily_off.png';
+import educationGray from '../../resource/image/Main/study_off.png';
+import healthGray from '../../resource/image/Main/health_off.png';
+import mentalGray from '../../resource/image/Main/mind_off.png';
 import lv1 from '../../resource/image/Main/1lv.gif';
 import lv2 from '../../resource/image/Main/2lv.gif';
 import lv3 from '../../resource/image/Main/3lv.gif';
@@ -45,16 +45,13 @@ import {jwtState} from '../../recoil/atom';
 import {dateState, routineStateNum} from '../../recoil/appState';
 import {nickNameState, userRpState} from '../../recoil/atom';
 import {routineStateDaysSet, alarmChanged} from '../../recoil/userState';
-import {getAllRoutine} from '../../actions/routineAPI';
 import {useIsFocused} from '@react-navigation/native';
 import {
   responsiveFontSize,
   responsiveHeight,
-  responsiveScreenHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import PushNotification from 'react-native-push-notification';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import moment from 'moment';
 
@@ -100,12 +97,7 @@ let date = today.getDate(); // 날짜
 const MainScreen = ({navigation: {navigate}}) => {
   const todo = ['일상', '학습', '마음관리', '운동'];
   const todoImg = [life, education, mental, health];
-  const todoImgGray = [
-    <LifeGray />,
-    <EducationGray />,
-    <MentalGray />,
-    <HealthGray />,
-  ];
+  const todoImgGray = [lifeGray, educationGray, mentalGray, healthGray];
   const [nickName, setNickName] = useRecoilState(nickNameState);
   // const [daily, setDaily] = useRecoilState(dailyState);
   // const [exercise, setExercise] = useRecoilState(exerciseState);
@@ -586,7 +578,9 @@ const MainScreen = ({navigation: {navigate}}) => {
               <View key={index}>
                 <View style={styles.notCompletedSheet}>
                   {todoCompleted[index] === todoTotal[index] ? (
-                    <View style={styles.grayImg}>{todoImgGray[index]}</View>
+                    <View>
+                      <Image source={todoImgGray[index]} style={styles.img4} />
+                    </View>
                   ) : (
                     <View>
                       <Image source={todoImg[index]} style={styles.img4} />
@@ -930,11 +924,8 @@ const styles = StyleSheet.create({
   notCompletedSheet: {
     width: 90,
     height: 90,
-    shadowColor: '#000000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.5,
-    shadowRadius: 2,
-    elevation: 5, // changed to a greater value
+    shadowColor: '#ababab',
+    elevation: 9,
     borderRadius: 150 / 2,
     borderColor: '#000000',
     zIndex: 99, // added zIndex
@@ -942,6 +933,12 @@ const styles = StyleSheet.create({
     marginTop: responsiveHeight(3),
     marginLeft: responsiveWidth(5),
     marginRight: 5,
+    shadowOpacity: 0.4,
+    shadowRadius: 3.84,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
   },
   levelUpModalText: {
     top: responsiveHeight(14.5),
