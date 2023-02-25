@@ -130,7 +130,13 @@ export default function OnBoarding({navigation}) {
         showsButtons={true}>
         {TextData.map(data => (
           <View style={styles.slide} key={data.id}>
-            <FastImage style={styles.onBoardingIMG} source={data.img} />
+            <FastImage
+              style={[
+                styles.onBoardingIMG,
+                {marginRight: data.id === 3 ? 12 : null},
+              ]}
+              source={data.img}
+            />
             <Text style={styles.title}>{data.title}</Text>
             <Text style={styles.subTitle}>{data.text1}</Text>
             <Text style={styles.subTitle}>{data.text2}</Text>
