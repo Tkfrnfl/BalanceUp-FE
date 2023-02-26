@@ -374,11 +374,13 @@ const Progress = () => {
             </View>
             <Text style={commonStyles.mediumText_}>
               {data.routineCategory} |{' '}
-              {`종료일 ${data.endDate.reduce((prev, curr) => {
-                return new Date(prev).getTime() <= new Date(curr).getTime()
-                  ? curr
-                  : prev;
-              })} `}
+              {`종료일 ${data.endDate
+                .reduce((prev, curr) => {
+                  return new Date(prev).getTime() <= new Date(curr).getTime()
+                    ? curr
+                    : prev;
+                })
+                .replace(/-/g, '.')} `}
             </Text>
           </View>
           <TouchableWithoutFeedback onPress={() => checkComplete(index)}>

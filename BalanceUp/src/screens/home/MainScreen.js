@@ -16,7 +16,7 @@ import commonStyles from '../../css/commonStyles';
 import {format} from 'date-fns';
 import * as Progress from 'react-native-progress';
 import LevelArrow from '../../resource/image/Main/levelArrow.svg';
-import LevelBox from '../../resource/image/Main/levelBox.svg';
+// import LevelBox from '../../resource/image/Main/levelBox.svg';
 import LeftArrow from '../../resource/image/Main/left.svg';
 import RightArrow from '../../resource/image/Main/right.svg';
 import Iconx from '../../resource/image/Main/back.svg';
@@ -45,7 +45,6 @@ import {jwtState} from '../../recoil/atom';
 import {dateState, routineStateNum} from '../../recoil/appState';
 import {nickNameState, userRpState} from '../../recoil/atom';
 import {routineStateDaysSet, alarmChanged} from '../../recoil/userState';
-import {useIsFocused} from '@react-navigation/native';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -99,10 +98,6 @@ const MainScreen = ({navigation: {navigate}}) => {
   const todoImg = [life, education, mental, health];
   const todoImgGray = [lifeGray, educationGray, mentalGray, healthGray];
   const [nickName, setNickName] = useRecoilState(nickNameState);
-  // const [daily, setDaily] = useRecoilState(dailyState);
-  // const [exercise, setExercise] = useRecoilState(exerciseState);
-  // const [learning, setLearning] = useRecoilState(learningState);
-  // const [mindCare, setMindCare] = useRecoilState(mindCareState);
   const [routineRefresh, setRoutineStateNum] = useRecoilState(routineStateNum);
   const [alarmChange, setAlarmChanged] = useRecoilState(alarmChanged);
   const [userRp, setUserRp] = useRecoilState(userRpState);
@@ -130,7 +125,6 @@ const MainScreen = ({navigation: {navigate}}) => {
   const [selectedDate, setSelectedDate] = useState(
     format(new Date(), 'yyyy-MM-dd'),
   );
-  const isFocused = useIsFocused();
   const [levelUpModalVisible, setLevelUpModalVisible] = useState(false);
   const [levelUp_ModalVisible, setLevelUp_ModalVisible] = useState(false);
   const [showUpModal, setShowUpModal] = useState(false);
@@ -168,9 +162,12 @@ const MainScreen = ({navigation: {navigate}}) => {
       setTimeout(() => setGif(lv2), 3000);
       // 레벨업시 한번만 실행을 위해 다시 false
       setShowUpModal(false);
+
+      // 16레벨 달성시 레벨업 Modal
     } else if (userLevel === 16 && showUpModal == true) {
       setLevelUp_ModalVisible(true);
       setTimeout(() => setGif(lv3), 2000);
+      // 레벨업시 한번만 실행을 위해 다시 false
       setShowUpModal(false);
     }
 
@@ -574,36 +571,33 @@ const MainScreen = ({navigation: {navigate}}) => {
             완료하지 않은 루틴이 있어요!
           </Text>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {todo.map((value, index) => (
-              <View key={index}>
-                <View style={styles.notCompletedSheet}>
-                  {todoCompleted[index] === todoTotal[index] ? (
-                    <View>
-                      <Image source={todoImgGray[index]} style={styles.img4} />
-                    </View>
-                  ) : (
-                    <View>
-                      <Image source={todoImg[index]} style={styles.img4} />
-                    </View>
-                  )}
-                </View>
-                {todoCompleted[index] === todoTotal[index] ? (
+            {todo.map((value, index) =>
+              todoCompleted[index] === todoTotal[index] ? (
+                <View key={index}>
+                  <View style={styles.notCompletedSheet}>
+                    <Image source={todoImgGray[index]} style={styles.img4} />
+                  </View>
                   <View>
                     <Text style={styles.categoryText}>{todo[index]}</Text>
                     <Text style={styles.categoryBlackText}>
                       {todoCompleted[index]}/{todoTotal[index]}
                     </Text>
                   </View>
-                ) : (
+                </View>
+              ) : (
+                <View key={index}>
+                  <View style={styles.notCompletedSheet}>
+                    <Image source={todoImg[index]} style={styles.img4} />
+                  </View>
                   <View>
                     <Text style={styles.categoryText}>{todo[index]}</Text>
                     <Text style={styles.categoryColorText}>
                       {todoCompleted[index]}/{todoTotal[index]}
                     </Text>
                   </View>
-                )}
-              </View>
-            ))}
+                </View>
+              ),
+            )}
           </ScrollView>
         </View>
         <View style={commonStyles.spacing2} />
@@ -743,17 +737,17 @@ const dstyleText = x =>
     },
   });
 
-const dstyleText_ = x =>
-  StyleSheet.create({
-    bar: {
-      marginLeft: x + 17,
-      fontSize: 10,
-    },
-    bar_: {
-      marginLeft: x + 17,
-      fontSize: 7.8,
-    },
-  });
+// const dstyleText_ = x =>
+//   StyleSheet.create({
+//     bar: {
+//       marginLeft: x + 17,
+//       fontSize: 10,
+//     },
+//     bar_: {
+//       marginLeft: x + 17,
+//       fontSize: 7.8,
+//     },
+//   });
 
 const styles = StyleSheet.create({
   container: {
@@ -925,7 +919,7 @@ const styles = StyleSheet.create({
     width: 90,
     height: 90,
     shadowColor: '#ababab',
-    elevation: 9,
+    elevation: 15,
     borderRadius: 150 / 2,
     borderColor: '#000000',
     zIndex: 99, // added zIndex
