@@ -16,7 +16,7 @@ import commonStyles from '../../css/commonStyles';
 import {format} from 'date-fns';
 import * as Progress from 'react-native-progress';
 import LevelArrow from '../../resource/image/Main/levelArrow.svg';
-import LevelBox from '../../resource/image/Main/levelBox.svg';
+// import LevelBox from '../../resource/image/Main/levelBox.svg';
 import LeftArrow from '../../resource/image/Main/left.svg';
 import RightArrow from '../../resource/image/Main/right.svg';
 import Iconx from '../../resource/image/Main/back.svg';
@@ -24,10 +24,10 @@ import life from '../../resource/image/SetTodo/life.png';
 import education from '../../resource/image/SetTodo/education.png';
 import mental from '../../resource/image/SetTodo/mental.png';
 import health from '../../resource/image/SetTodo/health.png';
-import LifeGray from '../../resource/image/Main/lifeGray.svg';
-import EducationGray from '../../resource/image/Main/studyGray.svg';
-import HealthGray from '../../resource/image/Main/healthGray.svg';
-import MentalGray from '../../resource/image/Main/mindGray.svg';
+import lifeGray from '../../resource/image/Main/daily_off.png';
+import educationGray from '../../resource/image/Main/study_off.png';
+import healthGray from '../../resource/image/Main/health_off.png';
+import mentalGray from '../../resource/image/Main/mind_off.png';
 import lv1 from '../../resource/image/Main/1lv.gif';
 import lv2 from '../../resource/image/Main/2lv.gif';
 import lv3 from '../../resource/image/Main/3lv.gif';
@@ -45,16 +45,12 @@ import {jwtState} from '../../recoil/atom';
 import {dateState, routineStateNum} from '../../recoil/appState';
 import {nickNameState, userRpState} from '../../recoil/atom';
 import {routineStateDaysSet, alarmChanged} from '../../recoil/userState';
-import {getAllRoutine} from '../../actions/routineAPI';
-import {useIsFocused} from '@react-navigation/native';
 import {
   responsiveFontSize,
   responsiveHeight,
-  responsiveScreenHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import PushNotification from 'react-native-push-notification';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import moment from 'moment';
 
@@ -98,19 +94,9 @@ let month = today.getMonth() + 1; // 월
 let date = today.getDate(); // 날짜
 
 const MainScreen = ({navigation: {navigate}}) => {
-  const todo = ['일상', '학습', '마음관리', '운동'];
   const todoImg = [life, education, mental, health];
-  const todoImgGray = [
-    <LifeGray />,
-    <EducationGray />,
-    <MentalGray />,
-    <HealthGray />,
-  ];
+  const todoImgGray = [lifeGray, educationGray, mentalGray, healthGray];
   const [nickName, setNickName] = useRecoilState(nickNameState);
-  // const [daily, setDaily] = useRecoilState(dailyState);
-  // const [exercise, setExercise] = useRecoilState(exerciseState);
-  // const [learning, setLearning] = useRecoilState(learningState);
-  // const [mindCare, setMindCare] = useRecoilState(mindCareState);
   const [routineRefresh, setRoutineStateNum] = useRecoilState(routineStateNum);
   const [alarmChange, setAlarmChanged] = useRecoilState(alarmChanged);
   const [userRp, setUserRp] = useRecoilState(userRpState);
@@ -138,11 +124,37 @@ const MainScreen = ({navigation: {navigate}}) => {
   const [selectedDate, setSelectedDate] = useState(
     format(new Date(), 'yyyy-MM-dd'),
   );
-  const isFocused = useIsFocused();
   const [levelUpModalVisible, setLevelUpModalVisible] = useState(false);
   const [levelUp_ModalVisible, setLevelUp_ModalVisible] = useState(false);
   const [showUpModal, setShowUpModal] = useState(false);
   const [gif, setGif] = useState(lv1);
+
+  const todo = [
+    {
+      id: 0,
+      title: '일상',
+      completed: todoCompleted[0] === todoTotal[0],
+      total: todoTotal[0],
+    },
+    {
+      id: 1,
+      title: '학습',
+      completed: todoCompleted[1] === todoTotal[1],
+      total: todoTotal[1],
+    },
+    {
+      id: 2,
+      title: '마음관리',
+      completed: todoCompleted[2] === todoTotal[2],
+      total: todoTotal[2],
+    },
+    {
+      id: 3,
+      title: '운동',
+      completed: todoCompleted[3] === todoTotal[3],
+      total: todoTotal[3],
+    },
+  ];
 
   // RP 레벨 처리
   useEffect(() => {
@@ -176,9 +188,12 @@ const MainScreen = ({navigation: {navigate}}) => {
       setTimeout(() => setGif(lv2), 3000);
       // 레벨업시 한번만 실행을 위해 다시 false
       setShowUpModal(false);
+
+      // 16레벨 달성시 레벨업 Modal
     } else if (userLevel === 16 && showUpModal == true) {
       setLevelUp_ModalVisible(true);
       setTimeout(() => setGif(lv3), 2000);
+      // 레벨업시 한번만 실행을 위해 다시 false
       setShowUpModal(false);
     }
 
@@ -577,41 +592,44 @@ const MainScreen = ({navigation: {navigate}}) => {
           <View style={commonStyles.spacing2} />
         </View>
         <View style={commonStyles.spacing2} />
-        <View>
-          <Text style={[commonStyles.boldText_, styles.centering]}>
-            완료하지 않은 루틴이 있어요!
-          </Text>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {todo.map((value, index) => (
-              <View key={index}>
+
+        {/* 완료되지 않은 루틴 카테고리 */}
+        <Text style={[commonStyles.boldText_, styles.centering]}>
+          완료하지 않은 루틴이 있어요!
+        </Text>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          {todo
+            .sort((a, b) => a.total - b.total)
+            .sort((a, b) => a.completed - b.completed)
+            .map(value => (
+              <View key={value.id}>
                 <View style={styles.notCompletedSheet}>
-                  {todoCompleted[index] === todoTotal[index] ? (
-                    <View style={styles.grayImg}>{todoImgGray[index]}</View>
-                  ) : (
-                    <View>
-                      <Image source={todoImg[index]} style={styles.img4} />
-                    </View>
-                  )}
+                  <Image
+                    source={
+                      value.completed != false
+                        ? todoImgGray[value.id]
+                        : todoImg[value.id]
+                    }
+                    style={styles.img4}
+                  />
                 </View>
-                {todoCompleted[index] === todoTotal[index] ? (
-                  <View>
-                    <Text style={styles.categoryText}>{todo[index]}</Text>
-                    <Text style={styles.categoryBlackText}>
-                      {todoCompleted[index]}/{todoTotal[index]}
-                    </Text>
-                  </View>
-                ) : (
-                  <View>
-                    <Text style={styles.categoryText}>{todo[index]}</Text>
-                    <Text style={styles.categoryColorText}>
-                      {todoCompleted[index]}/{todoTotal[index]}
-                    </Text>
-                  </View>
-                )}
+                <View>
+                  <Text style={styles.categoryText}>{value.title}</Text>
+                  <Text
+                    style={[
+                      styles.categoryBlackText,
+                      {
+                        color: value.completed != false ? '#888888' : '#585FFF',
+                      },
+                    ]}>
+                    {todoCompleted[value.id]}/{todoTotal[value.id]}
+                  </Text>
+                </View>
               </View>
             ))}
-          </ScrollView>
-        </View>
+        </ScrollView>
+
+        {/* 이번 주 루틴 기록 */}
         <View style={commonStyles.spacing2} />
         <View style={[commonStyles.row]}>
           <Text
@@ -644,8 +662,9 @@ const MainScreen = ({navigation: {navigate}}) => {
             theme={{
               textMonthFontWeight: '800',
               selectedDayBackgroundColor: '#585FFF',
-              dotColor: '#585FFF',
+              dotColor: '#F4F7FF',
               todayTextColor: '#009688',
+              dayTextColor: '#232323',
               textMonthFontFamily: 'Pretendard-Bold',
               textDayFontFamily: 'Pretendard-Medium',
               textDayHeaderFontFamily: 'Pretendard-Medium',
@@ -660,6 +679,10 @@ const MainScreen = ({navigation: {navigate}}) => {
                   paddingRight: 50,
                   marginTop: 6,
                   alignItems: 'center',
+                  color: 'red',
+                },
+                dayHeader: {
+                  color: '#888888',
                 },
               },
             }}
@@ -744,17 +767,17 @@ const dstyleText = x =>
     },
   });
 
-const dstyleText_ = x =>
-  StyleSheet.create({
-    bar: {
-      marginLeft: x + 17,
-      fontSize: 10,
-    },
-    bar_: {
-      marginLeft: x + 17,
-      fontSize: 7.8,
-    },
-  });
+// const dstyleText_ = x =>
+//   StyleSheet.create({
+//     bar: {
+//       marginLeft: x + 17,
+//       fontSize: 10,
+//     },
+//     bar_: {
+//       marginLeft: x + 17,
+//       fontSize: 7.8,
+//     },
+//   });
 
 const styles = StyleSheet.create({
   container: {
@@ -874,18 +897,18 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontSize: 15,
   },
-  categoryColorText: {
-    marginTop: 6,
-    marginLeft: 15,
-    color: '#585FFF',
-    fontFamily: 'Pretendard-Bold',
-    alignSelf: 'center',
-    fontSize: 15,
-  },
+  // categoryColorText: {
+  //   marginTop: 6,
+  //   marginLeft: 15,
+  //   color: '#585FFF',
+  //   fontFamily: 'Pretendard-Bold',
+  //   alignSelf: 'center',
+  //   fontSize: 15,
+  // },
   categoryBlackText: {
     marginTop: 6,
     marginLeft: 15,
-    color: '#888888',
+    // color: '#888888',
     fontFamily: 'Pretendard-Bold',
     alignSelf: 'center',
     fontSize: 15,
@@ -925,11 +948,8 @@ const styles = StyleSheet.create({
   notCompletedSheet: {
     width: 90,
     height: 90,
-    shadowColor: '#000000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.5,
-    shadowRadius: 2,
-    elevation: 5, // changed to a greater value
+    shadowColor: '#ababab',
+    elevation: 15,
     borderRadius: 150 / 2,
     borderColor: '#000000',
     zIndex: 99, // added zIndex
@@ -937,6 +957,12 @@ const styles = StyleSheet.create({
     marginTop: responsiveHeight(3),
     marginLeft: responsiveWidth(5),
     marginRight: 5,
+    shadowOpacity: 0.4,
+    shadowRadius: 3.84,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
   },
   levelUpModalText: {
     top: responsiveHeight(14.5),

@@ -130,7 +130,13 @@ export default function OnBoarding({navigation}) {
         showsButtons={true}>
         {TextData.map(data => (
           <View style={styles.slide} key={data.id}>
-            <FastImage style={styles.onBoardingIMG} source={data.img} />
+            <FastImage
+              style={[
+                styles.onBoardingIMG,
+                {marginRight: data.id === 3 ? responsiveWidth(2) : null},
+              ]}
+              source={data.img}
+            />
             <Text style={styles.title}>{data.title}</Text>
             <Text style={styles.subTitle}>{data.text1}</Text>
             <Text style={styles.subTitle}>{data.text2}</Text>
@@ -173,6 +179,7 @@ const styles = StyleSheet.create({
     width: responsiveWidth(58),
     height: responsiveHeight(36),
     marginLeft: 12,
+    marginBottom: responsiveHeight(3),
   },
   title: {
     color: '#232323',

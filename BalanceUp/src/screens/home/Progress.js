@@ -361,7 +361,11 @@ const Progress = () => {
             <View style={{flexDirection: 'row'}}>
               <Clock style={{top: 6, marginRight: 5}} />
               <Text style={commonStyles.mediumText}>
-                {data.days != '토일' && data.days.length < 4 ? data.days : null}
+                {data.days != '토일' &&
+                data.days != '월화수목금' &&
+                data.days != '월화수목금토일'
+                  ? data.days
+                  : null}
                 {data.days === '토일' ? '주말' : null}
                 {data.days === '월화수목금' ? '평일' : null}
                 {data.days === '월화수목금토일' ? '매일' : null}{' '}
@@ -370,11 +374,13 @@ const Progress = () => {
             </View>
             <Text style={commonStyles.mediumText_}>
               {data.routineCategory} |{' '}
-              {`루틴 종료일 ${data.endDate.reduce((prev, curr) => {
-                return new Date(prev).getTime() <= new Date(curr).getTime()
-                  ? curr
-                  : prev;
-              })} `}
+              {`종료일 ${data.endDate
+                .reduce((prev, curr) => {
+                  return new Date(prev).getTime() <= new Date(curr).getTime()
+                    ? curr
+                    : prev;
+                })
+                .replace(/-/g, '.')} `}
             </Text>
           </View>
           <TouchableWithoutFeedback onPress={() => checkComplete(index)}>

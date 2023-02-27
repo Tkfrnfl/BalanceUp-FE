@@ -4,6 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import NameScreen from '../screens/register/NameScreen';
 import AgreeScreen from '../screens/register/AgreeScreen';
 import MainScreen from '../screens/home/MainScreen';
+import {MainRouter} from './mainRouter';
 const NickNameStack = createStackNavigator();
 
 // const routeInfo = [
@@ -41,7 +42,7 @@ export function NickNameRouter() {
         />
         <NickNameStack.Screen
           name="Main"
-          component={MainScreen}
+          component={MainRouter}
           options={{headerShown: false}}
         />
       </NickNameStack.Navigator>

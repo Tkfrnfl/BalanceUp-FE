@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
     fontSize: 35,
     fontWeight: 'bold',
     marginTop: 10,
+    marginLeft: 10,
   },
   timeView: {
     flexDirection: 'row',
