@@ -1,5 +1,5 @@
-import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import React, {useEffect} from 'react';
+import {StyleSheet, Text, View, TouchableOpacity, Button} from 'react-native';
 import {
   KakaoOAuthToken,
   getProfile as getKakaoProfile,
@@ -33,6 +33,7 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
+import PushNotification from 'react-native-push-notification';
 
 // const naverLogin = async (): Promise<void> => {
 //   console.log('dd');
@@ -71,6 +72,37 @@ const unlinkKakao = async (): Promise<void> => {
 // }; // 추후에 process.env로 빼기
 
 export default function Login({navigation}) {
+  useEffect(() => {
+    PushNotification.createChannel(
+      {
+        channelId: '1',
+        channelName: '1',
+        channelDescription: 'A channel to categorise your notifications',
+        playSound: false,
+        soundName: 'default',
+        vibrate: true,
+      },
+      // created => console.log(`createChannel returned '${created}'`),
+    );
+    PushNotification.localNotificationSchedule({
+      channelId: '1',
+      id: '1',
+      title: '1',
+      message: '님, 오늘의 루틴을 완료해보세요!',
+      // date: tmpDays,
+      // repeatType: 'week',
+      date: new Date(Date.now() + 30 * 1000), // 시간대 에러날시 서버시간 체크후 보정
+    });
+    PushNotification.getScheduledLocalNotifications(callback => {
+      console.log(callback);
+    });
+  }, []);
+  const test1 = async (): Promise<void> => {
+    console.log('??');
+    PushNotification.getScheduledLocalNotifications(callback => {
+      console.log(callback);
+    });
+  };
   React.useEffect(() => {
     googleSigninConfigure();
   });
@@ -169,6 +201,7 @@ export default function Login({navigation}) {
         <FastImage style={styles.loginImg} source={Login_Onboading} />
       </View>
       <Text style={styles.title}>만나서 반가워요!</Text>
+
       <Text style={styles.subTitle}>로그인 할 계정을 선택해 주세요</Text>
       <TouchableOpacity
         activeOpacity={1.0}

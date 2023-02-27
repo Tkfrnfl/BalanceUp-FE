@@ -385,29 +385,37 @@ const MainScreen = ({navigation: {navigate}}) => {
     for (var i = 0; i < tmpArray.length; i++) {
       let tmpArrayDays = [];
 
-      for (var j = 0; j < tmpArray[i].routineDays.length; j++) {
-        let m = moment().utcOffset(0);
-        // console.log(tmpArray[i].routineDays[j]);
-        let year = parseInt(tmpArray[i].routineDays[j].day.split('-')[0], 10);
-        let month = parseInt(tmpArray[i].routineDays[j].day.split('-')[1], 10);
-        month -= 1;
-        let date = parseInt(tmpArray[i].routineDays[j].day.split('-')[2], 10);
-        let hour = parseInt(tmpArray[i].alarmTime.split(':')[0], 10);
-        let minute = parseInt(tmpArray[i].alarmTime.split(':')[1], 10);
+      if (tmpArray[i].alarmTime != null) {
+        for (var j = 0; j < tmpArray[i].routineDays.length; j++) {
+          let m = moment().utcOffset(0);
+          // console.log(tmpArray[i].routineDays[j]);
+          let year = parseInt(tmpArray[i].routineDays[j].day.split('-')[0], 10);
+          let month = parseInt(
+            tmpArray[i].routineDays[j].day.split('-')[1],
+            10,
+          );
+          month -= 1;
+          let date = parseInt(tmpArray[i].routineDays[j].day.split('-')[2], 10);
+          let hour = parseInt(tmpArray[i].alarmTime.split(':')[0], 10);
+          let minute = parseInt(tmpArray[i].alarmTime.split(':')[1], 10);
 
-        m.set({
-          year: year,
-          month: month,
-          date: date,
-          hour: hour,
-          minute: minute,
-          second: 0,
-          millisecond: 0,
-        });
-        m.toDate();
-        var tmpM = new Date(m);
-        tmpArrayDays.push(tmpM);
+          m.set({
+            year: year,
+            month: month,
+            date: date,
+            hour: hour,
+            minute: minute,
+            second: 0,
+            millisecond: 0,
+          });
+          var correctHours = moment.duration('09:00:00');  //시간보정
+          m.subtract(correctHours);
+          m.toDate();
+          var tmpM = new Date(m);
+          tmpArrayDays.push(tmpM);
+        }
       }
+
       console.log(tmpArray[i].routineId);
 
       for (var k = 0; k < tmpArrayDays.length; k++) {
@@ -421,7 +429,7 @@ const MainScreen = ({navigation: {navigate}}) => {
             PushNotification.createChannel(
               {
                 channelId: `${tmpId}${tmpDays}`,
-                channelName: tmpTitle,
+                channelName: `${tmpId}${tmpDays}`,
                 channelDescription:
                   'A channel to categorise your notifications',
                 playSound: false,
@@ -432,21 +440,22 @@ const MainScreen = ({navigation: {navigate}}) => {
             );
             PushNotification.localNotificationSchedule({
               channelId: `${tmpId}${tmpDays}`,
-              id: `${tmpId}${tmpDays}`,
+              //id: `${tmpId}${tmpDays}`,  //id must 32bit integer
               title: tmpTitle,
               message: `${nickName}님, 오늘의 루틴을 완료해보세요!`,
               date: tmpDays,
               // repeatType: 'week',
-              // date: new Date(Date.now() + 20 * 1000), //시간대 에러날시 서버시간 체크후 보정
+              //date: new Date(Date.now() + 30 * 1000), // 시간대 에러날시 서버시간 체크후 보정
+            });
+             PushNotification.getScheduledLocalNotifications(callback => {
+              console.log(callback);
             });
           } else {
             // PushNotification.deleteChannel(`${tmpId}${tmpDays}`)
             // PushNotification.getScheduledLocalNotifications(callback => {
-            //   console.log(callback); // ['channel_id_1']
-            // });
-            // PushNotification.getChannels(callback => {
             //   console.log(callback);
             // });
+            // PushNotification.cancelAllLocalNotifications();
           }
         });
       }
