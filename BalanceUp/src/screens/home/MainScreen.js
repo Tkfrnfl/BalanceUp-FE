@@ -94,7 +94,6 @@ let month = today.getMonth() + 1; // 월
 let date = today.getDate(); // 날짜
 
 const MainScreen = ({navigation: {navigate}}) => {
-  const todo = ['일상', '학습', '마음관리', '운동'];
   const todoImg = [life, education, mental, health];
   const todoImgGray = [lifeGray, educationGray, mentalGray, healthGray];
   const [nickName, setNickName] = useRecoilState(nickNameState);
@@ -129,6 +128,33 @@ const MainScreen = ({navigation: {navigate}}) => {
   const [levelUp_ModalVisible, setLevelUp_ModalVisible] = useState(false);
   const [showUpModal, setShowUpModal] = useState(false);
   const [gif, setGif] = useState(lv1);
+
+  const todo = [
+    {
+      id: 0,
+      title: '일상',
+      completed: todoCompleted[0] === todoTotal[0],
+      total: todoTotal[0],
+    },
+    {
+      id: 1,
+      title: '학습',
+      completed: todoCompleted[1] === todoTotal[1],
+      total: todoTotal[1],
+    },
+    {
+      id: 2,
+      title: '마음관리',
+      completed: todoCompleted[2] === todoTotal[2],
+      total: todoTotal[2],
+    },
+    {
+      id: 3,
+      title: '운동',
+      completed: todoCompleted[3] === todoTotal[3],
+      total: todoTotal[3],
+    },
+  ];
 
   // RP 레벨 처리
   useEffect(() => {
@@ -566,40 +592,44 @@ const MainScreen = ({navigation: {navigate}}) => {
           <View style={commonStyles.spacing2} />
         </View>
         <View style={commonStyles.spacing2} />
-        <View>
-          <Text style={[commonStyles.boldText_, styles.centering]}>
-            완료하지 않은 루틴이 있어요!
-          </Text>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {todo.map((value, index) =>
-              todoCompleted[index] === todoTotal[index] ? (
-                <View key={index}>
-                  <View style={styles.notCompletedSheet}>
-                    <Image source={todoImgGray[index]} style={styles.img4} />
-                  </View>
-                  <View>
-                    <Text style={styles.categoryText}>{todo[index]}</Text>
-                    <Text style={styles.categoryBlackText}>
-                      {todoCompleted[index]}/{todoTotal[index]}
-                    </Text>
-                  </View>
+
+        {/* 완료되지 않은 루틴 카테고리 */}
+        <Text style={[commonStyles.boldText_, styles.centering]}>
+          완료하지 않은 루틴이 있어요!
+        </Text>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          {todo
+            .sort((a, b) => a.total - b.total)
+            .sort((a, b) => a.completed - b.completed)
+            .map(value => (
+              <View key={value.id}>
+                <View style={styles.notCompletedSheet}>
+                  <Image
+                    source={
+                      value.completed != false
+                        ? todoImgGray[value.id]
+                        : todoImg[value.id]
+                    }
+                    style={styles.img4}
+                  />
                 </View>
-              ) : (
-                <View key={index}>
-                  <View style={styles.notCompletedSheet}>
-                    <Image source={todoImg[index]} style={styles.img4} />
-                  </View>
-                  <View>
-                    <Text style={styles.categoryText}>{todo[index]}</Text>
-                    <Text style={styles.categoryColorText}>
-                      {todoCompleted[index]}/{todoTotal[index]}
-                    </Text>
-                  </View>
+                <View>
+                  <Text style={styles.categoryText}>{value.title}</Text>
+                  <Text
+                    style={[
+                      styles.categoryBlackText,
+                      {
+                        color: value.completed != false ? '#888888' : '#585FFF',
+                      },
+                    ]}>
+                    {todoCompleted[value.id]}/{todoTotal[value.id]}
+                  </Text>
                 </View>
-              ),
-            )}
-          </ScrollView>
-        </View>
+              </View>
+            ))}
+        </ScrollView>
+
+        {/* 이번 주 루틴 기록 */}
         <View style={commonStyles.spacing2} />
         <View style={[commonStyles.row]}>
           <Text
@@ -867,18 +897,18 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontSize: 15,
   },
-  categoryColorText: {
-    marginTop: 6,
-    marginLeft: 15,
-    color: '#585FFF',
-    fontFamily: 'Pretendard-Bold',
-    alignSelf: 'center',
-    fontSize: 15,
-  },
+  // categoryColorText: {
+  //   marginTop: 6,
+  //   marginLeft: 15,
+  //   color: '#585FFF',
+  //   fontFamily: 'Pretendard-Bold',
+  //   alignSelf: 'center',
+  //   fontSize: 15,
+  // },
   categoryBlackText: {
     marginTop: 6,
     marginLeft: 15,
-    color: '#888888',
+    // color: '#888888',
     fontFamily: 'Pretendard-Bold',
     alignSelf: 'center',
     fontSize: 15,
