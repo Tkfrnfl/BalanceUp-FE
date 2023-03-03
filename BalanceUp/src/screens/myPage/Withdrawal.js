@@ -9,11 +9,13 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
+import {show} from '../../recoil/atom';
+import {useRecoilState} from 'recoil';
 
 const Withdrawal = ({navigation: {navigate}}) => {
   const [useCheck, setUseCheck] = useState(false);
   const [disabled, setDisabled] = useState(false);
-  const [withdrawal, setWithdrawal] = useState(false);
+  const [showIcon, setShowIcon] = useRecoilState(show);
 
   const useBtnEvent = () => {
     if (useCheck === false) {
@@ -74,6 +76,7 @@ const Withdrawal = ({navigation: {navigate}}) => {
         ]}
         onPress={() =>
           userWithdraw().then(() => {
+            setShowIcon(true);
             navigate('Login');
           })
         }

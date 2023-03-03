@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Linking} from 'react-native';
 
 import BackArrow from '../../resource/image/Common/backArrow.svg';
 
@@ -7,14 +7,14 @@ const Notice = ({navigation: {navigate}}) => {
   const noticeData = [
     {
       id: 1,
-      title: '새해가 밝았습니다!',
-      date: '2023. 01. 01',
-    },
-    {
-      id: 2,
       title: '안녕하세요, KEYUM 입니다.',
       date: '2022. 12. 31',
     },
+    // {
+    //   id: 2,
+    //   title: '안녕하세요, KEYUM 입니다.',
+    //   date: '2022. 12. 31',
+    // },
   ];
   return (
     <View style={styles.container}>
@@ -27,7 +27,14 @@ const Notice = ({navigation: {navigate}}) => {
         <Text style={styles.topTitle}>공지사항</Text>
       </View>
       {noticeData.map(data => (
-        <TouchableOpacity key={data.id} activeOpacity={0.5}>
+        <TouchableOpacity
+          key={data.id}
+          activeOpacity={0.5}
+          onPress={() =>
+            Linking.openURL(
+              'https://noble-wolken-00.notion.site/0d85a96941ac408f8eb67a01dfe2c84b',
+            )
+          }>
           <View
             style={[
               styles.noticeSheet,
