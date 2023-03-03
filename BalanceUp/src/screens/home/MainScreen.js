@@ -892,7 +892,7 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(1.5),
     fontFamily: 'Pretendard-Medium',
     textDecorationLine: 'underline',
-    marginLeft: responsiveWidth(65),
+    marginLeft: responsiveWidth(59),
     marginBottom: responsiveHeight(3),
   },
   mainText4: {
