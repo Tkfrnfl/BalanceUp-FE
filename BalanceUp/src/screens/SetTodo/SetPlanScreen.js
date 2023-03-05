@@ -455,9 +455,13 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
           {shouldShow ? (
             <View style={styles.timeView}>
               <Text style={styles.timeText}>{time}</Text>
-              <TouchableWithoutFeedback onPress={() => setOpen(true)}>
+              <TouchableOpacity
+                style={{position: 'absolute', right: 17}}
+                activeOpacity={1.0}
+                hitSlop={{bottom: 10, left: 10, right: 10}}
+                onPress={() => setOpen(true)}>
                 <Text style={styles.timeModalText}>시간변경</Text>
-              </TouchableWithoutFeedback>
+              </TouchableOpacity>
             </View>
           ) : null}
           <DatePicker

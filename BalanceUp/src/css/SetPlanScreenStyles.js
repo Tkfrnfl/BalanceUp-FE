@@ -109,20 +109,17 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#585FFF',
     marginTop: 21,
-    marginLeft: 150,
-    left: 5,
   },
   timeText: {
     color: '#000',
-    right: 8,
     fontSize: 35,
     fontWeight: 'bold',
     marginTop: 10,
-    marginLeft: 10,
+    marginLeft: 16,
   },
   timeView: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'flex-start',
   },
   nextBtn: {
     width: responsiveWidth(91),
