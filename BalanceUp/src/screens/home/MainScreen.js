@@ -408,7 +408,7 @@ const MainScreen = ({navigation: {navigate}}) => {
             second: 0,
             millisecond: 0,
           });
-          var correctHours = moment.duration('09:00:00'); //시간보정
+          var correctHours = moment.duration('09:00:00'); // 시간보정
           m.subtract(correctHours);
           m.toDate();
           var tmpM = new Date(m);
@@ -422,6 +422,9 @@ const MainScreen = ({navigation: {navigate}}) => {
         let tmpId = tmpArray[i].routineId;
         let tmpTitle = tmpArray[i].routineTitle;
         let tmpDays = tmpArrayDays[k];
+        let tmpDaysStr = String(tmpDays);
+        let tmpForId = tmpDaysStr.slice(8, 10); // id 구분을 위한 날짜추가
+        tmpForId = parseInt(tmpForId);
         // let strtmpDays=tmpArray[i].routineDays[k].day;
         PushNotification.channelExists(`${tmpId}${tmpDays}`, function (exists) {
           // 채널 확인후 존재하지 않으면 채널 생성후 알림 설정
@@ -440,12 +443,12 @@ const MainScreen = ({navigation: {navigate}}) => {
             );
             PushNotification.localNotificationSchedule({
               channelId: `${tmpId}${tmpDays}`,
-              //id: `${tmpId}${tmpDays}`,  //id must 32bit integer
+              id: `${tmpId}${tmpForId}`, // id must 32bit integer
               title: tmpTitle,
               message: `${nickName}님, 오늘의 루틴을 완료해보세요!`,
               date: tmpDays,
               // repeatType: 'week',
-              //date: new Date(Date.now() + 30 * 1000), // 시간대 에러날시 서버시간 체크후 보정
+              // date: new Date(Date.now() + 30 * 1000), // 시간대 에러날시 서버시간 체크후 보정
             });
             PushNotification.getScheduledLocalNotifications(callback => {
               console.log(callback);
@@ -455,7 +458,7 @@ const MainScreen = ({navigation: {navigate}}) => {
             // PushNotification.getScheduledLocalNotifications(callback => {
             //   console.log(callback);
             // });
-            // PushNotification.cancelAllLocalNotifications();
+            //PushNotification.cancelAllLocalNotifications();
           }
         });
       }

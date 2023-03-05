@@ -72,37 +72,6 @@ const unlinkKakao = async (): Promise<void> => {
 // }; // 추후에 process.env로 빼기
 
 export default function Login({navigation}) {
-  useEffect(() => {
-    PushNotification.createChannel(
-      {
-        channelId: '1',
-        channelName: '1',
-        channelDescription: 'A channel to categorise your notifications',
-        playSound: false,
-        soundName: 'default',
-        vibrate: true,
-      },
-      // created => console.log(`createChannel returned '${created}'`),
-    );
-    PushNotification.localNotificationSchedule({
-      channelId: '1',
-      id: '1',
-      title: '1',
-      message: '님, 오늘의 루틴을 완료해보세요!',
-      // date: tmpDays,
-      // repeatType: 'week',
-      date: new Date(Date.now() + 30 * 1000), // 시간대 에러날시 서버시간 체크후 보정
-    });
-    PushNotification.getScheduledLocalNotifications(callback => {
-      console.log(callback);
-    });
-  }, []);
-  const test1 = async (): Promise<void> => {
-    console.log('??');
-    PushNotification.getScheduledLocalNotifications(callback => {
-      console.log(callback);
-    });
-  };
   React.useEffect(() => {
     googleSigninConfigure();
   });

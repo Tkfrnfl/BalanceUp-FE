@@ -256,31 +256,35 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
   };
 
   // 루틴 수정
-  const handleEdit = () => {
-    modifyRoutine(routineId, todoText, days, time).then(
+  const handleEdit = async () => {
+    await modifyRoutine(routineId, todoText, days, time).then(
       setClearModalVisible(false),
-      navigate('Home'),
+      // navigate('Home'),
     );
     let tmpArray = [];
     let tmpId = routineId;
 
     PushNotification.getScheduledLocalNotifications(callback => {
       for (var i = 0; i < callback.length; i++) {
-        if (callback[i].id.slice(0, 4) === String(tmpId).slice(0, 4)) {
+        if (callback[i].id.slice(0, 3) === String(tmpId).slice(0, 3)) {
           // id 만자리수 대비
+          // ***백에서 각 알림별 id 따로 받아와 처리
           tmpArray.push(callback[i]);
         }
       }
-      if (time != null) {
+      //console.log(time);
+      if (time != undefined) {
         for (var j = 0; j < tmpArray.length; j++) {
           let beforeDate = tmpArray[j].date;
           console.log(beforeDate);
           PushNotification.deleteChannel(`${tmpId}${beforeDate}`); // 이전채널 삭제
           let m = moment(beforeDate);
-
+          let tmpDaysStr = String(beforeDate);
+          let tmpForId = tmpDaysStr.slice(8, 10); // id 구분을 위함
+          tmpForId = parseInt(tmpForId);
           m.set({hour: time.split(':')[0], minute: time.split(':')[1]}); // 시간만 바꿈
-          var correctHours = moment.duration('09:00:00'); // 시간보정
-          m.subtract(correctHours);
+          // var correctHours = moment.duration('09:00:00'); // 시간보정 이미 됬으므로 패스
+          // m.subtract(correctHours);
           m.toDate();
           var tmpM = new Date(m);
           PushNotification.createChannel(
@@ -296,7 +300,7 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
           );
           PushNotification.localNotificationSchedule({
             channelId: `${tmpId}${tmpM}`,
-            // id: `${tmpId}${tmpM}`,
+            id: `${tmpId}${tmpForId}`,
             title: tmpArray[j].title,
             message: `${nickName}님, 오늘의 루틴을 완료해보세요!`,
             date: tmpM,
@@ -305,11 +309,17 @@ const SetPlanScreen = ({navigation: {navigate}, route}) => {
           });
         }
       }
-
       PushNotification.getScheduledLocalNotifications(callback2 => {
         console.log(callback2); // ['channel_id_1']
       });
     });
+    // 알림 설정
+    let tmp = JSON.parse(JSON.stringify(alarmChanged));
+    setAlarmChanged(tmp + 1);
+    // seloctor 업데이트를 위해+1
+    let tmpNum = JSON.parse(JSON.stringify(routineRefresh));
+    setRoutineStateNum(tmpNum + 1);
+    navigate('Home');
   };
 
   // 토스트 메세지
