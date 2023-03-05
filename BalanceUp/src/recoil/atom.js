@@ -51,6 +51,11 @@ let userLogin = atom({
   default: '',
 });
 
+let show = atom({
+  key: 'show',
+  default: true,
+});
+
 export {
   dailyState,
   exerciseState,
@@ -62,4 +67,5 @@ export {
   jwtState,
   jwtRefreshState,
   userLogin,
+  show,
 };

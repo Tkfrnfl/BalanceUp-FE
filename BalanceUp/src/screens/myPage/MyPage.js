@@ -17,7 +17,7 @@ import {
 import {useRecoilState} from 'recoil';
 import {validateText} from '../../utils/regex';
 import {ChangeNameAPI, duplicationCheckAPI} from '../../actions/checkNameAPI';
-import {nickNameState} from '../../recoil/atom';
+import {nickNameState, show} from '../../recoil/atom';
 
 import MoreInfoArrow from '../../resource/image/Agree/moreInfoArrow.svg';
 import modalInnerStyles from '../../css/modalStyles';
@@ -32,6 +32,7 @@ import {
 const MyPage = ({navigation: {navigate}}) => {
   const [userName, setUserName] = useState('');
   const [nickName, setNickName] = useRecoilState(nickNameState);
+  const [showIcon, setShowIcon] = useRecoilState(show);
   const [checkTextError, setCheckTextError] = useState('');
   const [checkTextPass, setCheckTextPass] = useState('');
   const [checkDisabled, setCheckDisabled] = useState(true);
@@ -143,7 +144,7 @@ const MyPage = ({navigation: {navigate}}) => {
     if (id === 1) {
       setIsModalVisible(!isModalVisible);
     } else if (id === 2) {
-      navigate(func);
+      navigate(func), setShowIcon(false);
     } else if (id === 3) {
       setLogoutModalVisible(!logoutModalVisible);
     }
@@ -189,7 +190,9 @@ const MyPage = ({navigation: {navigate}}) => {
               activeOpacity={1.0}>
               <View style={styles.menuSheet}>
                 <Text style={styles.menuText}>{data.title}</Text>
-                {data.id === 2 ? <NewNotice style={styles.newSvg} /> : null}
+                {data.id === 2 && showIcon === true ? (
+                  <NewNotice style={styles.newSvg} />
+                ) : null}
                 <MoreInfoArrow style={styles.arrowBtnStyle} />
               </View>
             </TouchableOpacity>

@@ -50,7 +50,7 @@ const NameScreen = ({navigation}) => {
 
     // 글자수 제한
     if (userName.length >= 11) {
-      setCheckTextError('11글자 이하 사용 불가능합니다');
+      setCheckTextError('11글자 이상 입력 불가합니다');
     } else if (userName.length === 0) {
       setUserName('');
       setCheckTextError('');

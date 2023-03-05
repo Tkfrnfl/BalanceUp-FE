@@ -157,9 +157,10 @@ const AgreeScreen = ({navigation}) => {
             [필수] 서비스 이용약관에 동의합니다.
           </Text>
           <MoreInfoArrow
+            hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
             onPress={() =>
               Linking.openURL(
-                'https://keyum.notion.site/KEYUM-dc7a7a7e475f402ea75025985a34061e',
+                'https://keyum.notion.site/KEYUM-dd9853b3ffa74f34951a57cfb7d195ce',
               )
             }
             style={styles.arrowBtnStyle}
@@ -185,6 +186,7 @@ const AgreeScreen = ({navigation}) => {
             [필수] 개인정보 수집 / 이용에 동의합니다.
           </Text>
           <MoreInfoArrow
+            hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
             onPress={() =>
               Linking.openURL(
                 'https://keyum.notion.site/KEYUM-ef4e1a7f198d4cec8d4642c3bf7cc0a4',

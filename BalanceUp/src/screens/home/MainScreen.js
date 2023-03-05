@@ -408,7 +408,7 @@ const MainScreen = ({navigation: {navigate}}) => {
             second: 0,
             millisecond: 0,
           });
-          var correctHours = moment.duration('09:00:00');  //시간보정
+          var correctHours = moment.duration('09:00:00'); //시간보정
           m.subtract(correctHours);
           m.toDate();
           var tmpM = new Date(m);
@@ -447,7 +447,7 @@ const MainScreen = ({navigation: {navigate}}) => {
               // repeatType: 'week',
               //date: new Date(Date.now() + 30 * 1000), // 시간대 에러날시 서버시간 체크후 보정
             });
-             PushNotification.getScheduledLocalNotifications(callback => {
+            PushNotification.getScheduledLocalNotifications(callback => {
               console.log(callback);
             });
           } else {
@@ -490,7 +490,7 @@ const MainScreen = ({navigation: {navigate}}) => {
           <TouchableOpacity
             onPress={() => navigate('Guide')}
             activeOpacity={1.0}>
-            <Text style={styles.guideText}>키움 성장 가이드</Text>
+            <Text style={styles.guideText}>KEYUM 성장 가이드</Text>
           </TouchableOpacity>
 
           {/* 레벨 progressBar */}
@@ -892,7 +892,7 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(1.5),
     fontFamily: 'Pretendard-Medium',
     textDecorationLine: 'underline',
-    marginLeft: responsiveWidth(65),
+    marginLeft: responsiveWidth(59),
     marginBottom: responsiveHeight(3),
   },
   mainText4: {
