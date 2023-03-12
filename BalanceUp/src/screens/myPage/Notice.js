@@ -8,7 +8,7 @@ const Notice = ({navigation: {navigate}}) => {
     {
       id: 1,
       title: '안녕하세요, KEYUM 입니다.',
-      date: '2022. 12. 31',
+      date: '2023. 03. 20',
     },
     // {
     //   id: 2,
@@ -32,7 +32,7 @@ const Notice = ({navigation: {navigate}}) => {
           activeOpacity={0.5}
           onPress={() =>
             Linking.openURL(
-              'https://noble-wolken-00.notion.site/0d85a96941ac408f8eb67a01dfe2c84b',
+              'https://keyum.notion.site/KEYUM-f353f4a2ae7d449d813fa2b346931c1a',
             )
           }>
           <View

@@ -16,18 +16,9 @@ import commonStyles from '../../css/commonStyles';
 import {format} from 'date-fns';
 import * as Progress from 'react-native-progress';
 import LevelArrow from '../../resource/image/Main/levelArrow.svg';
-// import LevelBox from '../../resource/image/Main/levelBox.svg';
 import LeftArrow from '../../resource/image/Main/left.svg';
 import RightArrow from '../../resource/image/Main/right.svg';
 import Iconx from '../../resource/image/Main/back.svg';
-import life from '../../resource/image/SetTodo/life.png';
-import education from '../../resource/image/SetTodo/education.png';
-import mental from '../../resource/image/SetTodo/mental.png';
-import health from '../../resource/image/SetTodo/health.png';
-import lifeGray from '../../resource/image/Main/daily_off.png';
-import educationGray from '../../resource/image/Main/study_off.png';
-import healthGray from '../../resource/image/Main/health_off.png';
-import mentalGray from '../../resource/image/Main/mind_off.png';
 import lv1 from '../../resource/image/Main/1lv.gif';
 import lv2 from '../../resource/image/Main/2lv.gif';
 import lv3 from '../../resource/image/Main/3lv.gif';
@@ -94,8 +85,6 @@ let month = today.getMonth() + 1; // 월
 let date = today.getDate(); // 날짜
 
 const MainScreen = ({navigation: {navigate}}) => {
-  const todoImg = [life, education, mental, health];
-  const todoImgGray = [lifeGray, educationGray, mentalGray, healthGray];
   const [nickName, setNickName] = useRecoilState(nickNameState);
   const [routineRefresh, setRoutineStateNum] = useRecoilState(routineStateNum);
   const [alarmChange, setAlarmChanged] = useRecoilState(alarmChanged);
@@ -128,33 +117,6 @@ const MainScreen = ({navigation: {navigate}}) => {
   const [levelUp_ModalVisible, setLevelUp_ModalVisible] = useState(false);
   const [showUpModal, setShowUpModal] = useState(false);
   const [gif, setGif] = useState(lv1);
-
-  const todo = [
-    {
-      id: 0,
-      title: '일상',
-      completed: todoCompleted[0] === todoTotal[0],
-      total: todoTotal[0],
-    },
-    {
-      id: 1,
-      title: '학습',
-      completed: todoCompleted[1] === todoTotal[1],
-      total: todoTotal[1],
-    },
-    {
-      id: 2,
-      title: '마음관리',
-      completed: todoCompleted[2] === todoTotal[2],
-      total: todoTotal[2],
-    },
-    {
-      id: 3,
-      title: '운동',
-      completed: todoCompleted[3] === todoTotal[3],
-      total: todoTotal[3],
-    },
-  ];
 
   // RP 레벨 처리
   useEffect(() => {
@@ -320,48 +282,6 @@ const MainScreen = ({navigation: {navigate}}) => {
       resetBottomSheet.start();
     }
   }, [levelUpModalVisible, levelUp_ModalVisible]);
-
-  // const asyncGetAll = async () => {
-  //   let res;
-
-  //   res = await getAllRoutine();
-  //   res = res.body;
-
-  //   for (var i = 0; i < res.length; i++) {
-  //     // 루틴 전체 불러오기
-  //     if (res[i].routineCategory === '일상') {
-  //       if (res[i].completed === true) {
-  //         completedTmp[0] += 1;
-  //         totalTmp[0] += 1;
-  //       } else {
-  //         totalTmp[0] += 1;
-  //       }
-  //     } else if (res[i].routineCategory === '학습') {
-  //       if (res[i].completed === true) {
-  //         completedTmp[1] += 1;
-  //         totalTmp[1] += 1;
-  //       } else {
-  //         totalTmp[1] += 1;
-  //       }
-  //     } else if (res[i].routineCategory === '마음관리') {
-  //       if (res[i].completed === true) {
-  //         completedTmp[2] += 1;
-  //         totalTmp[2] += 1;
-  //       } else {
-  //         totalTmp[2] += 1;
-  //       }
-  //     } else if (res[i].routineCategory === '운동') {
-  //       if (res[i].completed === true) {
-  //         completedTmp[3] += 1;
-  //         totalTmp[3] += 1;
-  //       } else {
-  //         totalTmp[3] += 1;
-  //       }
-  //     }
-  //     setTodoCompleted(completedTmp);
-  //     setTodoTotal(totalTmp);
-  //   }
-  // };
 
   useEffect(() => {
     // asyncGetAll();
@@ -568,78 +488,11 @@ const MainScreen = ({navigation: {navigate}}) => {
                     </Text>
                   )}
                 </View>
-                {/* ) : (
-                  // 만렙 처리
-                  <LevelBox
-                    style={[
-                      dstyleText((999 / 999) * responsiveWidth(75.5)).bar,
-                      {top: responsiveHeight(2.5), left: responsiveWidth(-1.7)},
-                    ]}
-                  />
-                )} */}
-                {/* {userRp <= 999 ? (
-                  <Text
-                    style={[
-                      styles.progressRpText,
-                      dstyleText_(
-                        (userRp < 300 ? userRp / upRp : userRp / 999) *
-                          responsiveWidth(75.5),
-                      ).bar,
-                    ]}>
-                    {userRp}
-                  </Text>
-                ) : (
-                  // 만렙 처리
-                  <Text
-                    style={[
-                      styles.progressRpText,
-                      dstyleText_((999 / 999) * responsiveWidth(75.5)).bar_,
-                    ]}>
-                    999+
-                  </Text>
-                )} */}
               </View>
             </View>
           </Shadow>
           <View style={commonStyles.spacing2} />
         </View>
-        <View style={commonStyles.spacing2} />
-
-        {/* 완료되지 않은 루틴 카테고리 */}
-        <Text style={[commonStyles.boldText_, styles.centering]}>
-          완료하지 않은 루틴이 있어요!
-        </Text>
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          {todo
-            .sort((a, b) => a.total - b.total)
-            .sort((a, b) => a.completed - b.completed)
-            .map(value => (
-              <View key={value.id}>
-                <View style={styles.notCompletedSheet}>
-                  <Image
-                    source={
-                      value.completed != false
-                        ? todoImgGray[value.id]
-                        : todoImg[value.id]
-                    }
-                    style={styles.img4}
-                  />
-                </View>
-                <View>
-                  <Text style={styles.categoryText}>{value.title}</Text>
-                  <Text
-                    style={[
-                      styles.categoryBlackText,
-                      {
-                        color: value.completed != false ? '#888888' : '#585FFF',
-                      },
-                    ]}>
-                    {todoCompleted[value.id]}/{todoTotal[value.id]}
-                  </Text>
-                </View>
-              </View>
-            ))}
-        </ScrollView>
 
         {/* 이번 주 루틴 기록 */}
         <View style={commonStyles.spacing2} />
@@ -779,18 +632,6 @@ const dstyleText = x =>
     },
   });
 
-// const dstyleText_ = x =>
-//   StyleSheet.create({
-//     bar: {
-//       marginLeft: x + 17,
-//       fontSize: 10,
-//     },
-//     bar_: {
-//       marginLeft: x + 17,
-//       fontSize: 7.8,
-//     },
-//   });
-
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
@@ -900,30 +741,6 @@ const styles = StyleSheet.create({
   },
   mainText4: {
     paddingRight: 60,
-  },
-  categoryText: {
-    marginTop: 10,
-    marginLeft: 15,
-    color: '#232323',
-    fontFamily: 'Pretendard-Medium',
-    alignSelf: 'center',
-    fontSize: 15,
-  },
-  // categoryColorText: {
-  //   marginTop: 6,
-  //   marginLeft: 15,
-  //   color: '#585FFF',
-  //   fontFamily: 'Pretendard-Bold',
-  //   alignSelf: 'center',
-  //   fontSize: 15,
-  // },
-  categoryBlackText: {
-    marginTop: 6,
-    marginLeft: 15,
-    // color: '#888888',
-    fontFamily: 'Pretendard-Bold',
-    alignSelf: 'center',
-    fontSize: 15,
   },
   centering: {
     alignItems: 'center',
