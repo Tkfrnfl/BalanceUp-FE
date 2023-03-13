@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">KEYUM</string>
-    <string name="kakao_app_key">e4edd619a7260f951c919c0c28913cf7</string>
+    <!-- <string name="kakao_app_key">e4edd619a7260f951c919c0c28913cf7</string> -->
+    <string name="kakao_app_key">31f62de64deab2e519140e615f6e4b4e</string>
 </resources>

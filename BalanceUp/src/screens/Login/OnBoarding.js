@@ -56,7 +56,6 @@ export default function OnBoarding({navigation}) {
           dataRefreshToekn,
         ).then(response => {
           res = response;
-
           if (res.resultCode === 'success') {
             // jwt 로컬 스토리지 저장후 메인화면 보내기
             console.log(res.body.refreshToken);

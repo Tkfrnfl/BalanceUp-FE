@@ -88,7 +88,7 @@ export default function Login({navigation}) {
     let res;
     await loginKakao(token.accessToken).then(response => {
       res = response;
-      // console.log(response);
+      console.log(response);
       if (res.body.login === 'sign-up') {
         setUserName(res.body.username);
         setKorG('K');
